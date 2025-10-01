@@ -41,12 +41,12 @@ const HeroSection = () => {
     >
       Apply Now
     </Link>
-    <Link
-      to="/loan-calculator"
-      className="border-2 border-[#226C3B] text-[#226C3B] hover:bg-green-50 font-semibold py-3 px-8 rounded-lg shadow-sm hover:shadow-md transition-transform transform hover:scale-105"
-    >
-      Loan Calculator
-    </Link>
+   <Link
+  to="/calculator"
+  className="border-2 border-[#226C3B] text-[#226C3B] hover:bg-green-50 font-semibold py-3 px-8 rounded-lg shadow-sm hover:shadow-md transition-transform transform hover:scale-105"
+>
+  Loan Calculator
+</Link>
   </div>
 </div>
 
