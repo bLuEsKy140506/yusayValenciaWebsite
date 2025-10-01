@@ -5,6 +5,14 @@ export default function PLRenewalCalculator() {
   const [months, setMonths] = useState("");
   const [result, setResult] = useState(null);
 
+    const handleNumericInput = (e, setter) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      setter(value);
+    }
+  };
+
+
   useEffect(() => {
     const monthlyVal = parseFloat(monthly);
     const monthsVal = parseInt(months);
@@ -60,9 +68,9 @@ export default function PLRenewalCalculator() {
             Monthly Amortization
           </label>
           <input
-            type="number"
+            type="text"
             value={monthly}
-            onChange={(e) => setMonthly(e.target.value)}
+            onChange={(e) => handleNumericInput(e, setMonthly)}
             placeholder="Enter monthly amortization"
             className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
             min="1"
@@ -73,7 +81,19 @@ export default function PLRenewalCalculator() {
           <label className="block text-gray-700 font-medium">
             Number of Months
           </label>
-          <input
+           <select
+            value={months}
+            onChange={(e) => setMonths(e.target.value)}
+            className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
+          >
+            <option value="">Select months</option>
+            {[...Array(27).keys()].map((num) => (
+              <option key={num + 4} value={num + 4}>
+                {num + 4}
+              </option>
+            ))}
+          </select>
+          {/* <input
             type="number"
             value={months}
             onChange={(e) => setMonths(e.target.value)}
@@ -81,7 +101,7 @@ export default function PLRenewalCalculator() {
             className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
             min="4"
             max="36"
-          />
+          /> */}
         </div>
       </div>
 

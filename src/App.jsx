@@ -3,7 +3,8 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import LoanCalculator from "./pages/LoanCalculator";
-
+import ApplyNow from "./components/ApplyNow";
+import AboutUs from "./components/AboutUs";
 
 function App() {
   const location = useLocation();
@@ -17,7 +18,13 @@ function App() {
       {/* Main content */}
       <main className="flex-grow">
         <Routes>
-          <Route path="/" element={<HeroSection />} />
+          <Route path="/" element={
+            <>
+            <HeroSection />
+            <AboutUs />
+            <ApplyNow />
+            </>
+            } />
           <Route path="/about" element={<div className="p-6">About Page</div>} />
           <Route path="/services" element={<div className="p-6">Services Page</div>} />
           <Route path="/assets" element={<div className="p-6">Acquired Assets</div>} />

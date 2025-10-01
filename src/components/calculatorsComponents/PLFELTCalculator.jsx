@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
 
-export default function PLNewCalculator() {
+export default function PLFELTCalculator() {
   const [monthly, setMonthly] = useState("");
   const [months, setMonths] = useState("");
   const [withReferral, setWithReferral] = useState(false);
   const [result, setResult] = useState(null);
-    const handleNumericInput = (e, setter) => {
+
+  // 🔹 helper: allow only numeric input
+  const handleNumericInput = (e, setter) => {
     const value = e.target.value;
     if (/^\d*$/.test(value)) {
       setter(value);
     }
   };
-
 
   useEffect(() => {
     const monthlyVal = parseFloat(monthly);
@@ -22,21 +23,21 @@ export default function PLNewCalculator() {
       return;
     }
 
-    if (monthsVal < 4 || monthsVal > 36 || monthlyVal <= 0) {
+    if (monthsVal < 24 || monthsVal > 36 || monthlyVal <= 0) {
       setResult(null);
       return;
     }
 
-   
     const gross = monthlyVal * monthsVal;
 
     // Deductions
-    const interest = gross * monthsVal * 0.01;
+    const interest = gross * monthsVal * 0.008; // 0.8% per month
     const serviceFee = 400;
     const rfpl = (gross / 1000) * 2.5 * monthsVal;
     const atmCharges = monthsVal * 15;
-    const itFee = gross <= 100000 ? 50 : 0.0005*gross;
+    const itFee = gross <= 100000 ? 50 : 0.0005 * gross;
     const notarial = 100;
+
     // Referral Fee (optional)
     let referralFee = 0;
     if (withReferral) {
@@ -46,7 +47,13 @@ export default function PLNewCalculator() {
     }
 
     const totalDeductions =
-      interest + serviceFee + rfpl + atmCharges + itFee + referralFee + notarial;
+      interest +
+      serviceFee +
+      rfpl +
+      atmCharges +
+      itFee +
+      referralFee +
+      notarial;
 
     const netProceeds = gross - totalDeductions;
 
@@ -60,59 +67,52 @@ export default function PLNewCalculator() {
       referralFee,
       totalDeductions,
       netProceeds,
-      notarial
+      notarial,
     });
   }, [monthly, months, withReferral]);
 
   return (
     <div className="max-w-xl mx-auto p-6 bg-white shadow-lg rounded-xl flex flex-col items-center space-y-4 min-h-[300px] transition-all">
       <h2 className="text-2xl font-bold text-gray-800 text-center">
-        PLNew Loan Calculator
+        PL FELT {`For BUY-OUT only`}
       </h2>
 
       {/* Input Fields */}
       <div className="space-y-4">
+        {/* Monthly Amortization */}
         <div>
           <label className="block text-gray-700 font-medium">
             Monthly Amortization
           </label>
           <input
-            type="text"
+            type="text" // changed to text
             value={monthly}
             onChange={(e) => handleNumericInput(e, setMonthly)}
             placeholder="Enter monthly amortization"
             className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
-            min="1"
           />
         </div>
 
+        {/* Number of Months Dropdown */}
         <div>
           <label className="block text-gray-700 font-medium">
             Number of Months
           </label>
-           <select
+          <select
             value={months}
             onChange={(e) => setMonths(e.target.value)}
             className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
           >
             <option value="">Select months</option>
-            {[...Array(27).keys()].map((num) => (
-              <option key={num + 4} value={num + 4}>
-                {num + 4}
+            {[...Array(13).keys()].map((num) => (
+              <option key={num + 24} value={num + 24}>
+                {num + 24}
               </option>
             ))}
           </select>
-          {/* <input
-            type="number"
-            value={months}
-            onChange={(e) => setMonths(e.target.value)}
-            placeholder="Enter 4 - 30 months"
-            className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
-            min="4"
-            max="36"
-          /> */}
         </div>
 
+        {/* Referral Checkbox */}
         <div className="flex items-center space-x-2">
           <input
             type="checkbox"
@@ -140,7 +140,7 @@ export default function PLNewCalculator() {
 
           {/* Deductions */}
           <div className="grid grid-cols-2 gap-y-1 text-gray-700">
-            <span>Interest (1% per month):</span>
+            <span>Interest (0.8% per month):</span>
             <span className="text-right">
               ₱{result.interest.toLocaleString()}
             </span>
@@ -164,7 +164,8 @@ export default function PLNewCalculator() {
             <span className="text-right font-semibold">
               ₱{result.itFee.toLocaleString()}
             </span>
-              <span>Notarial:</span>
+
+            <span>Notarial:</span>
             <span className="text-right font-semibold">
               ₱{result.notarial.toLocaleString()}
             </span>

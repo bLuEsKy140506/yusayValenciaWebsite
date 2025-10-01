@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import backgroundImage from "../assets/bg-interior.jpg"; // adjust path as needed
+import { Link as ScrollLink } from "react-scroll";
 
 const HeroSection = () => {
   return (
@@ -35,12 +36,15 @@ const HeroSection = () => {
 
   {/* CTA Buttons */}
   <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-2">
-    <Link
-      to="/apply"
-      className="bg-[#226C3B] hover:bg-green-800 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transition-transform transform hover:scale-105"
-    >
-      Apply Now
-    </Link>
+   <ScrollLink
+  to="apply-now"
+  smooth={true}
+  duration={600}
+  offset={-80} // adjust if header overlaps
+  className="cursor-pointer bg-[#226C3B] hover:bg-green-800 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transition-transform transform hover:scale-105"
+>
+  Apply Now
+</ScrollLink>
    <Link
   to="/calculator"
   className="border-2 border-[#226C3B] text-[#226C3B] hover:bg-green-50 font-semibold py-3 px-8 rounded-lg shadow-sm hover:shadow-md transition-transform transform hover:scale-105"
