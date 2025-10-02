@@ -107,20 +107,18 @@ const REMCalculatorOld = () => {
         />
 
         {/* Months Input */}
-        <input
-          type="number"
-          placeholder="Number of Months (4–24)"
-          value={months}
-          onChange={(e) => {
-            const val = e.target.value;
-            if (val === "" || (Number(val) >= 4 && Number(val) <= 24)) {
-              setMonths(val);
-            }
-          }}
-          className="w-[300px] border rounded-lg px-4 py-2"
-          min="4"
-          max="24"
-        />
+         <select
+            value={months}
+            onChange={(e) => setMonths(e.target.value)}
+            className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
+          >
+            <option value="">Select months</option>
+            {[...Array(21).keys()].map((num) => (
+              <option key={num + 4} value={num + 4}>
+                {num + 4}
+              </option>
+            ))}
+          </select>
       </div>
 
       {result && (

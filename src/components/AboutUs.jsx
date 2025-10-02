@@ -1,16 +1,18 @@
 import React from "react";
+import TeamAndMap from "./TeamAndMap";
+
 import {
-  Eye,            // Vision
-  Target,         // Mission
-  ShieldCheck,    // Honesty
-  Award,          // Excellence
-  HeartHandshake, // Loyalty
-  Briefcase       // Professionalism
+  Eye,
+  Target,
+  ShieldCheck,
+  Award,
+  HeartHandshake,
+  Briefcase
 } from "lucide-react";
 
-const AboutUs = () => {
+const AboutUs = ({ id }) => {
   return (
-    <div className="px-6 md:px-16 py-16 space-y-20">
+    <div id={id} className="px-6 md:px-16 py-16 space-y-20 scroll-mt-18">
       {/* Top Section: Vision & Mission + Core Values */}
       <section className="grid md:grid-cols-2 gap-12 max-w-7xl mx-auto items-start">
         {/* Vision & Mission */}
@@ -48,43 +50,50 @@ const AboutUs = () => {
 
         {/* Core Values */}
         <div>
-          <h2 className="text-2xl font-bold mb-6 text-center md:text-left">
-            Core Values
+          <h2 className="text-3xl font-extrabold mb-2 text-center md:text-left tracking-tight">
+            HELP
           </h2>
+          <p className="text-gray-500 mb-8 text-center md:text-left text-sm uppercase tracking-wide">
+            is Our Core Values
+          </p>
+
           <div className="grid sm:grid-cols-2 gap-6">
-            <div className="p-6 bg-gray-50 rounded-xl shadow flex flex-col">
-              <div className="flex items-center gap-2 mb-2">
-                <ShieldCheck className="w-5 h-5 text-blue-600" />
+            <div className="p-6 bg-white rounded-2xl shadow-md border hover:shadow-lg transition">
+              <div className="flex items-center gap-3 mb-3">
+                <ShieldCheck className="w-6 h-6 text-blue-600" />
                 <h3 className="font-semibold text-lg">Honesty</h3>
               </div>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-sm leading-relaxed">
                 In dealing with clients and in performing duties.
               </p>
             </div>
-            <div className="p-6 bg-gray-50 rounded-xl shadow flex flex-col">
-              <div className="flex items-center gap-2 mb-2">
-                <Award className="w-5 h-5 text-yellow-600" />
+
+            <div className="p-6 bg-white rounded-2xl shadow-md border hover:shadow-lg transition">
+              <div className="flex items-center gap-3 mb-3">
+                <Award className="w-6 h-6 text-yellow-500" />
                 <h3 className="font-semibold text-lg">Excellence</h3>
               </div>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-sm leading-relaxed">
                 Through consistent delivery of fast and personalized services.
               </p>
             </div>
-            <div className="p-6 bg-gray-50 rounded-xl shadow flex flex-col">
-              <div className="flex items-center gap-2 mb-2">
-                <HeartHandshake className="w-5 h-5 text-red-600" />
+
+            <div className="p-6 bg-white rounded-2xl shadow-md border hover:shadow-lg transition">
+              <div className="flex items-center gap-3 mb-3">
+                <HeartHandshake className="w-6 h-6 text-red-500" />
                 <h3 className="font-semibold text-lg">Loyalty</h3>
               </div>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-sm leading-relaxed">
                 To the company and the vision it seeks to achieve.
               </p>
             </div>
-            <div className="p-6 bg-gray-50 rounded-xl shadow flex flex-col">
-              <div className="flex items-center gap-2 mb-2">
-                <Briefcase className="w-5 h-5 text-purple-600" />
+
+            <div className="p-6 bg-white rounded-2xl shadow-md border hover:shadow-lg transition">
+              <div className="flex items-center gap-3 mb-3">
+                <Briefcase className="w-6 h-6 text-purple-600" />
                 <h3 className="font-semibold text-lg">Professionalism</h3>
               </div>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-sm leading-relaxed">
                 Shown through work ethics and conduct towards co-workers,
                 partners, and clients.
               </p>
@@ -94,44 +103,9 @@ const AboutUs = () => {
       </section>
 
       {/* Bottom Section: Team + Map */}
-      <section className="grid md:grid-cols-2 gap-12 max-w-7xl mx-auto items-start">
-        {/* Team */}
-        <div>
-          <h2 className="text-2xl font-bold mb-6 text-center md:text-left">
-            Our Team
-          </h2>
-          <div className="grid sm:grid-cols-2 gap-8">
-            <div className="flex flex-col items-center text-center">
-              <img
-                src="/images/earl.jpg"
-                alt="Earl Lauriece S. Butlay"
-                className="w-28 h-28 rounded-full object-cover shadow"
-              />
-              <h3 className="mt-4 font-semibold text-base">Earl Lauriece S. Butlay</h3>
-              <p className="text-gray-600 text-sm">Branch OIC</p>
-            </div>
-            {/* Add more staff here */}
-          </div>
-        </div>
-
-        {/* Map */}
-        <div>
-          <h2 className="text-2xl font-bold mb-6 text-center md:text-left">
-            Find Us
-          </h2>
-          <div className="rounded-xl overflow-hidden shadow-lg">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d246.9937108638777!2d125.09103146627044!3d7.905580425364019!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x32ff197d005371db%3A0xc66449328acb4088!2sYusay%20Credit%20and%20Finance%20Corporation!5e0!3m2!1sen!2sph!4v1759309731783!5m2!1sen!2sph"
-              width="100%"
-              height="380"
-              style={{ border: 0 }}
-              allowFullScreen=""
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
-          </div>
-        </div>
-      </section>
+     
+        <TeamAndMap />
+     
     </div>
   );
 };

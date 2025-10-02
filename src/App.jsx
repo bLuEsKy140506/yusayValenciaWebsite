@@ -5,6 +5,7 @@ import HeroSection from "./components/HeroSection";
 import LoanCalculator from "./pages/LoanCalculator";
 import ApplyNow from "./components/ApplyNow";
 import AboutUs from "./components/AboutUs";
+import ServicesSection from "./components/ServicesSection";
 
 function App() {
   const location = useLocation();
@@ -21,12 +22,13 @@ function App() {
           <Route path="/" element={
             <>
             <HeroSection />
-            <AboutUs />
+            <ServicesSection id="services"/>
+            <AboutUs id="about" />
             <ApplyNow />
             </>
             } />
-          <Route path="/about" element={<div className="p-6">About Page</div>} />
-          <Route path="/services" element={<div className="p-6">Services Page</div>} />
+          {/* <Route path="/about" element={<div className="p-6">About Page</div>} /> */}
+          {/* <Route path="/services" element={<div className="p-6">Services Page</div>} /> */}
           <Route path="/assets" element={<div className="p-6">Acquired Assets</div>} />
           {/* Loan Calculator Page */}
           <Route path="/calculator" element={<LoanCalculator />} />

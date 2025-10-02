@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
+import { HashLink } from "react-router-hash-link";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,9 +16,13 @@ const Navbar = () => {
 
         {/* Links + Button (desktop) */}
         <div className="hidden md:flex gap-6 items-center">
-          <Link to="/about" className="hover:text-primary">About</Link>
-          <Link to="/services" className="hover:text-primary">Services</Link>
-          <Link to="/assets" className="hover:text-primary">Acquired Asset</Link>
+          <HashLink smooth to="/#about" className="hover:text-blue-600">
+  About Us
+</HashLink>
+          <HashLink smooth to="/#services" className="hover:text-blue-600">
+  Services
+</HashLink>
+          <Link to="/assets" className="hover:text-primary">Properties For Sale</Link>
           {/* <Link to="/calculator" className="hover:text-primary">Loan Calculator</Link> */}
           
           {/* Always visible button on desktop */}
@@ -46,9 +51,13 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-white shadow-md flex flex-col items-start p-4 space-y-3">
-          <Link to="/about" onClick={() => setIsOpen(false)} className="block text-gray-700 hover:text-green-600">About</Link>
-          <Link to="/services" onClick={() => setIsOpen(false)} className="block text-gray-700 hover:text-green-600">Services</Link>
-          <Link to="/assets" onClick={() => setIsOpen(false)} className="block text-gray-700 hover:text-green-600">Acquired Asset</Link>
+           <HashLink smooth to="/#about" className="hover:text-blue-600"  onClick={() => setIsOpen(!isOpen)}>
+  About Us
+</HashLink>
+         <HashLink smooth to="/#services" className="hover:text-blue-600"  onClick={() => setIsOpen(!isOpen)}>
+  Services
+</HashLink>
+           <Link to="/assets" className="hover:text-primary">Properties For Sale</Link>
           <Link to="/calculator" onClick={() => setIsOpen(false)} className="block text-gray-700 hover:text-green-600">Loan Calculator</Link>
           
           {/* Mobile button */}

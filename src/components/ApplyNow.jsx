@@ -100,7 +100,7 @@ const ApplyNow = () => {
             <input
               type="number"
               name="amount"
-              placeholder="Desired Loan Amount"
+              placeholder="Monthly Pension or monthly income"
               value={formData.amount}
               onChange={handleChange}
               required
