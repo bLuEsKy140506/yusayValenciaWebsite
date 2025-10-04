@@ -32,7 +32,9 @@ const TeamAndMap = () => {
         <h2 className="text-3xl font-bold text-gray-800 mb-8">Our Team</h2>
 
         {/* Avatar Cluster */}
-       <AvatarCluster images={randomizedMembers.map(m => ({ img: m.img, name: m.name }))} />
+        <AvatarCluster
+          images={randomizedMembers.map((m) => ({ img: m.img, name: m.name }))}
+        />
       </section>
 
       {/* Map Section */}
@@ -42,7 +44,7 @@ const TeamAndMap = () => {
         </h2>
         <div className="w-full rounded-xl overflow-hidden shadow-lg">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d246.9937108638777!2d125.09103146627044!3d7.905580425364019!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x32ff197d005371db%3A0xc66449328acb4088!2sYusay%20Credit%20and%20Finance%20Corporation!5e0!3m2!1sen!2sph!4v1759309731783!5m2!1sen!2sph"
+            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1746.9652744657049!2d125.09086045963295!3d7.905736229177349!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x32ff197d005371db%3A0xc66449328acb4088!2sYusay%20Credit%20and%20Finance%20Corporation!5e1!3m2!1sen!2sph!4v1759499485646!5m2!1sen!2sph"
             width="100%"
             height="380"
             style={{ border: 0 }}

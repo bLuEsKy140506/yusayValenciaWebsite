@@ -1,0 +1,23 @@
+[33mcommit 851dcbc77576b85cbc45c674ea3912e8a87d829c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Earl Lauriece S. Butlay <earl0bluesky142226@gmail.com>
+Date:   Thu Oct 2 17:24:55 2025 +0800
+
+    4th commit, adding service, polishing about us and calculator
+
+[33mcommit 901eb336d620f9a6f5eeeb1b7b3ffe831fb3a81b[m
+Author: Earl Lauriece S. Butlay <earl0bluesky142226@gmail.com>
+Date:   Wed Oct 1 17:22:12 2025 +0800
+
+    3rd commit, completing PL calculators, add apply now, starting about us component
+
+[33mcommit 37c67ad11a73ead74440812360c10c226990dff2[m
+Author: Earl Lauriece S. Butlay <earl0bluesky142226@gmail.com>
+Date:   Wed Oct 1 09:56:00 2025 +0800
+
+    2nd commit, creation of calculator page - REM/PL, REM tab old & new, PL tab new and renewal
+
+[33mcommit 306c0ff064ebf716b50d453ae5aaff62aac45bdd[m
+Author: Earl Lauriece S. Butlay <earl0bluesky142226@gmail.com>
+Date:   Tue Sep 30 10:48:07 2025 +0800
+
+    first commit, uploading the 1st phase (landing page), done @ local

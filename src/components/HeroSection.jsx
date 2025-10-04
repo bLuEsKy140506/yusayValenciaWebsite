@@ -4,7 +4,10 @@ import { Link as ScrollLink } from "react-scroll";
 
 const HeroSection = () => {
   return (
-    <section className="relative flex items-center justify-center px-6 md:px-16 min-h-screen overflow-hidden">
+    <section
+      id="hero"
+      className="relative flex items-center justify-center px-6 md:px-16 min-h-screen overflow-hidden"
+    >
       {/* Background Image */}
       <div className="absolute inset-0 -z-20">
         <img
@@ -19,41 +22,41 @@ const HeroSection = () => {
       {/* Content Wrapper */}
       <div className="relative z-10 flex flex-col-reverse md:flex-row items-center justify-between w-full gap-12">
         {/* Left Content */}
-       <div className="w-full md:w-1/2 text-center md:text-left space-y-8">
-  {/* Title */}
-  <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight">
-    Fast & Affordable Loans in{" "}
-    <span className="text-[#226C3B]">Valencia City</span>
-  </h1>
+        <div className="w-full md:w-1/2 text-center md:text-left space-y-8">
+          {/* Title */}
+          <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight">
+            Fast & Affordable Loans in{" "}
+            <span className="text-[#226C3B]">Valencia City</span>
+          </h1>
 
-  {/* Subtitle */}
-  <p className="text-gray-700 text-lg md:text-xl leading-relaxed max-w-lg mx-auto md:mx-0">
-    Trusted since <span className="font-semibold text-[#226C3B]">2004</span>.  
-    Enjoy quick approvals, flexible terms, and low interest rates for{" "}
-    <span className="font-medium">SSS/GSIS Pension</span> and{" "}
-    <span className="font-medium">Real Estate Mortgage</span> loans.
-  </p>
+          {/* Subtitle */}
+          <p className="text-gray-700 text-lg md:text-xl leading-relaxed max-w-lg mx-auto md:mx-0">
+            Trusted since{" "}
+            <span className="font-semibold text-[#226C3B]">2004</span>. Enjoy
+            quick approvals, flexible terms, and low interest rates for{" "}
+            <span className="font-medium">SSS/GSIS Pension</span> and{" "}
+            <span className="font-medium">Real Estate Mortgage</span> loans.
+          </p>
 
-  {/* CTA Buttons */}
-  <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-2">
-   <ScrollLink
-  to="apply-now"
-  smooth={true}
-  duration={600}
-  offset={-80} // adjust if header overlaps
-  className="cursor-pointer bg-[#226C3B] hover:bg-green-800 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transition-transform transform hover:scale-105"
->
-  Apply Now
-</ScrollLink>
-   <Link
-  to="/calculator"
-  className="border-2 border-[#226C3B] text-[#226C3B] hover:bg-green-50 font-semibold py-3 px-8 rounded-lg shadow-sm hover:shadow-md transition-transform transform hover:scale-105"
->
-  Loan Calculator
-</Link>
-  </div>
-</div>
-
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-2">
+            <ScrollLink
+              to="apply-now"
+              smooth={true}
+              duration={600}
+              offset={-80} // adjust if header overlaps
+              className="cursor-pointer bg-[#226C3B] hover:bg-green-800 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transition-transform transform hover:scale-105"
+            >
+              Apply Now
+            </ScrollLink>
+            <Link
+              to="/calculator"
+              className="border-2 border-[#226C3B] text-[#226C3B] hover:bg-green-50 font-semibold py-3 px-8 rounded-lg shadow-sm hover:shadow-md transition-transform transform hover:scale-105"
+            >
+              Loan Calculator
+            </Link>
+          </div>
+        </div>
 
         {/* Right Badge Section */}
         <div className="w-full md:w-1/2 flex justify-center md:justify-end">
