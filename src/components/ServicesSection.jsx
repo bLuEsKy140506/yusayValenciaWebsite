@@ -1,10 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HandCoins, Home } from "lucide-react";
 import { Link } from "react-router-dom";
+import PensionBookmark from "./bookmarks/PensionBookmark";
+import REMBookmark from "./bookmarks/REMBookmark";
+import ReferralBookmark from "./bookmarks/ReferralBookmark";
 
-const ServicesSection = ({id}) => {
+const ServicesSection = ({ id }) => {
   const [language, setLanguage] = useState("en");
-  const [hovered, setHovered] = useState(null);
+
+  const [showBookmarks, setShowBookmarks] = useState(false);
+
+  // control bookmark popup open states
+  const [openPension, setOpenPension] = useState(false);
+  const [openREM, setOpenREM] = useState(false);
+
+  // Detect when section is visible on scroll
+  useEffect(() => {
+    const section = document.getElementById(id);
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowBookmarks(entry.isIntersecting),
+      { threshold: 0.4 }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [id]);
 
   const translations = {
     en: {
@@ -17,44 +39,13 @@ const ServicesSection = ({id}) => {
         "Get financing with your land title as collateral. We offer low interest rates with flexible repayment terms of up to 5 years. Our hybrid of advance and add-on interest keeps payments affordable and manageable — ensuring financial stability and growth.",
       calcBtn: "Calculate",
     },
-    tl: {
-      title: "Aming mga Serbisyo sa Pautang",
-      pensionTitle: "SSS/GSIS Pension Loan",
-      pensionDesc:
-        "Nag-aalok kami ng pautang para sa mga pensionado ng SSS at GSIS — kabilang ang retiree, survivorship, ITF, at disability. Mas mababang interes na 1% bawat buwan. May Extension Program din kung saan makakautang ka batay sa bilang ng buwang nabayaran, nang walang doble-dobleng bayad — upang makatulong sa dagdag na puhunan.",
-      realEstateTitle: "Real Estate Mortgage Loan",
-      realEstateDesc:
-        "Kumuha ng pondo gamit ang iyong titulo ng lupa bilang kolateral. Nag-aalok kami ng mababang interes at flexible na hulugan hanggang 5 taon. Ang aming hybrid na advance at add-on interest ay ginagawang mas abot-kaya at madali ang pagbabayad.",
-      calcBtn: "Kalkulahin",
-    },
-    bis: {
-      title: "Among Serbisyo sa Utang",
-      pensionTitle: "SSS/GSIS Pension Loan",
-      pensionDesc:
-        "Nagahatag kami og pautang para sa mga pensionado sa SSS ug GSIS — lakip ang retiree, survivorship, ITF, ug disability. Ubos nga interes nga 1% matag bulan. Aduna puy Extension Program diin makapahulam ka base sa bulan nga nabayran, nga walay doble nga bayad — aron makakuha og kwarta samtang nagapaningkamot nga mabalik ang kapital.",
-      realEstateTitle: "Real Estate Mortgage Loan",
-      realEstateDesc:
-        "Makakuha og financing gamit ang titulo sa yuta isip kolateral. Naghatag kami og ubos nga interes ug flexible nga terms hangtod 5 ka tuig. Ang hybrid nga advance ug add-on interest nagapamenos sa bayad ug nagahatag ug kasaligan nga pamaagi sa pagpanginabuhi.",
-      calcBtn: "Kwenta",
-    },
-    ilo: {
-      title: "Amó nga Serbisyo sa Utang",
-      pensionTitle: "SSS/GSIS Pension Loan",
-      pensionDesc:
-        "Nagahatag kami sang loan para sa mga pensionado sang SSS kag GSIS — lakip ang retiree, survivorship, ITF, kag disability. Nubo lang nga interes nga 1% kada bulan. May Extension Program man nga nagahatag sang utang base sa bulan nga nabayran, nga wala overlap sang bayad — agud makakuha pa sang kwarta samtang ginabalik ang kapital.",
-      realEstateTitle: "Real Estate Mortgage Loan",
-      realEstateDesc:
-        "Makakuha sang pondo gamit ang titulo sang duta bilang kolateral. Nagahatag kami sang nubo nga interes kag flexible nga terms tubtob 5 ka tuig. Ang hybrid nga advance kag add-on interest nagapabuhin sang bayad kag nagahatag kasiguraduhan sa pinansyal.",
-      calcBtn: "Kwenta",
-    },
   };
 
   const t = translations[language];
 
   return (
-    <section id={id} className="py-20 bg-gray-50">
+    <section id={id} className="py-20 bg-gray-50 relative">
       <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
-        {/* Language Toggle */}
         <div className="flex justify-center gap-3 mb-10 flex-wrap">
           {[
             { code: "en", label: "English" },
@@ -75,18 +66,13 @@ const ServicesSection = ({id}) => {
             </button>
           ))}
         </div>
-
         <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-12">
           {t.title}
         </h2>
 
         <div className="grid md:grid-cols-2 gap-10">
           {/* Pension Loan */}
-          <div
-            className="relative bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition flex flex-col justify-between group overflow-hidden"
-            onMouseEnter={() => setHovered("PL")}
-            onMouseLeave={() => setHovered(null)}
-          >
+          <div className="relative bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition flex flex-col justify-between group overflow-hidden">
             <div>
               <div className="flex justify-center md:justify-start items-center gap-4 mb-6">
                 <HandCoins className="w-14 h-14 text-green-700" />
@@ -98,8 +84,6 @@ const ServicesSection = ({id}) => {
                 {t.pensionDesc}
               </p>
             </div>
-
-            {/* Button */}
             <div className="mt-6 flex justify-center md:justify-start relative z-10">
               <Link
                 to="/calculator"
@@ -109,19 +93,10 @@ const ServicesSection = ({id}) => {
                 {t.calcBtn}
               </Link>
             </div>
-
-            {/* Overlay triggered only when hovering button */}
-            {hovered === "PL" && (
-              <div className="absolute inset-0 bg-green-700 bg-opacity-20 opacity-0 hover:opacity-100 transition duration-500 pointer-events-none"></div>
-            )}
           </div>
 
           {/* Real Estate Loan */}
-          <div
-            className="relative bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition flex flex-col justify-between group overflow-hidden"
-            onMouseEnter={() => setHovered("REM")}
-            onMouseLeave={() => setHovered(null)}
-          >
+          <div className="relative bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition flex flex-col justify-between group overflow-hidden">
             <div>
               <div className="flex justify-center md:justify-start items-center gap-4 mb-6">
                 <Home className="w-14 h-14 text-green-700" />
@@ -133,8 +108,6 @@ const ServicesSection = ({id}) => {
                 {t.realEstateDesc}
               </p>
             </div>
-
-            {/* Button */}
             <div className="mt-6 flex justify-center md:justify-start relative z-10">
               <Link
                 to="/calculator"
@@ -144,14 +117,42 @@ const ServicesSection = ({id}) => {
                 {t.calcBtn}
               </Link>
             </div>
-
-            {/* Overlay triggered only when hovering button */}
-            {hovered === "REM" && (
-              <div className="absolute inset-0 bg-green-700 bg-opacity-20 opacity-0 hover:opacity-100 transition duration-500 pointer-events-none"></div>
-            )}
           </div>
         </div>
       </div>
+
+      {/* ✅ Show bookmarks only when section is visible */}
+      {showBookmarks && (
+        <>
+          {/* Left floating buttons */}
+          <div className="fixed bottom-4 left-4 flex flex-col gap-2 z-[9999]">
+            <button
+              onClick={() => setOpenPension(true)}
+              className="px-4 py-2 bg-green-700 text-white rounded-full shadow-lg hover:bg-green-800 transition"
+            >
+              Pension Requirements
+            </button>
+            <button
+              onClick={() => setOpenREM(true)}
+              className="px-4 py-2 bg-green-700 text-white rounded-full shadow-lg hover:bg-green-800 transition"
+            >
+              REM Requirements
+            </button>
+          </div>
+
+          {/* Right floating referral bookmark */}
+          <div className="fixed bottom-4 right-4 z-[9999]">
+            <ReferralBookmark />
+          </div>
+        </>
+      )}
+
+      {/* ✅ Pop-up bookmark windows */}
+      <PensionBookmark
+        isOpen={openPension}
+        onClose={() => setOpenPension(false)}
+      />
+      <REMBookmark isOpen={openREM} onClose={() => setOpenREM(false)} />
     </section>
   );
 };

@@ -1,29 +1,16 @@
-// src/pages/AppointmentPage.jsx
 import React, { useState } from "react";
+import PensionBookmark from "../components/bookmarks/PensionBookmark";
+import REMBookmark from "../components/bookmarks/REMBookmark";
 
 const AppointmentPage = () => {
-  const [showModal, setShowModal] = useState(false);
   const [activeBookmark, setActiveBookmark] = useState(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const form = e.target;
-    const data = new FormData(form);
-
-    await fetch("https://formspree.io/f/mzzjgnlz", {
-      method: "POST",
-      body: data,
-      headers: { Accept: "application/json" },
-    });
-
-    form.reset();
-    setShowModal(true);
+  const handleToggle = (type) => {
+    setActiveBookmark(activeBookmark === type ? null : type);
   };
 
   return (
-    <div className="relative bg-gray-50 min-h-screen pt-24 pb-16 px-6">
-      {/* Left Floating Bookmarks */}
+    <section className="relative min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 pt-24 pb-16 px-6">
       <div className="max-w-3xl mx-auto text-center">
         <h1 className="text-4xl md:text-5xl font-extrabold text-green-800 mb-3">
           We Bring Our Service to You — Fast, Personal, and Hassle-Free
@@ -39,83 +26,51 @@ const AppointmentPage = () => {
           you have the necessary documents before requesting a visit.
         </p>
       </div>
-      <div className="fixed top-1/3 left-2 flex flex-col gap-2 z-20">
+
+      {/* ✅ Bookmarks fixed at bottom-left */}
+      <div className="fixed bottom-6 left-6 flex flex-col gap-3 z-50">
         <button
-          onClick={() =>
-            setActiveBookmark(activeBookmark === "pl" ? null : "pl")
-          }
-          className="bg-green-700 hover:bg-green-800 text-white font-semibold py-2 px-4 rounded-r-lg shadow-md transition-all duration-200"
+          onClick={() => handleToggle("pl")}
+          className={`bg-green-600 text-white font-semibold text-sm px-4 py-2 rounded-t-lg shadow-md hover:bg-green-700 transition ${
+            activeBookmark === "pl" ? "bg-green-800" : ""
+          }`}
         >
-          PL Requirements
+          PL
         </button>
         <button
-          onClick={() =>
-            setActiveBookmark(activeBookmark === "rem" ? null : "rem")
-          }
-          className="bg-green-700 hover:bg-green-800 text-white font-semibold py-2 px-4 rounded-r-lg shadow-md transition-all duration-200"
+          onClick={() => handleToggle("rem")}
+          className={`bg-green-600 text-white font-semibold text-sm px-4 py-2 rounded-b-lg shadow-md hover:bg-green-700 transition ${
+            activeBookmark === "rem" ? "bg-green-800" : ""
+          }`}
         >
-          REM Requirements
+          REM
         </button>
       </div>
 
-      {/* Bookmark Panels */}
-      {activeBookmark === "pl" && (
-        <div className="fixed top-1/4 left-20 bg-white p-6 rounded-xl shadow-2xl w-80 z-30 border border-green-200">
-          <h2 className="text-lg font-semibold text-green-800 mb-3">
-            Pension Loan Requirements
-          </h2>
-          <ul className="text-sm text-gray-700 list-disc pl-4 space-y-1">
-            <li>SSS/GSIS ID Number</li>
-            <li>DDR Print / SSS Certification</li>
-            <li>Voucher / Retirement Notice from SSS/GSIS</li>
-            <li>Bank Statement of ATM</li>
-            <li>ATM Card and Photocopy</li>
-            <li>2 Valid IDs</li>
-            <li>One (1) 2x2 ID Picture</li>
-            <li>Marriage Contract (Authenticated)</li>
-            <li>Birth Certificate (if with dependents)</li>
-            <li>Cedula / Barangay Clearance</li>
-            <li>Proof of Billing (Electric/Water)</li>
-          </ul>
-        </div>
-      )}
+      {/* ✅ Pop-up panels positioned right above the buttons */}
+      <div className="fixed bottom-20 left-6 z-50">
+        <PensionBookmark
+          isOpen={activeBookmark === "pl"}
+          onClose={() => setActiveBookmark(null)}
+        />
+        <REMBookmark
+          isOpen={activeBookmark === "rem"}
+          onClose={() => setActiveBookmark(null)}
+        />
+      </div>
 
-      {activeBookmark === "rem" && (
-        <div className="fixed top-1/4 left-20 bg-white p-6 rounded-xl shadow-2xl w-80 z-30 border border-green-200">
-          <h2 className="text-lg font-semibold text-green-800 mb-3">
-            REM Loan Requirements
-          </h2>
-          <ul className="text-sm text-gray-700 list-disc pl-4 space-y-1">
-            <li>Owner’s Duplicate Copy of Title</li>
-            <li>Certified True Copy of Title</li>
-            <li>Lot Plan with Vicinity Map</li>
-            <li>Tax Declaration & Receipts</li>
-            <li>Land Tax Clearance</li>
-            <li>2 Valid IDs (Applicant & Co-Maker)</li>
-            <li>1 2x2 ID Picture (Applicant & Co-Maker)</li>
-            <li>TIN (Applicant)</li>
-            <li>
-              CAR (Certificate Authorizing Registration) for Land title issued
-              on 2007 onward
-            </li>
-          </ul>
-        </div>
-      )}
-
-      {/* Appointment Section */}
-      <section className="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl p-10 mb-10">
-        <h1 className="text-3xl font-bold text-green-800 mb-4 text-center">
+      {/* ✅ Main Content */}
+      <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-2xl p-8 mt-10 relative z-10">
+        <h1 className="text-3xl font-bold text-green-700 mb-4 text-center">
           Schedule an Appointment
         </h1>
-        <p className="text-gray-700 mb-8 text-center">
-          We value your time and convenience. Our team will personally visit
-          your residence or property for evaluation — saving you a trip to our
-          office. Please ensure that you have the necessary loan requirements or
-          qualified documents ready.
-        </p>
 
+        {/* Important Notes */}
+
+        {/* ✅ Appointment Form */}
         <form
-          onSubmit={handleSubmit}
+          action="https://formspree.io/f/mzzjgnlz"
+          method="POST"
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           <input
@@ -123,90 +78,68 @@ const AppointmentPage = () => {
             name="name"
             placeholder="Full Name"
             required
-            className="border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-green-500 outline-none"
+            className="p-3 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
           />
           <input
             type="email"
             name="email"
             placeholder="Email Address"
             required
-            className="border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-green-500 outline-none"
+            className="p-3 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
           />
           <input
             type="text"
-            name="phone"
+            name="contact"
             placeholder="Contact Number"
             required
-            className="border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-green-500 outline-none"
+            className="p-3 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
           />
           <input
             type="text"
-            name="address"
-            placeholder="Complete Address"
+            name="location"
+            placeholder="Property / Residence Location"
             required
-            className="border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-green-500 outline-none"
+            className="p-3 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
           />
           <textarea
             name="message"
             rows="4"
-            placeholder="Additional Message or Notes"
-            className="border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-green-500 outline-none md:col-span-2"
+            placeholder="Additional Notes"
+            className="p-3 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none md:col-span-2"
           ></textarea>
 
-          <div className="md:col-span-2 flex flex-col items-center gap-3">
+          <div className="md:col-span-2 flex flex-col items-center">
             <button
               type="submit"
-              className="bg-green-700 hover:bg-green-800 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition duration-300"
+              className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 font-medium shadow-md transition"
             >
               Submit Appointment
             </button>
-            <p className="text-sm text-gray-600 text-center">
-              📌 Please read the <b>Important Notes</b> below before submitting.
+            <p className="text-sm text-gray-600 mt-2">
+              Please review the <strong>important notes</strong> before
+              submitting.
             </p>
           </div>
         </form>
-      </section>
-
-      {/* Important Notes */}
-      <section className="max-w-4xl mx-auto bg-green-50 border border-green-200 rounded-2xl p-8">
-        <h2 className="text-2xl font-semibold text-green-800 mb-4">
-          Important Notes
-        </h2>
-        <ul className="list-disc text-gray-700 pl-6 space-y-2">
-          <li>
-            <b>For Pensioners:</b> We only accept applicants aged 74 years old
-            and below, preferably with a permanent residence within Bukidnon.
-          </li>
-          <li>
-            <b>For REM Loan Applicants:</b> We do not accept CLOA titles,
-            agricultural lands exceeding 3 hectares, Emancipation Patents, NHA,
-            or DAR-CARP properties, or titles under the name of deceased
-            persons.
-          </li>
-        </ul>
-      </section>
-
-      {/* Success Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
-            <h2 className="text-2xl font-bold text-green-700 mb-4">
-              Submission Successful!
-            </h2>
-            <p className="text-gray-700 mb-6">
-              Thank you for your appointment request. Our team will contact you
-              as soon as possible.
-            </p>
-            <button
-              onClick={() => setShowModal(false)}
-              className="bg-green-700 hover:bg-green-800 text-white font-semibold py-2 px-6 rounded-lg transition"
-            >
-              Close
-            </button>
-          </div>
+        <div className="bg-green-50 border-l-4 border-green-600 p-5 rounded-lg mb-8">
+          <h2 className="text-lg font-semibold text-green-700 mb-2">
+            Important Notes:
+          </h2>
+          <ul className="list-disc pl-6 text-gray-700 space-y-1">
+            <li>Pensioners must be 74 years old and below.</li>
+            <li>
+              Applicants should preferably be permanent residents within
+              Bukidnon.
+            </li>
+            <li>
+              For Real Estate Mortgage (REM) — we do not accept CLOA titles,
+              agricultural lands over 3 hectares, Emancipation patents, NHA, or
+              DAR-CARP properties.
+            </li>
+          </ul>
         </div>
-      )}
-    </div>
+      </div>
+    </section>
   );
 };
 
