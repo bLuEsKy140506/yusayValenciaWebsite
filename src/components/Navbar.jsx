@@ -7,13 +7,17 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
-  // ✅ Scroll to top only for full-page routes (not hash links)
   useEffect(() => {
     const topRoutes = ["/", "/properties", "/calculator", "/appointment"];
-    if (topRoutes.includes(location.pathname)) {
+    const hasHash = location.hash !== ""; // ✅ Check if URL has #about or #services
+
+    // Scroll only if it's a full route and NOT a hash link
+    if (topRoutes.includes(location.pathname) && !hasHash) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-    setIsOpen(false); // ✅ Close dropdown on route change
+
+    // Close mobile menu on any navigation
+    setIsOpen(false);
   }, [location]);
 
   return (
@@ -21,7 +25,11 @@ const Navbar = () => {
       {/* Navbar Container */}
       <div className="container mx-auto flex items-center justify-between px-4 py-2 md:py-3">
         {/* Logo */}
-        <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
+        <Link
+          to="/"
+          onClick={() => setIsOpen(false)}
+          className="flex items-center gap-2"
+        >
           <img src={logo} alt="YCFC Logo" className="h-8 md:h-10" />
         </Link>
 
