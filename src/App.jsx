@@ -2,6 +2,7 @@ import React, { Suspense, lazy, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
+import Footer from "./components/Footer";
 
 // Lazy load heavy pages & components
 const LoanCalculator = lazy(() => import("./pages/LoanCalculator"));
@@ -35,18 +36,18 @@ function App() {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col ${isHome ? "" : "bg-gray-50"}`}>
-      {/* Navbar with preloading callbacks */}
+    // 🧩 Use flex-column layout so Footer stays below content
+    <div className="flex flex-col min-h-screen bg-gray-50 text-gray-900">
+      {/* Navbar */}
       <Navbar
         onPreloadProperties={preloadProperties}
         onPreloadLoanCalculator={preloadLoanCalculator}
       />
 
-      {/* Main Content */}
+      {/* Page content (pushes footer down) */}
       <main className="flex-grow">
         <Suspense fallback={<div className="p-6 text-center">Loading...</div>}>
           <Routes>
-            {/* Homepage */}
             <Route
               path="/"
               element={
@@ -58,8 +59,6 @@ function App() {
                 </>
               }
             />
-
-            {/* Pages */}
             <Route path="/properties" element={<PropertyList />} />
             <Route path="/properties/:id" element={<PropertyDetails />} />
             <Route path="/calculator" element={<LoanCalculator />} />
@@ -67,17 +66,16 @@ function App() {
             <Route
               path="*"
               element={
-                <div className="p-6 text-center">404 - Page Not Found</div>
+                <div className="p-6 text-center text-gray-700">
+                  404 - Page Not Found
+                </div>
               }
             />
           </Routes>
         </Suspense>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gray-100 py-4 text-center text-gray-600">
-        © {new Date().getFullYear()} Yusay Credit & Finance Corporation
-      </footer>
+      <Footer />
     </div>
   );
 }

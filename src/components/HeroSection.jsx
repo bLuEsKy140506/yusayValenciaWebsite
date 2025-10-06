@@ -1,35 +1,26 @@
+
 import { Link } from "react-router-dom";
-import backgroundImage from "../assets/bg-interior.jpg"; // adjust path as needed
 import { Link as ScrollLink } from "react-scroll";
 
 const HeroSection = () => {
   return (
     <section
-      id="hero"
-      className="relative flex items-center justify-center px-6 md:px-16 min-h-screen overflow-hidden pt-24 md:pt-28"
-    >
-      {/* Background Image */}
-      <div className="absolute inset-0 -z-20">
-        <img
-          src={backgroundImage}
-          alt="Background Interior"
-          className="w-full h-full object-cover"
-        />
-        {/* Light Overlay */}
-        <div className="absolute inset-0 bg-white/70"></div>
-      </div>
+  id="hero"
+  className="relative flex items-center justify-center px-6 md:px-16 min-h-screen bg-cover bg-center pt-24 md:pt-28"
+  style={{ backgroundImage: `url('/bg-interior.jpg')` }}
+>
 
-      {/* Content Wrapper */}
+      {/* Light Overlay */}
+      <div className="absolute inset-0 bg-white/60"></div>
+
       <div className="relative z-10 flex flex-col-reverse md:flex-row items-center justify-between w-full gap-12">
         {/* Left Content */}
         <div className="w-full md:w-1/2 text-center md:text-left space-y-8">
-          {/* Title */}
           <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight">
             Fast & Affordable Loans in{" "}
             <span className="text-[#226C3B]">Valencia City</span>
           </h1>
 
-          {/* Subtitle */}
           <p className="text-gray-700 text-lg md:text-xl leading-relaxed max-w-lg mx-auto md:mx-0">
             Trusted since{" "}
             <span className="font-semibold text-[#226C3B]">2004</span>. Enjoy
@@ -38,13 +29,12 @@ const HeroSection = () => {
             <span className="font-medium">Real Estate Mortgage</span> loans.
           </p>
 
-          {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-2">
             <ScrollLink
               to="apply-now"
               smooth={true}
               duration={600}
-              offset={-80} // adjust if header overlaps
+              offset={-80}
               className="cursor-pointer bg-[#226C3B] hover:bg-green-800 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transition-transform transform hover:scale-105"
             >
               Apply Now
@@ -58,7 +48,7 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* Right Badge Section */}
+        {/* Right Section */}
         <div className="w-full md:w-1/2 flex justify-center md:justify-end">
           <div
             className="text-white rounded-2xl shadow-lg text-center p-12 md:p-16"

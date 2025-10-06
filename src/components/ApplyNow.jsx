@@ -50,9 +50,9 @@ const ApplyNow = () => {
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
             Fast & Secure Online Application
           </h2>
-          <p className="text-gray-600 mb-6">
-            Complete the form in just 3 minutes. No hidden fees. No hassle.
-          </p>
+        <p className="text-gray-600 mb-6 text-sm">
+  <strong>Note:</strong> This online application serves as your <em>initial step</em> toward securing a loan. After you submit the form, our team will contact you to guide you through the next steps.
+</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
@@ -117,9 +117,14 @@ const ApplyNow = () => {
           </form>
 
           <div className="flex items-center mt-4 text-gray-500 text-sm">
-            <Lock size={16} className="mr-2" />
-            Your information is 100% secure and private.
-          </div>
+  <Lock size={16} className="mr-2" />
+  Your information is kept strictly confidential and securely processed. 
+  <br />
+  <span className="block mt-1">
+    <strong>Reminder:</strong> Document signing and loan release are done in person at our office.
+  </span>
+</div>
+
         </div>
 
         {/* Right: Trust & Benefits */}

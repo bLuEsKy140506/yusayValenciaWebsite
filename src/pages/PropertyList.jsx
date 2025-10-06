@@ -7,13 +7,13 @@ const PropertyCard = ({ property }) => {
 
   return (
     <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-2xl transition duration-300">
-      {/* Main (large) Image */}
+      {/* Main Image */}
       <Link to={`/properties/${property.id}`}>
         <img
           src={activeImage}
           alt={property.title}
           className="w-full h-56 object-cover"
-          loading="lazy" // ✅ Lazy load main image
+          loading="lazy"
         />
       </Link>
 
@@ -25,7 +25,7 @@ const PropertyCard = ({ property }) => {
             src={thumb}
             alt={`Thumbnail ${index + 1}`}
             onClick={() => setActiveImage(property.images[index])}
-            loading="lazy" // ✅ Lazy load thumbnails
+            loading="lazy"
             className={`w-16 h-16 object-cover rounded-md cursor-pointer border transition ${
               activeImage === property.images[index]
                 ? "border-green-600"
@@ -45,7 +45,6 @@ const PropertyCard = ({ property }) => {
           Land Area: {property.landArea} sqm
         </p>
 
-        {/* View Details Button */}
         <Link
           to={`/properties/${property.id}`}
           className="block w-full bg-green-600 hover:bg-green-700 text-white text-center py-2 rounded-lg font-medium transition"
@@ -59,16 +58,17 @@ const PropertyCard = ({ property }) => {
 
 const PropertyList = () => {
   return (
-    <div className="pt-24 pb-16 px-6 min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200">
-      {/* Sticky Header */}
-      <div className="sticky top-16 z-10 bg-gradient-to-r from-gray-50 via-gray-100 to-gray-200 py-4">
-        <h1 className="text-4xl font-bold text-center text-gray-800">
+    <div className="pt-28 pb-24 px-6 bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 min-h-screen">
+      {/* Header */}
+      <div className="text-center mb-10">
+        <h1 className="text-4xl font-bold text-gray-800">
           🏡 Properties for Sale
         </h1>
+        <p className="text-gray-600 mt-2">Browse available lots and houses.</p>
       </div>
 
       {/* Property Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         {properties.map((property) => (
           <PropertyCard key={property.id} property={property} />
         ))}

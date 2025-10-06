@@ -11,6 +11,7 @@ const AppointmentPage = () => {
 
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 pt-24 pb-16 px-6">
+      {/* ✅ Header Section */}
       <div className="max-w-3xl mx-auto text-center">
         <h1 className="text-4xl md:text-5xl font-extrabold text-green-800 mb-3">
           We Bring Our Service to You — Fast, Personal, and Hassle-Free
@@ -27,28 +28,35 @@ const AppointmentPage = () => {
         </p>
       </div>
 
-      {/* ✅ Bookmarks fixed at bottom-left */}
-      <div className="fixed bottom-6 left-6 flex flex-col gap-3 z-50">
-        <button
-          onClick={() => handleToggle("pl")}
-          className={`bg-green-600 text-white font-semibold text-sm px-4 py-2 rounded-t-lg shadow-md hover:bg-green-700 transition ${
-            activeBookmark === "pl" ? "bg-green-800" : ""
-          }`}
-        >
-          PL
-        </button>
-        <button
-          onClick={() => handleToggle("rem")}
-          className={`bg-green-600 text-white font-semibold text-sm px-4 py-2 rounded-b-lg shadow-md hover:bg-green-700 transition ${
-            activeBookmark === "rem" ? "bg-green-800" : ""
-          }`}
-        >
-          REM
-        </button>
+      {/* ✅ Fixed Floating Box with Label and Buttons */}
+      <div className="fixed bottom-4 left-4 z-50">
+        <div className="bg-white/80 backdrop-blur-md border border-green-300 shadow-lg rounded-xl p-4">
+          <h3 className="text-green-800 font-semibold text-sm mb-3 text-center">
+            Requirements
+          </h3>
+          <div className="flex flex-col gap-2">
+            <button
+              onClick={() => handleToggle("pl")}
+              className={`bg-green-600 text-white font-semibold text-sm px-4 py-2 rounded-lg shadow-md hover:bg-green-700 transition ${
+                activeBookmark === "pl" ? "bg-green-800" : ""
+              }`}
+            >
+              PL
+            </button>
+            <button
+              onClick={() => handleToggle("rem")}
+              className={`bg-green-600 text-white font-semibold text-sm px-4 py-2 rounded-lg shadow-md hover:bg-green-700 transition ${
+                activeBookmark === "rem" ? "bg-green-800" : ""
+              }`}
+            >
+              REM
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* ✅ Pop-up panels positioned right above the buttons */}
-      <div className="fixed bottom-20 left-6 z-50">
+      {/* ✅ Pop-up Panels (Positioned Above the Floating Box) */}
+      <div className="fixed bottom-32 left-6 z-50">
         <PensionBookmark
           isOpen={activeBookmark === "pl"}
           onClose={() => setActiveBookmark(null)}
@@ -59,15 +67,12 @@ const AppointmentPage = () => {
         />
       </div>
 
-      {/* ✅ Main Content */}
+      {/* ✅ Main Appointment Form */}
       <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-2xl p-8 mt-10 relative z-10">
         <h1 className="text-3xl font-bold text-green-700 mb-4 text-center">
           Schedule an Appointment
         </h1>
 
-        {/* Important Notes */}
-
-        {/* ✅ Appointment Form */}
         <form
           action="https://formspree.io/f/mzzjgnlz"
           method="POST"
@@ -121,7 +126,9 @@ const AppointmentPage = () => {
             </p>
           </div>
         </form>
-        <div className="bg-green-50 border-l-4 border-green-600 p-5 rounded-lg mb-8">
+
+        {/* ✅ Important Notes */}
+        <div className="bg-green-50 border-l-4 border-green-600 p-5 rounded-lg mt-8">
           <h2 className="text-lg font-semibold text-green-700 mb-2">
             Important Notes:
           </h2>
