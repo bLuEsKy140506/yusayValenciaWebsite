@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import properties from "../data/properties";
+import InquiryBookmark from "../components/bookmarks/InquiryBookmark";
 
 const PropertyCard = ({ property }) => {
   const [activeImage, setActiveImage] = useState(property.images[0]);
@@ -8,6 +9,7 @@ const PropertyCard = ({ property }) => {
   return (
     <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-2xl transition duration-300">
       {/* Main Image */}
+      <InquiryBookmark />
       <Link to={`/properties/${property.id}`}>
         <img
           src={activeImage}

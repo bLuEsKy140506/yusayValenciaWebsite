@@ -30,12 +30,18 @@ const ApplyNow = () => {
 
       if (response.ok) {
         setIsSuccess(true);
-        setFormData({ name: "", email: "", phone: "", loanType: "", amount: "" });
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          loanType: "",
+          amount: "",
+        });
       } else {
         alert("Something went wrong. Please try again.");
       }
     } catch (error) {
-      alert("Error submitting the form.");
+      alert(`Error submitting the form. ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -44,15 +50,16 @@ const ApplyNow = () => {
   return (
     <section id="apply-now" className="relative bg-gray-50 py-16 px-6 md:px-20">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        
         {/* Left: Form */}
         <div className="bg-white shadow-lg rounded-2xl p-8 md:p-10">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
             Fast & Secure Online Application
           </h2>
-        <p className="text-gray-600 mb-6 text-sm">
-  <strong>Note:</strong> This online application serves as your <em>initial step</em> toward securing a loan. After you submit the form, our team will contact you to guide you through the next steps.
-</p>
+          <p className="text-gray-600 mb-6 text-sm">
+            <strong>Note:</strong> This online application serves as your{" "}
+            <em>initial step</em> toward securing a loan. After you submit the
+            form, our team will contact you to guide you through the next steps.
+          </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
@@ -68,10 +75,9 @@ const ApplyNow = () => {
             <input
               type="email"
               name="email"
-              placeholder="Email Address"
+              placeholder="[optional]Email Address"
               value={formData.email}
               onChange={handleChange}
-              required
               className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#226C3B]"
             />
 
@@ -117,14 +123,15 @@ const ApplyNow = () => {
           </form>
 
           <div className="flex items-center mt-4 text-gray-500 text-sm">
-  <Lock size={16} className="mr-2" />
-  Your information is kept strictly confidential and securely processed. 
-  <br />
-  <span className="block mt-1">
-    <strong>Reminder:</strong> Document signing and loan release are done in person at our office.
-  </span>
-</div>
-
+            <Lock size={16} className="mr-2" />
+            Your information is kept strictly confidential and securely
+            processed.
+            <br />
+            <span className="block mt-1">
+              <strong>Reminder:</strong> Document signing and loan release are
+              done in person at our office.
+            </span>
+          </div>
         </div>
 
         {/* Right: Trust & Benefits */}
@@ -135,7 +142,9 @@ const ApplyNow = () => {
           <ul className="space-y-4 text-gray-700">
             <li className="flex items-center gap-2 justify-center md:justify-start">
               <CheckCircle className="text-green-600" size={20} />
-              <span>Low interest rates for SSS/GSIS Pension & Real Estate Loans</span>
+              <span>
+                Low interest rates for SSS/GSIS Pension & Real Estate Loans
+              </span>
             </li>
             <li className="flex items-center gap-2 justify-center md:justify-start">
               <CheckCircle className="text-green-600" size={20} />
@@ -173,7 +182,8 @@ const ApplyNow = () => {
               Application Submitted!
             </h3>
             <p className="text-gray-600 mb-6">
-              Thank you for applying. Our team will review your application and contact you shortly.
+              Thank you for applying. Our team will review your application and
+              contact you shortly.
             </p>
             <button
               onClick={() => setIsSuccess(false)}

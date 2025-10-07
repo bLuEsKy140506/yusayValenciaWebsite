@@ -21,8 +21,36 @@
   animation: fade-in 0.3s ease-in-out;
 }
 
-body, #root, main {
- overflow: visible !important;
-position: static !important;
+body,
+#root,
+main {
+  overflow: visible !important;
+  position: static !important;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 
+@keyframes slideInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.animate-slideInUp {
+  animation: slideInUp 0.4s ease-in-out forwards;
 }

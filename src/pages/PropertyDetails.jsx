@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import properties from "../data/properties";
+import InquiryBookmark from "../components/bookmarks/InquiryBookmark";
 
 const PropertyDetails = () => {
   const { id } = useParams();
@@ -42,8 +43,7 @@ const PropertyDetails = () => {
 
   return (
     <div className="max-w-6xl mx-auto pt-[5.5rem]">
-      {" "}
-      {/* accounts for fixed navbar */}
+      <InquiryBookmark selectedProperty={property.title} />
       {/* Sticky Header Section */}
       <div
         className={`sticky z-30 bg-white border-b border-gray-200 shadow-sm transition-all duration-500 ${
