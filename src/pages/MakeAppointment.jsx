@@ -1,12 +1,35 @@
 import React, { useState } from "react";
+import { CheckCircle, X } from "lucide-react";
 import PensionBookmark from "../components/bookmarks/PensionBookmark";
 import REMBookmark from "../components/bookmarks/REMBookmark";
 
 const AppointmentPage = () => {
   const [activeBookmark, setActiveBookmark] = useState(null);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleToggle = (type) => {
     setActiveBookmark(activeBookmark === type ? null : type);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // simulate form submit
+    const form = e.target;
+    fetch(form.action, {
+      method: form.method,
+      body: new FormData(form),
+      headers: { Accept: "application/json" },
+    })
+      .then((response) => {
+        if (response.ok) {
+          setIsSuccess(true);
+          form.reset();
+        } else {
+          alert("Something went wrong. Please try again.");
+        }
+      })
+      .catch(() => alert("Network error. Please try again later."));
   };
 
   return (
@@ -55,7 +78,7 @@ const AppointmentPage = () => {
         </div>
       </div>
 
-      {/* ✅ Pop-up Panels (Positioned Above the Floating Box) */}
+      {/* ✅ Pop-up Panels */}
       <div className="fixed bottom-32 left-6 z-50">
         <PensionBookmark
           isOpen={activeBookmark === "pl"}
@@ -76,6 +99,7 @@ const AppointmentPage = () => {
         <form
           action="https://formspree.io/f/mzzjgnlz"
           method="POST"
+          onSubmit={handleSubmit}
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           <input
@@ -146,6 +170,34 @@ const AppointmentPage = () => {
           </ul>
         </div>
       </div>
+
+      {/* ✅ Success Modal */}
+      {isSuccess && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[10001]">
+          <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full relative text-center">
+            <button
+              onClick={() => setIsSuccess(false)}
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+            >
+              <X size={20} />
+            </button>
+            <CheckCircle className="text-green-600 mx-auto mb-4" size={48} />
+            <h3 className="text-xl font-bold text-gray-900 mb-2">
+              Inquiry Submitted!
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Thank you for your interest! Our team will contact you shortly
+              regarding your inquiry.
+            </p>
+            <button
+              onClick={() => setIsSuccess(false)}
+              className="bg-green-700 hover:bg-green-800 text-white font-semibold py-2 px-6 rounded-lg transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
