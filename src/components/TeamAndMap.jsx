@@ -2,14 +2,14 @@ import React from "react";
 import AvatarCluster from "../formatting/AvatarCluster";
 
 const teamMembers = [
-  { name: "Earl", img: "/src/assets/teams/earl.jpg" },
-  { name: "Joyce", img: "/src/assets/teams/joyce.jpg" },
-  { name: "Kyla", img: "/src/assets/teams/kyla.jpg" },
-  { name: "Llorente", img: "/src/assets/teams/llorente.jpg" },
-  { name: "Roi", img: "/src/assets/teams/roi.jpg" },
-  { name: "Dennis", img: "/src/assets/teams/dennis.jpg" },
-  { name: "Cyrill", img: "/src/assets/teams/cyrill.jpg" },
-  { name: "Florymay", img: "/src/assets/teams/florymay.jpg" },
+  { name: "Earl", img: "/teams/earl.jpg" },
+  { name: "Joyce", img: "/teams/joyce.jpg" },
+  { name: "Kyla", img: "/teams/kyla.jpg" },
+  { name: "Llorente", img: "/teams/llorente.jpg" },
+  { name: "Roi", img: "/teams/roi.jpg" },
+  { name: "Dennis", img: "/teams/dennis.jpg" },
+  { name: "Cyrill", img: "/teams/cyrill.jpg" },
+  { name: "Florymay", img: "/teams/florymay.jpg" },
 ];
 
 // Fisher–Yates shuffle for random order
