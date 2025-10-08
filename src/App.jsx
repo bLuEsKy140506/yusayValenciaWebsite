@@ -13,9 +13,6 @@ const PropertyList = lazy(() => import("./pages/PropertyList"));
 const PropertyDetails = lazy(() => import("./pages/PropertyDetails"));
 const MakeAppointment = lazy(() => import("./pages/MakeAppointment"));
 
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
-
 function ScrollToHash() {
   const location = useLocation();
 
