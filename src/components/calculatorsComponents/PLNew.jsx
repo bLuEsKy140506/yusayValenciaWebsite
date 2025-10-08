@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 export default function PLNewCalculator() {
   const [monthly, setMonthly] = useState("");
   const [months, setMonths] = useState("");
-  const [withReferral, setWithReferral] = useState(false);
+  const [withReferral, setWithReferral] = useState(true);
   const [result, setResult] = useState(null);
     const handleNumericInput = (e, setter) => {
     const value = e.target.value;
@@ -81,7 +81,7 @@ export default function PLNewCalculator() {
             value={monthly}
             onChange={(e) => handleNumericInput(e, setMonthly)}
             placeholder="Enter monthly amortization"
-            className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
+            className="w-[250px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
             min="1"
           />
         </div>
@@ -93,7 +93,7 @@ export default function PLNewCalculator() {
            <select
             value={months}
             onChange={(e) => setMonths(e.target.value)}
-            className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
+            className="w-[250px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
           >
             <option value="">Select months</option>
             {[...Array(27).keys()].map((num) => (
@@ -107,7 +107,7 @@ export default function PLNewCalculator() {
             value={months}
             onChange={(e) => setMonths(e.target.value)}
             placeholder="Enter 4 - 30 months"
-            className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
+            className="w-[250px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
             min="4"
             max="36"
           /> */}

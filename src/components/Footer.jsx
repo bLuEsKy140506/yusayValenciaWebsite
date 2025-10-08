@@ -59,7 +59,7 @@ const Footer = () => {
         </div>
 
         {/* 🧰 Private Tools */}
-        <div>
+        {/* <div>
           <h3 className="text-lg font-semibold text-white mb-3">
             Private Tools
           </h3>
@@ -68,19 +68,19 @@ const Footer = () => {
               <a href="#" className="hover:text-green-400 transition">
                 PDI Calculator
               </a>
-            </li>
+            </li> */}
             {/* <li>
               <a href="#" className="hover:text-green-400 transition">
                 Company Manual
               </a>
             </li> */}
-            <li>
+            {/* <li>
               <a href="#" className="hover:text-green-400 transition">
                 History
               </a>
             </li>
           </ul>
-        </div>
+        </div> */}
 
         {/* 📱 Social / Extra */}
         <div>

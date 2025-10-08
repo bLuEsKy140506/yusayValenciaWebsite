@@ -103,14 +103,14 @@ const REMCalculatorOld = () => {
               e.preventDefault();
             }
           }}
-          className="w-[300px] border rounded-lg px-4 py-2"
+          className="w-[250px] border rounded-lg px-4 py-2"
         />
 
         {/* Months Input */}
          <select
             value={months}
             onChange={(e) => setMonths(e.target.value)}
-            className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
+            className="w-[250px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
           >
             <option value="">Select months</option>
             {[...Array(21).keys()].map((num) => (

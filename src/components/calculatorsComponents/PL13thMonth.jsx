@@ -77,7 +77,7 @@ export default function PL13thMonthCalculator() {
             value={gross}
             onChange={handleGrossChange}
             placeholder="Enter gross amount"
-            className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
+            className="w-[250px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
             inputMode="numeric"
           />
         </div>
@@ -89,7 +89,7 @@ export default function PL13thMonthCalculator() {
           <select
             value={months}
             onChange={(e) => setMonths(e.target.value)}
-            className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
+            className="w-[250px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
           >
             <option value="">Select months</option>
             {[1, 2, 3, 4, 5, 6].map((m) => (

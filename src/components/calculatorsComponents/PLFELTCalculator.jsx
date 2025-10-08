@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 export default function PLFELTCalculator() {
   const [monthly, setMonthly] = useState("");
   const [months, setMonths] = useState("");
-  const [withReferral, setWithReferral] = useState(false);
+  const [withReferral, setWithReferral] = useState(true);
   const [result, setResult] = useState(null);
 
   // 🔹 helper: allow only numeric input
@@ -89,7 +89,7 @@ export default function PLFELTCalculator() {
             value={monthly}
             onChange={(e) => handleNumericInput(e, setMonthly)}
             placeholder="Enter monthly amortization"
-            className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
+            className="w-[250px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
           />
         </div>
 
@@ -101,7 +101,7 @@ export default function PLFELTCalculator() {
           <select
             value={months}
             onChange={(e) => setMonths(e.target.value)}
-            className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
+            className="w-[250px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
           >
             <option value="">Select months</option>
             {[...Array(13).keys()].map((num) => (

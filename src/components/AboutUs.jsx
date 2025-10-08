@@ -50,7 +50,7 @@ const AboutUs = ({ id }) => {
 
         {/* Core Values */}
         <div>
-          <h2 className="text-3xl font-extrabold mb-2 text-center md:text-left tracking-tight">
+          <h2 className="text-4xl font-bold mb-2 text-center md:text-left tracking-tight">
             HELP
           </h2>
           <p className="text-gray-500 mb-8 text-center md:text-left text-sm uppercase tracking-wide">
