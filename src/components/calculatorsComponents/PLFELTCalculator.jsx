@@ -42,8 +42,8 @@ export default function PLFELTCalculator() {
     let referralFee = 0;
     if (withReferral) {
       if (gross < 50000) referralFee = 0;
-      else if (gross >= 50000 && gross < 100000) referralFee = 1000;
-      else if (gross >= 100000) referralFee = 1500;
+      else if (gross >= 50000 && gross < 100000) referralFee = 500;
+      else if (gross >= 100000) referralFee = 1000;
     }
 
     const totalDeductions =

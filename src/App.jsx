@@ -13,6 +13,29 @@ const PropertyList = lazy(() => import("./pages/PropertyList"));
 const PropertyDetails = lazy(() => import("./pages/PropertyDetails"));
 const MakeAppointment = lazy(() => import("./pages/MakeAppointment"));
 
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
+function ScrollToHash() {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      // Wait a short moment until elements are rendered
+      setTimeout(() => {
+        const element = document.querySelector(location.hash);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 500); // 0.5s delay to ensure target exists
+    }
+  }, [location]);
+
+  return null;
+}
+
+
+
 function App() {
   const location = useLocation();
   const isHome = location.pathname === "/";
@@ -43,7 +66,7 @@ function App() {
         onPreloadProperties={preloadProperties}
         onPreloadLoanCalculator={preloadLoanCalculator}
       />
-
+      <ScrollToHash />
       {/* Page content (pushes footer down) */}
       <main className="flex-grow">
         <Suspense fallback={<div className="p-6 text-center">Loading...</div>}>
