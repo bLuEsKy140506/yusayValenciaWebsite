@@ -130,7 +130,7 @@ const REMCalculatorNew = () => {
         REM Loan Calculator (New Scheme)
       </h2>
 
-      <div className="flex flex-col items-center space-y-4 w-full max-w-md ">
+      <div className="flex flex-col items-center space-y-4 w-[200px] max-w-md ">
         <input
           type="text"
           placeholder="Gross Amount"
@@ -151,13 +151,13 @@ const REMCalculatorNew = () => {
               e.preventDefault();
             }
           }}
-          className="w-[300px] border rounded-lg px-4 py-2"
+          className="w-[200px] border rounded-lg px-4 py-2"
         />
 
         <select
           value={months}
           onChange={(e) => setMonths(e.target.value)}
-          className="w-[300px] border rounded-lg px-4 py-2"
+          className="w-[200px] border rounded-lg px-4 py-2"
         >
           <option value="">Select Term (Months)</option>
           <option value="37">37 months (3 years)</option>
@@ -198,6 +198,14 @@ const REMCalculatorNew = () => {
               <span className="font-semibold text-blue-700">₱{formatNumber(result.monthlyPayment)}</span>
             </div>
           </div>
+               <label className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            checked={includeFireInsurance}
+            onChange={(e) => setIncludeFireInsurance(e.target.checked)}
+          />
+          <span>Include Fire Insurance</span>
+        </label>
 
           {/* Amortization Table */}
           <div className="overflow-x-auto max-h-[500px] overflow-y-scroll border rounded-lg">

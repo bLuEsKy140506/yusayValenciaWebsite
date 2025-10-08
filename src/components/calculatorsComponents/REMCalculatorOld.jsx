@@ -103,7 +103,7 @@ const REMCalculatorOld = () => {
               e.preventDefault();
             }
           }}
-          className="w-[250px] border rounded-lg px-4 py-2"
+          className="w-[200px] border rounded-lg px-4 py-2"
         />
 
         {/* Months Input */}
