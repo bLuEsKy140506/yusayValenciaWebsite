@@ -20,6 +20,16 @@ const Navbar = () => {
     setIsOpen(false);
   }, [location]);
 
+  useEffect(() => {
+  if (location.hash) {
+    const element = document.querySelector(location.hash);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+}, [location]);
+
+
   return (
     <nav className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
       {/* Navbar Container */}
