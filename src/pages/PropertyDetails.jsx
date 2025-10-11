@@ -42,7 +42,7 @@ const PropertyDetails = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto pt-[5.5rem]">
+    <div className="max-w-6xl mx-auto pt-[3.5rem]">
       <InquiryBookmark selectedProperty={property.title} />
       {/* Sticky Header Section */}
       <div
@@ -50,7 +50,7 @@ const PropertyDetails = () => {
           isVisible ? "opacity-100" : "opacity-95"
         }`}
         style={{
-          top: "4.5rem", // 👈 ensures it stays just below the fixed navbar height
+          top: "3.10rem", // 👈 ensures it stays just below the fixed navbar height
           backdropFilter: "blur(4px)",
         }}
       >
@@ -79,13 +79,13 @@ const PropertyDetails = () => {
         </div>
 
         {/* Thumbnails */}
-        <div className="flex gap-2 flex-wrap mb-6 justify-center md:justify-start">
+        <div className="flex gap-2 p-3 overflow-x-auto">
           {property.images.map((img, index) => (
             <img
               key={index}
               src={img}
               alt={`Thumbnail ${index + 1}`}
-              className={`w-20 h-20 object-cover rounded-md cursor-pointer border-2 transition-all duration-200 ${
+              className={`w-10 h-10 object-cover rounded-md cursor-pointer border-2 transition-all duration-200 ${
                 activeImage === img
                   ? "border-green-600 scale-105"
                   : "border-transparent hover:opacity-80"

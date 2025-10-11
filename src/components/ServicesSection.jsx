@@ -71,6 +71,17 @@ const ServicesSection = ({ id }) => {
 
   const t = translations[language] || translations.en;
 
+  // ✅ Ensure only one bookmark modal opens at a time
+  const handleOpenPension = () => {
+    setOpenREM(false);
+    setOpenPension(true);
+  };
+
+  const handleOpenREM = () => {
+    setOpenPension(false);
+    setOpenREM(true);
+  };
+
   return (
     <section id={id} className="py-20 bg-gray-50 relative">
       <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
@@ -164,20 +175,20 @@ const ServicesSection = ({ id }) => {
       {showBookmarks &&
         createPortal(
           <>
-            {/* 📋 Requirements Floating Box */}
-            <div className="fixed bottom-6 left-4 z-[9999] bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-green-200 w-[180px] md:w-[200px] animate-fadeIn">
+            {/* 📋 Requirements Floating Box (moved slightly upward) */}
+            <div className="fixed bottom-2 left-4 z-[9999] bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-green-200 w-[180px] md:w-[200px] animate-fadeIn">
               <h4 className="text-green-800 font-bold mb-3 text-center">
                 📋 Requirements
               </h4>
               <div className="flex flex-col gap-2">
                 <button
-                  onClick={() => setOpenPension(true)}
+                  onClick={handleOpenPension}
                   className="px-4 py-2 bg-green-700 text-white rounded-full shadow-md hover:bg-green-800 transition text-sm"
                 >
                   Pension Loan
                 </button>
                 <button
-                  onClick={() => setOpenREM(true)}
+                  onClick={handleOpenREM}
                   className="px-4 py-2 bg-green-700 text-white rounded-full shadow-md hover:bg-green-800 transition text-sm"
                 >
                   Real Estate Loan
@@ -185,8 +196,8 @@ const ServicesSection = ({ id }) => {
               </div>
             </div>
 
-            {/* 🤝 Referral Bookmark */}
-            <div className="fixed bottom-6 right-4 z-[9999] animate-fadeIn">
+            {/* 🤝 Referral Bookmark (also moved slightly upward) */}
+            <div className="fixed bottom-16 right-4 z-[9999] animate-fadeIn">
               <ReferralBookmark />
             </div>
           </>,
