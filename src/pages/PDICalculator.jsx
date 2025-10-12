@@ -18,7 +18,7 @@ const PDICalculator = () => {
     setPdi(null);
 
     try {
-      const response = await fetch("/api/calculate-pdi", {
+      const response = await fetch("http://localhost:5173/api/calculate-pdi", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -98,3 +98,9 @@ const PDICalculator = () => {
 };
 
 export default PDICalculator;
+
+//   const response = await fetch("/api/calculate-pdi", {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(formData),
+//   });
