@@ -12,6 +12,11 @@ const PropertyDetails = () => {
   );
   const [isVisible, setIsVisible] = useState(false);
 
+  // ✅ Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   // ✅ Detect scroll to trigger fade-in animation
   useEffect(() => {
     const handleScroll = () => {
@@ -44,6 +49,7 @@ const PropertyDetails = () => {
   return (
     <div className="max-w-6xl mx-auto pt-[3.5rem]">
       <InquiryBookmark selectedProperty={property.title} />
+
       {/* Sticky Header Section */}
       <div
         className={`sticky z-30 bg-white border-b border-gray-200 shadow-sm transition-all duration-500 ${
@@ -67,6 +73,7 @@ const PropertyDetails = () => {
           <p className="text-gray-600 text-sm">{property.address}</p>
         </div>
       </div>
+
       {/* Main Content */}
       <div className="p-8">
         {/* Main Image */}

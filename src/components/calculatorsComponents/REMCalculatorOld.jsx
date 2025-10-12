@@ -1,5 +1,30 @@
 import React, { useState, useEffect } from "react";
 
+// Interest rate mapping based on months
+const interestRates = {
+  4: 0.06,
+  5: 0.075,
+  6: 0.09,
+  7: 0.095,
+  8: 0.1,
+  9: 0.105,
+  10: 0.11,
+  11: 0.115,
+  12: 0.12,
+  13: 0.13,
+  14: 0.14,
+  15: 0.15,
+  16: 0.16,
+  17: 0.17,
+  18: 0.18,
+  19: 0.19,
+  20: 0.2,
+  21: 0.21,
+  22: 0.22,
+  23: 0.23,
+  24: 0.24,
+};
+
 const REMCalculatorOld = () => {
   const [gross, setGross] = useState("");
   const [months, setMonths] = useState("");
@@ -10,31 +35,6 @@ const REMCalculatorOld = () => {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(num);
-
-  // Interest rate mapping based on months
-  const interestRates = {
-    4: 0.06,
-    5: 0.075,
-    6: 0.09,
-    7: 0.095,
-    8: 0.1,
-    9: 0.105,
-    10: 0.11,
-    11: 0.115,
-    12: 0.12,
-    13: 0.13,
-    14: 0.14,
-    15: 0.15,
-    16: 0.16,
-    17: 0.17,
-    18: 0.18,
-    19: 0.19,
-    20: 0.2,
-    21: 0.21,
-    22: 0.22,
-    23: 0.23,
-    24: 0.24,
-  };
 
   useEffect(() => {
     const grossAmount = parseFloat(gross);
@@ -53,9 +53,10 @@ const REMCalculatorOld = () => {
     const pnNotary = 100;
     const ciFee = 1500;
     const itFee = grossAmount <= 100000 ? 50 : 0.0005 * grossAmount;
-
+    const registrationFee = grossAmount * 0.03; // Assuming 0 as not specified
     // Total Deduction
-    const totalDeduction = totalInterest + pnNotary;
+    const totalDeduction =
+      totalInterest + pnNotary + ciFee + itFee + registrationFee;
 
     // Net Proceeds
     const netProceeds = grossAmount - totalDeduction;
@@ -70,6 +71,7 @@ const REMCalculatorOld = () => {
       totalDeduction: formatNumber(totalDeduction),
       netProceeds: formatNumber(netProceeds),
       monthlyPayment: formatNumber(monthlyPayment),
+      registrationFee: formatNumber(registrationFee),
       ciFee: formatNumber(ciFee),
       itFee: formatNumber(itFee),
     });
@@ -107,18 +109,18 @@ const REMCalculatorOld = () => {
         />
 
         {/* Months Input */}
-         <select
-            value={months}
-            onChange={(e) => setMonths(e.target.value)}
-            className="w-[250px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
-          >
-            <option value="">Select months</option>
-            {[...Array(21).keys()].map((num) => (
-              <option key={num + 4} value={num + 4}>
-                {num + 4}
-              </option>
-            ))}
-          </select>
+        <select
+          value={months}
+          onChange={(e) => setMonths(e.target.value)}
+          className="w-[200px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
+        >
+          <option value="">Select months</option>
+          {[...Array(21).keys()].map((num) => (
+            <option key={num + 4} value={num + 4}>
+              {num + 4}
+            </option>
+          ))}
+        </select>
       </div>
 
       {result && (
@@ -133,6 +135,9 @@ const REMCalculatorOld = () => {
 
             <span>Interest Amount:</span>
             <span className="text-right">₱{result.interestAmount}</span>
+
+            <span>Registration Fee:</span>
+            <span className="text-right">₱{result.registrationFee}</span>
 
             <span>PN Notarial:</span>
             <span className="text-right">₱{result.pnNotary}</span>
