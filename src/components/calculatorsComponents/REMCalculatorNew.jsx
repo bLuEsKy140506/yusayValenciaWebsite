@@ -74,7 +74,7 @@ const REMCalculatorNew = () => {
 
     // Monthly Payment
     const baseAmort = grossAmount / term;
-    const interestAmort = grossAmount * ((term - 12) / term) * 0.01;
+    const interestAmort = (grossAmount * ((term - 12) / term)) * 0.01;
     const fireMultiplier = term === 37 ? 3 : term === 48 ? 3 : 4;
     const fireAmort = includeFireInsurance
       ? (fireInsurance * fireMultiplier) / term
@@ -86,7 +86,7 @@ const REMCalculatorNew = () => {
     let balance = grossAmount;
     const sched = [];
     for (let i = 1; i <= term; i++) {
-      const interest = grossAmount * 0.01; // simplified 1%/month model
+      const interest = interestAmort; // simplified 1%/month model
       const principal = monthlyPayment - interest - fireAmort;
       balance -= principal;
       if (balance < 0) balance = 0;
