@@ -12,7 +12,6 @@ const PDICalculator = () => {
 
   const [pdi, setPdi] = useState(null);
   const [results, setResults] = useState([]);
-  const [bestOption, setBestOption] = useState(null);
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -32,13 +31,13 @@ const PDICalculator = () => {
     const pDate = new Date(paymentDate);
     const diffDays = Math.max(0, (pDate - mDate) / (1000 * 60 * 60 * 24));
 
-    // 5% annual rate × 12 months ÷ 365 days
+    // PDI formula: gross * (12/365) * 5% * days
     const computedPDI = P * (12 / 365) * 0.05 * diffDays;
     setPdi(computedPDI);
     alert("✅ PDI has been computed. Proceed with the next step.");
   };
 
-  // --- Extension options ---
+  // --- extension table ---
   const extensions = [
     { months: 1, percent: 0.03 },
     { months: 2, percent: 0.05 },
@@ -48,7 +47,7 @@ const PDICalculator = () => {
     { months: 6, percent: 0.12 },
   ];
 
-  // --- MODE 1: Available Funds Mode (auto compute when funds change) ---
+  // --- MODE 1: Available Funds Mode (progressive refinement search) ---
   useEffect(() => {
     if (mode !== "funds") return;
 
@@ -62,37 +61,85 @@ const PDICalculator = () => {
     }
 
     const validExtensions = extensions.filter((opt) => P * opt.percent + pdi < X);
-
     const computedOptions = [];
 
     validExtensions.forEach((opt) => {
+      // starting base = minimal downpayment (percent * principal)
       let base = P * opt.percent;
+      // clamp base so it doesn't exceed principal
+      base = Math.min(base, P);
+
       let bestMatch = null;
       let smallestDiff = Infinity;
 
-      // Increment base by ₱1 until total nearly equals available funds
-      while (base < X) {
+      // progressive steps, largest to smallest
+      const stepSizes = [1000, 100, 10, 1];
+
+      // For each step, attempt to increase base in increments of `step` as much as allowed
+      for (let s = 0; s < stepSizes.length; s++) {
+        const step = stepSizes[s];
+
+        // Try to increase base by step until doing so would push total > X
+        while (true) {
+          const nextBase = base + step;
+          if (nextBase > P) break; // can't downpay more than principal
+
+          const remaining = P - nextBase;
+          const interest = remaining * opt.percent;
+          const total = nextBase + interest + pdi;
+
+          if (total > X) {
+            // cannot take another `step` — move to next finer step
+            break;
+          }
+
+          // total <= X, it's a valid candidate; compute diff (unspent)
+          const diff = X - total;
+
+          if (diff >= 0 && diff < smallestDiff) {
+            smallestDiff = diff;
+            bestMatch = {
+              ...opt,
+              base: nextBase,
+              remaining,
+              interest,
+              total,
+              diff,
+            };
+          }
+
+          // If we've reached an unspent < 1, that's good enough — stop everything
+          if (diff < 1) break;
+
+          // commit the increment and continue with the same step size
+          base = nextBase;
+        }
+
+        // if we already got diff < 1, break out of stepSizes loop early
+        if (bestMatch && bestMatch.diff < 1) break;
+      }
+
+      // If we never updated bestMatch (maybe initial base is the only valid), compute initial candidate
+      if (!bestMatch) {
         const remaining = P - base;
         const interest = remaining * opt.percent;
         const total = base + interest + pdi;
         const diff = X - total;
-
-        if (diff >= 0 && diff < smallestDiff) {
-          smallestDiff = diff;
+        if (diff >= 0) {
           bestMatch = { ...opt, base, remaining, interest, total, diff };
         }
-
-        if (total >= X) break;
-        base += 1;
       }
 
       if (bestMatch) computedOptions.push(bestMatch);
     });
 
+    // Sort results by smallest unspent (diff) ascending
+    computedOptions.sort((a, b) => a.diff - b.diff);
+
     setResults(computedOptions);
   }, [formData.availableFunds, pdi, formData.principal, mode]);
 
-  // --- MODE 2: Percent Mode (manual compute) ---
+  // --- MODE 2: Percent Mode (fixed percent downpayment) ---
   const handleComputeByPercent = (e) => {
     e.preventDefault();
     if (mode !== "percent") return;
@@ -111,7 +158,8 @@ const PDICalculator = () => {
       const remaining = P - base;
       const interest = remaining * opt.percent;
       const total = base + interest + pdi;
-      return { ...opt, base, remaining, interest, total };
+      const diff = NaN; // not relevant for percent mode
+      return { ...opt, base, remaining, interest, total, diff };
     });
 
     setResults(resultsArray);
@@ -121,17 +169,15 @@ const PDICalculator = () => {
     <section className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-xl">
         <h1 className="text-2xl font-bold text-green-700 mb-6 text-center">
-          💰Non-LL REM Lumpsum< br></br> PDI + Payment Option Calculator
+          💰 Non-LL REM Lumpsum — PDI + Payment Option Calculator
         </h1>
 
-        {/* Toggle Mode */}
+        {/* Mode toggle */}
         <div className="flex justify-center gap-4 mb-6">
           <button
             onClick={() => setMode("funds")}
             className={`px-4 py-2 rounded-lg font-semibold ${
-              mode === "funds"
-                ? "bg-green-600 text-white"
-                : "bg-gray-200 text-gray-700"
+              mode === "funds" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"
             }`}
           >
             Available Funds Mode
@@ -139,16 +185,14 @@ const PDICalculator = () => {
           <button
             onClick={() => setMode("percent")}
             className={`px-4 py-2 rounded-lg font-semibold ${
-              mode === "percent"
-                ? "bg-green-600 text-white"
-                : "bg-gray-200 text-gray-700"
+              mode === "percent" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"
             }`}
           >
             Percent Mode
           </button>
         </div>
 
-        {/* --- STEP 1: PDI FORM --- */}
+        {/* PDI form (always visible) */}
         <form onSubmit={handleComputePDI} className="space-y-4">
           <input
             type="number"
@@ -186,17 +230,14 @@ const PDICalculator = () => {
           </button>
         </form>
 
-        {/* --- Display Computed PDI --- */}
         {pdi !== null && (
           <div className="mt-6 text-center">
             <h2 className="text-lg font-semibold text-gray-800">Computed PDI:</h2>
-            <p className="text-2xl font-bold text-green-700">
-              ₱ {pdi.toFixed(2)}
-            </p>
+            <p className="text-2xl font-bold text-green-700">₱ {pdi.toFixed(2)}</p>
           </div>
         )}
 
-        {/* --- STEP 2: Conditional Inputs --- */}
+        {/* mode specific inputs */}
         {mode === "funds" ? (
           <div className="mt-6 space-y-4">
             <input
@@ -208,18 +249,14 @@ const PDICalculator = () => {
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
               disabled={!pdi}
             />
-            {!pdi && (
-              <p className="text-sm text-gray-500 text-center">
-                💡 Compute PDI first to unlock this step.
-              </p>
-            )}
+            {!pdi && <p className="text-sm text-gray-500 text-center">💡 Compute PDI first to unlock this step.</p>}
           </div>
         ) : (
           <form onSubmit={handleComputeByPercent} className="mt-6 space-y-4">
             <input
               type="number"
               name="percent"
-              placeholder="Downpayment %"
+              placeholder="Downpayment % (e.g. 10 for 10%)"
               value={formData.percent}
               onChange={handleChange}
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
@@ -235,7 +272,7 @@ const PDICalculator = () => {
           </form>
         )}
 
-        {/* --- STEP 3: Results Table --- */}
+        {/* results table */}
         {results.length > 0 && (
           <div className="mt-8 overflow-x-auto">
             <table className="w-full text-sm border border-gray-200">
@@ -243,11 +280,11 @@ const PDICalculator = () => {
                 <tr>
                   <th className="p-2">Months Extn</th>
                   <th className="p-2">% Rate</th>
-                  <th className="p-2">Base</th>
-                  <th className="p-2">Interest</th>
+                  <th className="p-2">Base (Down)</th>
+                  <th className="p-2">Interest (on Remaining)</th>
                   <th className="p-2">PDI</th>
-                  <th className="p-2">Total + PDI</th>
-                  <th className="p-2">Remaining</th>
+                  <th className="p-2">Total (Base+Interest+PDI)</th>
+                  <th className="p-2">Remaining Principal</th>
                   {mode === "funds" && <th className="p-2">Unspent</th>}
                 </tr>
               </thead>
@@ -255,27 +292,16 @@ const PDICalculator = () => {
                 {results.map((opt, i) => (
                   <tr
                     key={i}
-                    className={`text-center ${
-                      opt.diff <= (formData.availableFunds || 0) * 0.01
-                        ? "bg-green-50 font-semibold"
-                        : ""
-                    }`}
+                    className={`text-center ${opt.diff !== undefined && opt.diff <= (parseFloat(formData.availableFunds || 0) * 0.01) ? "bg-green-50 font-semibold" : ""}`}
                   >
                     <td className="p-2">{opt.months}</td>
                     <td className="p-2">{(opt.percent * 100).toFixed(1)}%</td>
                     <td className="p-2">₱{opt.base.toFixed(2)}</td>
-                    
                     <td className="p-2">₱{opt.interest.toFixed(2)}</td>
                     <td className="p-2">₱{pdi.toFixed(2)}</td>
-                    <td className="p-2 text-green-700">
-                      ₱{opt.total.toFixed(2)}
-                    </td>
+                    <td className="p-2 text-green-700">₱{opt.total.toFixed(2)}</td>
                     <td className="p-2">₱{opt.remaining.toFixed(2)}</td>
-                    {mode === "funds" && (
-                      <td className="p-2 text-gray-600">
-                        ₱{opt.diff.toFixed(2)}
-                      </td>
-                    )}
+                    {mode === "funds" && <td className="p-2 text-gray-600">₱{opt.diff.toFixed(2)}</td>}
                   </tr>
                 ))}
               </tbody>
