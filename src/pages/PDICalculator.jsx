@@ -121,7 +121,7 @@ const PDICalculator = () => {
     <section className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-xl">
         <h1 className="text-2xl font-bold text-green-700 mb-6 text-center">
-          💰non-LL REM Lumpsum< br></br> PDI + Payment Option Calculator
+          💰Non-LL REM Lumpsum< br></br> PDI + Payment Option Calculator
         </h1>
 
         {/* Toggle Mode */}
