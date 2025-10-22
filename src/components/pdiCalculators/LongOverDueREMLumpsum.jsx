@@ -14,7 +14,7 @@ const defaultCharges = [
   { name: "Land Tax", amount: "" },
   { name: "Transfer Tax (ROD)", amount: "" },
   { name: "Short of PDI", amount: "" },
-   // 🆕 fixed auto-computed row
+  
 ];
 
 const formatPeso = (raw) =>
@@ -35,7 +35,7 @@ export default function LongOverDueREMLumpsum() {
     promissoryNo: "24775",
     originalLoan: "300000.00",
     outstandingPrincipal: "291666.00",
-    totalPartialPayment: "0.00",
+   
     numberMonthsToExtend: "0",
     maturityDate: "",
     cutOffDate: "",
@@ -151,7 +151,9 @@ useEffect(() => {
 
   const addCharge = () => setCharges([...charges, { name: "", amount: "" }]);
   const removeCharge = (i) =>
-    setCharges((s) => s.filter((_, idx) => !s[idx].fixed && idx !== i));
+   
+  setCharges((s) => s.filter((item, idx) => idx !== i || item.fixed));
+  
 
   // 🆕 Auto compute Cost of Extension
   useEffect(() => {
@@ -343,13 +345,16 @@ useEffect(() => {
                 onChange={(e) => updateCharge(idx, "amount", e.target.value)}
                 placeholder="0.00"
               />
-              {it.name === "Cost of Extension" ? "✕": <button
-                className="text-red-600 text-lg"
-                onClick={() => removeCharge(idx)}
-              >
-                ✕
-              </button>}
-              
+              {it.fixed ? (
+  <span className="text-gray-400 text-lg">✕</span>
+) : (
+  <button
+    className="text-red-600 text-lg"
+    onClick={() => removeCharge(idx)}
+  >
+    ✕
+  </button>
+)}
             </div>
           ))}
 
