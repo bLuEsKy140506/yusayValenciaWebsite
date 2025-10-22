@@ -4,6 +4,7 @@ import html2canvas from "html2canvas";
 import logo from "../../assets/logo2.png";
 
 const defaultCharges = [
+  { name: "Cost of Extension", amount: "0.00", fixed: true },
   { name: "Postage", amount: "" },
   { name: "Sheriff Fee", amount: "" },
   { name: "EJF & Publication fee", amount: "" },
@@ -13,7 +14,7 @@ const defaultCharges = [
   { name: "Land Tax", amount: "" },
   { name: "Transfer Tax (ROD)", amount: "" },
   { name: "Short of PDI", amount: "" },
-  { name: "Cost of Extension", amount: "0.00", fixed: true }, // 🆕 fixed auto-computed row
+   // 🆕 fixed auto-computed row
 ];
 
 const formatPeso = (raw) =>
