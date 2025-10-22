@@ -1,4 +1,5 @@
 import { Phone, Mail, FacebookIcon } from "lucide-react";
+import { HashLink } from "react-router-hash-link";
 
 const Footer = () => {
   return (
@@ -58,29 +59,36 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* 🧰 Private Tools */}
-        {/* <div>
+        {/*🧰 Private Tools */}
+         <div>
           <h3 className="text-lg font-semibold text-white mb-3">
             Private Tools
           </h3>
           <ul className="space-y-2 text-sm">
             <li>
-              <a href="#" className="hover:text-green-400 transition">
+               <HashLink smooth to="/calculator" className="hover:text-green-700">
+                Loan Calculator
+              </HashLink>
+             
+            </li> 
+            <li>
+               <HashLink smooth to="/pdi-calculator" className="hover:text-green-700">
                 PDI Calculator
-              </a>
-            </li> */}
-            {/* <li>
+              </HashLink>
+             
+            </li> 
+             {/* <li>
               <a href="#" className="hover:text-green-400 transition">
                 Company Manual
               </a>
-            </li> */}
-            {/* <li>
+            </li>  */}
+             <li>
               <a href="#" className="hover:text-green-400 transition">
                 History
               </a>
             </li>
           </ul>
-        </div> */}
+        </div>
 
         {/* 📱 Social / Extra */}
         <div>

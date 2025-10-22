@@ -12,7 +12,8 @@ const ServicesSection = lazy(() => import("./components/ServicesSection"));
 const PropertyList = lazy(() => import("./pages/PropertyList"));
 const PropertyDetails = lazy(() => import("./pages/PropertyDetails"));
 const MakeAppointment = lazy(() => import("./pages/MakeAppointment"));
-const PDICalculator = lazy(() => import("./pages/PDICalculator"));
+const PDICalculator = lazy(() => import("./pages/PDICalculatorSwitcher"));
+const PDICalculatorSwitcher = lazy(() => import('./pages/PDICalculatorSwitcher'))
 
 function ScrollToHash() {
   const location = useLocation();
@@ -82,7 +83,7 @@ function App() {
             <Route path="/properties/:id" element={<PropertyDetails />} />
             <Route path="/calculator" element={<LoanCalculator />} />
             <Route path="/appointment" element={<MakeAppointment />} />
-            <Route path="/pdi-calculator" element={<PDICalculator />} />
+            <Route path="/pdi-calculator" element={<PDICalculatorSwitcher />} />
             <Route
               path="*"
               element={

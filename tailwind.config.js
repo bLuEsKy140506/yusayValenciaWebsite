@@ -12,4 +12,21 @@ export default {
     },
   },
   plugins: [],
+  theme: {
+    extend: {},
+  },
+  corePlugins: {
+    preflight: false, // optional
+  },
+  future: {
+    disableColorOpacityUtilitiesByDefault: true,
+  },
+  experimental: {
+    optimizeUniversalDefaults: true,
+  },
+  // 👇 Force legacy color format instead of oklch
+  safelist: [],
+  
+
+
 }

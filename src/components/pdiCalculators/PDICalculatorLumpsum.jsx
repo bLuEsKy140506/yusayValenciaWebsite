@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-const PDICalculator = () => {
+
+const PDICalculatorLumpsum = () => {
   const [mode, setMode] = useState("funds"); // 'funds' or 'percent'
   const [formData, setFormData] = useState({
     principal: "",
@@ -73,7 +74,7 @@ const PDICalculator = () => {
       let smallestDiff = Infinity;
 
       // progressive steps, largest to smallest
-      const stepSizes = [1000, 100, 10, 1];
+      const stepSizes = [1000000,100000,10000,1000, 100, 10, 1];
 
       // For each step, attempt to increase base in increments of `step` as much as allowed
       for (let s = 0; s < stepSizes.length; s++) {
@@ -166,7 +167,7 @@ const PDICalculator = () => {
   };
 
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6">
+    <section className="min-h-screen flex flex-col items-center justify-start bg-gray-50 p-1">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-xl">
         <h1 className="text-2xl font-bold text-green-700 mb-6 text-center">
           💰 Non-LL REM Lumpsum — PDI + Payment Option Calculator
@@ -177,7 +178,7 @@ const PDICalculator = () => {
           <button
             onClick={() => setMode("funds")}
             className={`px-4 py-2 rounded-lg font-semibold ${
-              mode === "funds" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"
+              mode === "funds" ? "bg-green-600 text-white" : "bg-gray-200 text-green-700"
             }`}
           >
             Available Funds Mode
@@ -185,7 +186,7 @@ const PDICalculator = () => {
           <button
             onClick={() => setMode("percent")}
             className={`px-4 py-2 rounded-lg font-semibold ${
-              mode === "percent" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"
+              mode === "percent" ? "bg-green-600 text-white" : "bg-gray-200 text-green-700"
             }`}
           >
             Percent Mode
@@ -194,15 +195,21 @@ const PDICalculator = () => {
 
         {/* PDI form (always visible) */}
         <form onSubmit={handleComputePDI} className="space-y-4">
-          <input
-            type="number"
-            name="principal"
-            placeholder="Principal Amount"
-            value={formData.principal}
-            onChange={handleChange}
-            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
-            required
-          />
+         <input
+  type="number"
+  name="principal"
+  placeholder="Principal Amount"
+  value={formData.principal}
+  onChange={handleChange}
+  onInput={(e) => {
+    if (e.target.value.length > 9) {
+      e.target.value = e.target.value.slice(0, 9);
+    }
+  }}
+  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+  required
+/>
+
 
           <input
             type="date"
@@ -248,6 +255,11 @@ const PDICalculator = () => {
               onChange={handleChange}
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
               disabled={!pdi}
+              onInput={(e) => {
+    if (e.target.value.length > 9) {
+      e.target.value = e.target.value.slice(0, 9);
+    }
+  }}
             />
             {!pdi && <p className="text-sm text-gray-500 text-center">💡 Compute PDI first to unlock this step.</p>}
           </div>
@@ -309,8 +321,9 @@ const PDICalculator = () => {
           </div>
         )}
       </div>
+    
     </section>
   );
 };
 
-export default PDICalculator;
+export default PDICalculatorLumpsum;
