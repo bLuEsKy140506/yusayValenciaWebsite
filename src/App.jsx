@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 
 // Lazy load heavy pages & components
 const LoanCalculator = lazy(() => import("./pages/LoanCalculator"));
+const LoanCalculatorForClient = lazy(()=> import("./pages/LoanCalculatorForClient"))
 const ApplyNow = lazy(() => import("./components/ApplyNow"));
 const AboutUs = lazy(() => import("./components/AboutUs"));
 const ServicesSection = lazy(() => import("./components/ServicesSection"));
@@ -82,6 +83,7 @@ function App() {
             <Route path="/properties" element={<PropertyList />} />
             <Route path="/properties/:id" element={<PropertyDetails />} />
             <Route path="/calculator" element={<LoanCalculator />} />
+            <Route path="/calculator-forclient" element={<LoanCalculatorForClient />} />
             <Route path="/appointment" element={<MakeAppointment />} />
             <Route path="/pdi-calculator" element={<PDICalculatorSwitcher />} />
             <Route
