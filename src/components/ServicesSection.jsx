@@ -129,7 +129,7 @@ const ServicesSection = ({ id }) => {
             </div>
             <div className="mt-6 flex justify-center md:justify-start relative z-10">
               <Link
-                to="/calculator"
+                              to="/calculator-forclient"
                 state={{ activeTab: "PL", plTab: "new" }}
                 className="px-6 py-3 bg-green-700 text-white font-semibold rounded-lg shadow-lg transition hover:bg-green-800"
               >
@@ -153,7 +153,7 @@ const ServicesSection = ({ id }) => {
             </div>
             <div className="mt-6 flex justify-center md:justify-start relative z-10">
               <Link
-                to="/calculator"
+                to="/calculator-forclient"
                 state={{ activeTab: "REM", remTab: "new" }}
                 className="px-6 py-3 bg-green-700 text-white font-semibold rounded-lg shadow-lg transition hover:bg-green-800"
               >
