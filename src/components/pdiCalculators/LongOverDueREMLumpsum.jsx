@@ -34,7 +34,7 @@ export default function LongOverDueREMLumpsum() {
     address: "",
     promissoryNo: "",
     originalLoan: "",
-    outstandingPrincipal: "2",
+    outstandingPrincipal: "",
    
     numberMonthsToExtend: "0",
     maturityDate: "",
@@ -253,6 +253,7 @@ useEffect(() => {
                 <label className="text-sm text-gray-600">{label}</label>
                 <input
                   className="w-full border p-2 rounded"
+                  placeholder={label}
                   value={account[field]}
                   onChange={(e) => updateAccount(field, e.target.value)}
                 />

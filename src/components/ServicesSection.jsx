@@ -177,7 +177,7 @@ const ServicesSection = ({ id }) => {
     <>
       {/* 📋 Requirements Floating Box (scaled down on mobile) */}
       <div className="fixed bottom-2 left-4 z-[9999] bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-green-200 w-[180px] md:w-[200px] animate-fadeIn 
-                      transform scale-70 md:scale-100 origin-bottom-left">
+                      transform scale-75 md:scale-100 origin-bottom-left">
         <h4 className="text-green-800 font-bold mb-3 text-center text-sm md:text-base">
           📋 Requirements
         </h4>
@@ -198,7 +198,7 @@ const ServicesSection = ({ id }) => {
       </div>
 
       {/* 🤝 Referral Bookmark (scaled down on mobile) */}
-      <div className="fixed bottom-16 right-4 z-[9999] animate-fadeIn transform scale-50 md:scale-100 origin-bottom-right">
+      <div className="fixed bottom-0 right-4 z-[9999] animate-fadeIn transform scale-80 md:scale-100 origin-bottom-right">
         <ReferralBookmark />
       </div>
     </>,
