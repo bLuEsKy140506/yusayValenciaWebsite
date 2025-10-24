@@ -104,7 +104,7 @@ const Navbar = () => {
             Properties For Sale
           </Link>
           <Link
-            to="/calculator"
+            to="/calculator-forclient"
             className="hover:text-green-700 py-1"
             onClick={() => setIsOpen(false)}
           >
