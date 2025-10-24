@@ -30,11 +30,11 @@ const parseNum = (v) => {
 
 export default function LongOverDueREMLumpsum() {
   const [account, setAccount] = useState({
-    accountName: "Calva, Rodelio",
-    address: "Purok 13-A, Poblacion, Valencia City, Bukidnon",
-    promissoryNo: "24775",
-    originalLoan: "300000.00",
-    outstandingPrincipal: "291666.00",
+    accountName: "",
+    address: "",
+    promissoryNo: "",
+    originalLoan: "",
+    outstandingPrincipal: "2",
    
     numberMonthsToExtend: "0",
     maturityDate: "",

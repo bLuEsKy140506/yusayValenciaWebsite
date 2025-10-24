@@ -8,7 +8,7 @@ const Navbar = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const topRoutes = ["/", "/properties", "/calculator", "/appointment"];
+    const topRoutes = ["/", "/properties", "/calculator", "/appointment", "/calculator-forclient"];
     const hasHash = location.hash !== ""; // ✅ Check if URL has #about or #services
 
     // Scroll only if it's a full route and NOT a hash link

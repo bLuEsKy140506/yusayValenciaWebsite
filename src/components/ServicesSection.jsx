@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import PensionBookmark from "./bookmarks/PensionBookmark";
 import REMBookmark from "./bookmarks/REMBookmark";
 import ReferralBookmark from "./bookmarks/ReferralBookmark";
+import { HashLink } from "react-router-hash-link";
 
 const ServicesSection = ({ id }) => {
   const [language, setLanguage] = useState("en");
@@ -128,13 +129,12 @@ const ServicesSection = ({ id }) => {
               </p>
             </div>
             <div className="mt-6 flex justify-center md:justify-start relative z-10">
-              <Link
-                              to="/calculator-forclient"
+              <HashLink smooth  to="/calculator-forclient"
                 state={{ activeTab: "PL", plTab: "new" }}
                 className="px-6 py-3 bg-green-700 text-white font-semibold rounded-lg shadow-lg transition hover:bg-green-800"
               >
                 {t.calcBtn}
-              </Link>
+              </HashLink>
             </div>
           </div>
 
@@ -152,13 +152,13 @@ const ServicesSection = ({ id }) => {
               </p>
             </div>
             <div className="mt-6 flex justify-center md:justify-start relative z-10">
-              <Link
+              <HashLink smooth
                 to="/calculator-forclient"
                 state={{ activeTab: "REM", remTab: "new" }}
                 className="px-6 py-3 bg-green-700 text-white font-semibold rounded-lg shadow-lg transition hover:bg-green-800"
               >
                 {t.calcBtn}
-              </Link>
+              </HashLink>
             </div>
           </div>
         </div>
@@ -173,36 +173,38 @@ const ServicesSection = ({ id }) => {
 
       {/* ✅ Floating Bookmarks (only when in view) */}
       {showBookmarks &&
-        createPortal(
-          <>
-            {/* 📋 Requirements Floating Box (moved slightly upward) */}
-            <div className="fixed bottom-2 left-4 z-[9999] bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-green-200 w-[180px] md:w-[200px] animate-fadeIn">
-              <h4 className="text-green-800 font-bold mb-3 text-center">
-                📋 Requirements
-              </h4>
-              <div className="flex flex-col gap-2">
-                <button
-                  onClick={handleOpenPension}
-                  className="px-4 py-2 bg-green-700 text-white rounded-full shadow-md hover:bg-green-800 transition text-sm"
-                >
-                  Pension Loan
-                </button>
-                <button
-                  onClick={handleOpenREM}
-                  className="px-4 py-2 bg-green-700 text-white rounded-full shadow-md hover:bg-green-800 transition text-sm"
-                >
-                  Real Estate Loan
-                </button>
-              </div>
-            </div>
+  createPortal(
+    <>
+      {/* 📋 Requirements Floating Box (scaled down on mobile) */}
+      <div className="fixed bottom-2 left-4 z-[9999] bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-green-200 w-[180px] md:w-[200px] animate-fadeIn 
+                      transform scale-70 md:scale-100 origin-bottom-left">
+        <h4 className="text-green-800 font-bold mb-3 text-center text-sm md:text-base">
+          📋 Requirements
+        </h4>
+        <div className="flex flex-col gap-2">
+          <button
+            onClick={handleOpenPension}
+            className="px-4 py-2 bg-green-700 text-white rounded-full shadow-md hover:bg-green-800 transition text-xs md:text-sm"
+          >
+            Pension Loan
+          </button>
+          <button
+            onClick={handleOpenREM}
+            className="px-4 py-2 bg-green-700 text-white rounded-full shadow-md hover:bg-green-800 transition text-xs md:text-sm"
+          >
+            Real Estate Loan
+          </button>
+        </div>
+      </div>
 
-            {/* 🤝 Referral Bookmark (also moved slightly upward) */}
-            <div className="fixed bottom-16 right-4 z-[9999] animate-fadeIn">
-              <ReferralBookmark />
-            </div>
-          </>,
-          document.body
-        )}
+      {/* 🤝 Referral Bookmark (scaled down on mobile) */}
+      <div className="fixed bottom-16 right-4 z-[9999] animate-fadeIn transform scale-50 md:scale-100 origin-bottom-right">
+        <ReferralBookmark />
+      </div>
+    </>,
+    document.body
+  )}
+
     </section>
   );
 };
