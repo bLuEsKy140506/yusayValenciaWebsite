@@ -54,3 +54,67 @@ main {
 .animate-slideInUp {
   animation: slideInUp 0.4s ease-in-out forwards;
 }
+.letter-a4 {
+  width: 794px; /* A4 width */
+  height: 1123px; /* A4 height */
+  background: white;
+  color: #000;
+  font-family: "Times New Roman", Times, serif;
+  position: relative;
+  margin: 0 auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 40px 60px 120px 60px;
+  box-sizing: border-box;
+}
+
+.letter-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.letter-header img {
+  width: 70px; /* smaller logo */
+  height: 70px;
+  object-fit: contain;
+}
+
+.letter-body {
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: justify;
+}
+
+.line-section {
+  border-top: 1px solid #000;
+  margin: 10px 0;
+}
+
+.reminder-title {
+  text-align: center;
+  font-weight: bold;
+  text-decoration: underline;
+  margin: 12px 0;
+}
+
+.letter-note {
+  font-style: italic;
+  font-size: 13px;
+  margin-top: 20px;
+  border-top: 1px solid #000;
+  padding-top: 10px;
+ 
+ 
+}
+
+.letter-footer {
+  
+  position: absolute;
+  left: 60px;
+  right: 60px;
+  bottom: 20px;
+  text-align: center;
+  font-size: 12px;
+  color: #0b3d2e;
+}
