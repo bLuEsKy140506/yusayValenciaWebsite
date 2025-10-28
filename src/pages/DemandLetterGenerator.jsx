@@ -14,7 +14,7 @@ const formatFullDate = (date) =>
   });
 
 // ✅ Letter Templates
-const getLetterContent = (type, data, todayStr, formattedAmount) => {
+const getLetterContent = (type, data, todayStr, formattedAmount, formattedAmountOrig) => {
   switch (type) {
     case "1st Demand Letter":
       return (
@@ -62,11 +62,11 @@ const getLetterContent = (type, data, todayStr, formattedAmount) => {
       return (
         <>
           <p>
-            This is to acknowledge your partial payment under{" "}
-            <strong>REM PN NO. {data.remPn}</strong>. However, a remaining
-            balance of <strong>{data.amountInWords}</strong> (
-            <strong>₱{formattedAmount}</strong>) is still due. We encourage you
-            to settle the remaining amount to update your account.
+            Thank you for your payment last {data.paymentLastPaidOn}, however said payment was not sufficient to lodge your account to current account status as you still have an overdue balance in the amount of <strong>₱{formattedAmount}</strong>  exclusive of past due interest and other charges. Kindly be reminded that your maturity date is on <strong>{data.lastMonthlyDue}</strong> under Promissory Note REM-{data.remPn}. There will be a 5% penalty if you are unable to fully pay the loan on time.
+          </p>
+          <br />
+          <p>
+            However, we would appreciate it very much if you could update your account in the soonest possible time to avoid inconvenience on your part. Please heed this advice. Thank you for your prompt attention to this matter. We look forward to hearing from you. Thank you very much and God Bless.
           </p>
         </>
       );
@@ -75,13 +75,11 @@ const getLetterContent = (type, data, todayStr, formattedAmount) => {
       return (
         <>
           <p>
-            Despite repeated reminders, your account under{" "}
-            <strong>REM PN NO. {data.remPn}</strong> remains unpaid. YCFC is now
-            constrained to endorse your account for legal action should payment
-            not be made within seven (7) days. As of{" "}
-            <strong>{todayStr}</strong>, your outstanding balance is{" "}
-            <strong>{data.amountInWords}</strong> (
-            <strong>₱{formattedAmount}</strong>).
+           YUSAY CREDIT & FINANCE CORPORATION, which we represent as counsel had referred to us your obligation for collection.
+          </p>
+          <br />
+          <p>
+          According to the records of our client, you obtained a Loan under Promissory Note No. REM-{data.remPn} in the amount of  <strong>{data.amountInWordsOriginal}</strong> PESOS (<strong>₱{formattedAmountOrig}</strong>) which was granted on December 21, 2023 and had matured May 18, 2025.
           </p>
         </>
       );
@@ -122,13 +120,16 @@ const LetterPreview = React.forwardRef(({ data }, ref) => {
 
   const today = new Date();
   const todayStr = formatFullDate(today);
-  const formattedAmount = parseFloat(data.amountFigure || 0).toLocaleString();
+  const formattedAmount = `${parseFloat(data.amountFigure || 0).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const formattedAmountOrig = `${parseFloat(data.originalAmountLoan || 0).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
 
   const letterBody = getLetterContent(
     data.letterType,
     data,
     todayStr,
-    formattedAmount
+    formattedAmount,
+    formattedAmountOrig
   );
 
   return (
