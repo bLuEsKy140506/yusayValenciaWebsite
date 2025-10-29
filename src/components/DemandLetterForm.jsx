@@ -60,10 +60,10 @@ const [form, setForm] = useState({
           onChange={handleChange}
           className="border w-full p-2 rounded-md focus:outline-green-600"
         >
-          <option>1st Demand Letter</option>
-          <option>2nd Demand Letter</option>
-          <option>Partial Payment Letter</option>
-          <option>Legal Demand Letter (YCFC)</option>
+          <option>1st Reminder</option>
+          <option>2nd Reminder</option>
+          <option>Partial Payment Reminder</option>
+          <option>Legal Demand</option>
           <option>Final Reminder</option>
           <option>Final Notice</option>
         </select>
@@ -77,7 +77,7 @@ const [form, setForm] = useState({
     if (key === "letterType") return false;
 
     // Partial Payment Letter → show all + paymentLastPaidOn only
-    if (form.letterType === "Partial Payment Letter") {
+    if (form.letterType === "Partial Payment Reminder") {
       return (
         key !== "dateGranted" &&
         key !== "originalAmountLoan" &&
@@ -86,7 +86,7 @@ const [form, setForm] = useState({
     }
 
     // Legal Demand Letter (YCFC) → hide lastMonthlyDue, show 3 new fields
-    if (form.letterType === "Legal Demand Letter (YCFC)") {
+    if (form.letterType === "Legal Demand") {
       return (
         key !== "paymentLastPaidOn" && // hide partial payment field
         (key === "dateGranted" ||

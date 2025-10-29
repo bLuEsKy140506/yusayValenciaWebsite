@@ -55,15 +55,15 @@ main {
   animation: slideInUp 0.4s ease-in-out forwards;
 }
 .letter-a4 {
-  width: 794px; /* A4 width */
-  height: 1123px; /* A4 height */
+  width: 816px; /* Folio width (8.5 x 13 inches) */
+  height: 1248px; /* Folio height */
   background: white;
   color: #000;
   font-family: "Times New Roman", Times, serif;
   position: relative;
   margin: 0 auto;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  padding: 40px 60px 120px 60px;
+  padding: 60px 60px 120px 60px;
   box-sizing: border-box;
 }
 
@@ -104,12 +104,9 @@ main {
   margin-top: 20px;
   border-top: 1px solid #000;
   padding-top: 10px;
- 
- 
 }
 
 .letter-footer {
-  
   position: absolute;
   left: 60px;
   right: 60px;

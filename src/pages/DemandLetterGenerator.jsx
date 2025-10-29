@@ -5,18 +5,23 @@ import logo from "../assets/logo2.png";
 import DemandLetterForm from "../components/DemandLetterForm";
 import { numberToWords } from "../utils/numberToWords";
 
-const formatFullDate = (date) =>
-  date.toLocaleDateString("en-US", {
-    weekday: "long",
+const formatFullDate = (date) => {
+  if (!date) return ""; // if empty or undefined
+  const validDate = new Date(date); // convert string → Date object
+  if (isNaN(validDate.getTime())) return ""; // handle invalid date
+  return validDate.toLocaleDateString("en-US", {
+    // weekday: "long",
     month: "long",
     day: "numeric",
     year: "numeric",
   });
+};
+
 
 // ✅ Letter Templates
-const getLetterContent = (type, data, todayStr, formattedAmount, formattedAmountOrig) => {
+const getLetterContent = (type, data, todayStr, lastPaymentOn, dateGranted, originalMaturityDate, formattedAmount, formattedAmountOrig) => {
   switch (type) {
-    case "1st Demand Letter":
+    case "1st Reminder":
       return (
         <>
           <p>
@@ -29,10 +34,17 @@ const getLetterContent = (type, data, todayStr, formattedAmount, formattedAmount
     <strong>₱{formattedAmount}</strong>) exclusive of penalties and past due
     interest.
   </p>
+  <br />
+        <p>
+          Please treat this matter with urgency. Thank you for your attention.
+        </p>
+        <br />
+        <br />
+        <p>Very truly yours,</p>
         </>
       );
 
-    case "2nd Demand Letter":
+    case "2nd Reminder":
       return (
         <>
         <p>
@@ -54,24 +66,34 @@ const getLetterContent = (type, data, todayStr, formattedAmount, formattedAmount
   </ul>
 
 </div>
-         
+      <p>
+          Thank you for your prompt attention regarding the matter. 
+        </p>
+        <br />
+        <br />
+        <p>Very truly yours,</p>
         </>
+         
+       
       );
 
-    case "Partial Payment Letter":
+    case "Partial Payment Reminder":
       return (
         <>
           <p>
-            Thank you for your payment last {data.paymentLastPaidOn}, however said payment was not sufficient to lodge your account to current account status as you still have an overdue balance in the amount of <strong>₱{formattedAmount}</strong>  exclusive of past due interest and other charges. Kindly be reminded that your maturity date is on <strong>{data.lastMonthlyDue}</strong> under Promissory Note REM-{data.remPn}. There will be a 5% penalty if you are unable to fully pay the loan on time.
+            Thank you for your payment last {lastPaymentOn}, however said payment was not sufficient to lodge your account to current account status as you still have an overdue balance in the amount of <strong>₱{formattedAmount}</strong>  exclusive of past due interest and other charges. Kindly be reminded that your maturity date is on <strong>{data.lastMonthlyDue}</strong> under Promissory Note REM-{data.remPn}. There will be a 5% penalty if you are unable to fully pay the loan on time.
           </p>
           <br />
           <p>
-            However, we would appreciate it very much if you could update your account in the soonest possible time to avoid inconvenience on your part. Please heed this advice. Thank you for your prompt attention to this matter. We look forward to hearing from you. Thank you very much and God Bless.
+            However, we would appreciate it very much if you could update your account in the soonest possible time to avoid inconvenience on your part. Please heed this advice. Thank you for your prompt attention to this matter. 
           </p>
+          <p>We look forward to hearing from you. Thank you very much and God Bless.</p>
+          <br />
+          <p>Very truly yours,</p>
         </>
       );
 
-    case "Legal Demand Letter (YCFC)":
+    case "Legal Demand":
       return (
         <>
           <p>
@@ -79,8 +101,21 @@ const getLetterContent = (type, data, todayStr, formattedAmount, formattedAmount
           </p>
           <br />
           <p>
-          According to the records of our client, you obtained a Loan under Promissory Note No. REM-{data.remPn} in the amount of  <strong>{data.amountInWordsOriginal}</strong> PESOS (<strong>₱{formattedAmountOrig}</strong>) which was granted on December 21, 2023 and had matured May 18, 2025.
+          According to the records of our client, you obtained a loan under Promissory Note No. REM-{data.remPn} in the amount of  <strong>{data.amountInWordsOriginal}</strong> (<strong>₱{formattedAmountOrig}</strong>) which was granted on <strong>{dateGranted}</strong> and had matured <strong>{originalMaturityDate}</strong>.
           </p>
+          <br />
+          <p>As of {todayStr} your total outstanding balance is (₱<strong>{formattedAmount}</strong>) exclusive of past due interest, penalties and other charges imposed on delayed account.</p>
+          <br />
+          <p>To maintain your good name and credit history, kindly pay your account as above-stated within <strong>SEVEN (7) working days</strong> from receipt of this demand otherwise, we shall be left with no recourse but to institute adversarial proceedings against you to enforce our client’s interest.</p>
+          <br/>
+          <p>Thank you for giving this matter your preferential attention.</p>
+          <br />
+          <br />
+          <p>Very truly yours,</p>
+          <br />
+          <p>TANCINCO LAW OFFICE<br />Counsel for YCFC<br />
+          <br />By:<br /><br />ATTY. CECILIO CHITO R. TANCINCO<br />At my instance:<br />
+</p>
         </>
       );
 
@@ -120,6 +155,10 @@ const LetterPreview = React.forwardRef(({ data }, ref) => {
 
   const today = new Date();
   const todayStr = formatFullDate(today);
+ const lastPaymentOn = data.paymentLastPaidOn ? formatFullDate(data.paymentLastPaidOn) : "x";
+ const dateGranted = data.dateGranted ? formatFullDate(data.dateGranted) : "x";
+ const originalMaturityDate = data.originalMaturityDate? formatFullDate(data.originalMaturityDate) : "x";
+
   const formattedAmount = `${parseFloat(data.amountFigure || 0).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   const formattedAmountOrig = `${parseFloat(data.originalAmountLoan || 0).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
@@ -128,18 +167,39 @@ const LetterPreview = React.forwardRef(({ data }, ref) => {
     data.letterType,
     data,
     todayStr,
+    lastPaymentOn,
+    dateGranted,
+    originalMaturityDate,
     formattedAmount,
     formattedAmountOrig
   );
 
   return (
-    <div ref={ref} className="letter-a4" style={{ paddingTop: "20px" }}>
+    <div ref={ref} className="letter-a4" style={{ paddingTop: "40px" }}>
       {/* Header */}
-      {/* Centered Header Logo */} <div className="letter-header"> <img src={logo} alt="YCFC Logo" style={{ width: 90, height: 90, objectFit: "contain" }} /> </div>
+      {/* Centered Header Logo */} {/* Header */}
+<div className="letter-header">
+  {data.letterType === "Legal Demand" ? (
+    // ✅ Use legal header when letter type is Legal Demand
+    <img
+      src={legalHeader}
+      alt="Tancino Law Office Header"
+      style={{ width: "100%", height: "auto", objectFit: "contain" }}
+    />
+  ) : (
+    // ✅ Default YCFC logo
+    <img
+      src={logo}
+      alt="YCFC Logo"
+      style={{ width: 90, height: 90, objectFit: "contain" }}
+    />
+  )}
+</div>
+
       {/* Date */}
       <div style={{ fontSize: 14, marginBottom: 10 }}>{todayStr}</div>
       <br />
-      <br />
+     
 
       {/* Address */}
       <div style={{ fontSize: 14, lineHeight: 1.5 }}>
@@ -150,6 +210,7 @@ const LetterPreview = React.forwardRef(({ data }, ref) => {
         <strong>{data.municipalityName}</strong>, <strong>{data.provinceName}</strong>
         <br />
         {data.zipcode}
+        
       </div>
 
       {/* Title */}
@@ -159,7 +220,7 @@ const LetterPreview = React.forwardRef(({ data }, ref) => {
           textAlign: "center",
           fontWeight: "bold",
           textDecoration: "underline",
-          margin: "20px 0",
+          margin: "10px 0",
         }}
       >
         {data.letterType.toUpperCase()}
@@ -167,6 +228,7 @@ const LetterPreview = React.forwardRef(({ data }, ref) => {
 
       {/* Dynamic Body */}
       <div className="letter-body" style={{ fontSize: 14 }}>
+        <br />
         <p>
           Dear Mr/Ms. <strong>{data.lastName}</strong>,
         </p>
@@ -177,13 +239,7 @@ const LetterPreview = React.forwardRef(({ data }, ref) => {
 
         {letterBody}
 
-        <br />
-        <p>
-          Please treat this matter with urgency. Thank you for your attention.
-        </p>
-        <br />
-        <br />
-        <p>Very truly yours,</p>
+        
         <br />
         <p style={{ fontWeight: "bold" }}>EARL LAURIECE S. BUTLAY</p>
         <p>Branch Manager</p>
@@ -232,7 +288,7 @@ export default function DemandLetterPDFGenerator() {
       backgroundColor: "#ffffff",
     });
     const imgData = canvas.toDataURL("image/jpeg", 0.6);
-    const pdf = new jsPDF("p", "mm", "a4");
+    const pdf = new jsPDF("p", "mm", [215.9, 330.2]);
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
     const imgHeight = (canvas.height * pageWidth) / canvas.width;
