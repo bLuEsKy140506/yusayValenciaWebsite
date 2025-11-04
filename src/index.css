@@ -101,7 +101,7 @@ main {
 .letter-note {
   font-style: italic;
   font-size: 13px;
-  margin-top: 20px;
+  margin-top: 5px;
   border-top: 1px solid #000;
   padding-top: 10px;
 }
@@ -112,6 +112,6 @@ main {
   right: 60px;
   bottom: 20px;
   text-align: center;
-  font-size: 12px;
+  font-size: 10px;
   color: #0b3d2e;
 }

@@ -10,6 +10,7 @@ export function numberToWords(num) {
   ];
 
   const inWords = (n) => {
+    if (n === 0) return "zero";
     if (n < 20) return a[n];
     if (n < 100)
       return b[Math.floor(n / 10)] + (n % 10 ? " " + a[n % 10] : "");
@@ -26,5 +27,16 @@ export function numberToWords(num) {
     return n.toString();
   };
 
-  return inWords(num).replace(/\b\w/g, (c) => c.toUpperCase());
+  const [pesoPart, centavoPart] = num.toFixed(2).split(".");
+  const pesoNum = parseInt(pesoPart, 10);
+  const centNum = parseInt(centavoPart, 10);
+
+  const pesoWords =
+    pesoNum === 0
+      ? "Zero"
+      : inWords(pesoNum).replace(/\b\w/g, (c) => c.toUpperCase());
+
+  return centNum > 0
+    ? `${pesoWords} And ${centNum.toString().padStart(2, "0")}/100`
+    : `${pesoWords} Only`;
 }

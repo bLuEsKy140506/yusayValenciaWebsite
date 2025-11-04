@@ -33,7 +33,9 @@ const PensionBookmark = ({ isOpen, onClose }) => {
         <li>Birth Certificate (if with dependents)</li>
         <li>Cedula / Barangay Clearance</li>
         <li>Proof of Billing (Electric/Water)</li>
+        <li>2 co-makers (1 if retirement), 2 valid IDs and 2x2 ID picture</li>
       </ul>
+      
     </div>
   );
 };

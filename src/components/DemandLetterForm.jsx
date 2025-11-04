@@ -1,46 +1,106 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import logo from "../assets/logo2.png";
+import legalHeader from "../assets/legalHeader.png";
 import { numberToWords } from "../utils/numberToWords";
 
-const DemandLetterForm = ({ onGenerate }) => {
-const [form, setForm] = useState({
-  letterType: "1st Demand Letter",
-  firstName: "",
-  middleInitial: "",
-  lastName: "",
-  streetName: "",
-  barangayName: "",
-  municipalityName: "",
-  provinceName: "",
-  zipcode: "",
-  remPn: "",
-  lastMonthlyDue: "",
-  amountFigure: "",
-  paymentLastPaidOn: "",      // Partial Payment only
-  dateGranted: "",            // Legal Demand only
-  originalAmountLoan: "",     // Legal Demand only
-  originalMaturityDate: "",   // Legal Demand only
-});
+const formatFullDate = (date) => {
+  if (!date) return "";
+  const validDate = new Date(date);
+  if (isNaN(validDate.getTime())) return "";
+  return validDate.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
+// -------- DemandLetterForm --------
+const DemandLetterForm = ({ form, setForm, onGenerate }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  // --- Dynamic collateral (Final Notice) ---
+  const handleCollateralChange = (index, field, value) => {
+    const updated = (form.collaterals || []).map((item, i) =>
+      i === index ? { ...item, [field]: value } : item
+    );
+    setForm((prev) => ({ ...prev, collaterals: updated }));
+  };
+
+  const addCollateral = () => {
+    setForm((prev) => ({
+      ...prev,
+      collaterals: [...(prev.collaterals || []), { title: "", description: "" }],
+    }));
+  };
+
+  const removeCollateral = (index) => {
+    const updated = (form.collaterals || []).filter((_, i) => i !== index);
+    setForm((prev) => ({ ...prev, collaterals: updated }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    if (form.letterType === "Legal Demand Letter (YCFC)") {
-      const amountInWords = numberToWords(form.amountFigure) + " Pesos Only";
-    const amountInWordsOriginal = numberToWords(form.originalAmountLoan) + " Pesos Only";
-    onGenerate({ ...form, amountInWords, amountInWordsOriginal });
-  
-} else {
- const amountInWords = numberToWords(form.amountFigure) + " Pesos Only";
-  onGenerate({ ...form, amountInWords});
-
-}
-
-    
+    onGenerate(form); // Let parent handle amountInWords logic
   };
+
+  // --- Determine visible fields dynamically ---
+  const visibleFields = Object.keys(form).filter((key) => {
+    if (key === "letterType" || key === "collaterals") return false;
+
+    // default behavior for most letter types: show all except conditional ones
+    const defaultShow = ![
+      "paymentLastPaidOn",
+      "dateGranted",
+      "originalAmountLoan",
+      "originalMaturityDate",
+      "firstReminderDate",
+      "secondReminderDate",
+    ].includes(key);
+
+    switch (form.letterType) {
+      case "Partial Payment Reminder":
+        return (
+          key !== "dateGranted" &&
+          key !== "originalAmountLoan" &&
+          key !== "originalMaturityDate" &&
+          key !== "firstReminderDate" &&
+          key !== "secondReminderDate"
+        );
+      case "Legal Demand":
+        return (
+          key !== "firstReminderDate" &&
+          key !== "secondReminderDate" && key !== "paymentLastPaidOn" && 
+          (key === "dateGranted" ||
+            key === "originalAmountLoan" ||
+            key === "originalMaturityDate" ||
+            (key !== "lastMonthlyDue" &&
+              !["dateGranted", "originalAmountLoan", "originalMaturityDate"].includes(key)))
+        );
+      case "Final Reminder":
+        // same as default (1st Reminder) but explicitly include the two reminder dates
+        return (
+          defaultShow ||
+          key === "firstReminderDate" ||
+          key === "secondReminderDate"
+        );
+      case "Final Notice":
+        return (
+          key !== "paymentLastPaidOn" &&
+          key !== "dateGranted" &&
+          key !== "originalAmountLoan" &&
+          key !== "originalMaturityDate" &&
+          key !== "firstReminderDate" &&
+          key !== "secondReminderDate"
+        );
+      default:
+        return defaultShow;
+    }
+  });
 
   return (
     <form
@@ -69,81 +129,91 @@ const [form, setForm] = useState({
         </select>
       </div>
 
-      {/* Responsive grid layout */}
+      {/* Input Fields */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-     {Object.keys(form)
-  .filter((key) => {
-    // Always exclude the selector itself
-    if (key === "letterType") return false;
-
-    // Partial Payment Letter → show all + paymentLastPaidOn only
-    if (form.letterType === "Partial Payment Reminder") {
-      return (
-        key !== "dateGranted" &&
-        key !== "originalAmountLoan" &&
-        key !== "originalMaturityDate"
-      );
-    }
-
-    // Legal Demand Letter (YCFC) → hide lastMonthlyDue, show 3 new fields
-    if (form.letterType === "Legal Demand") {
-      return (
-        key !== "paymentLastPaidOn" && // hide partial payment field
-        (key === "dateGranted" ||
-          key === "originalAmountLoan" ||
-          key === "originalMaturityDate" ||
-          (key !== "lastMonthlyDue" &&
-            !["dateGranted", "originalAmountLoan", "originalMaturityDate"].includes(key)))
-      );
-    }
-
-    // Other letter types → hide all conditional fields
-    return (
-      key !== "paymentLastPaidOn" &&
-      key !== "dateGranted" &&
-      key !== "originalAmountLoan" &&
-      key !== "originalMaturityDate"
-    );
-  })
-  .map((key) => (
-    <div key={key}>
-      <label className="block text-sm font-medium capitalize mb-1">
-        {key.replace(/([A-Z])/g, " $1")}
-      </label>
-      <input
-        type={
-          key === "amountFigure"
-            ? "number"
-            : key === "paymentLastPaidOn" ||
-              key === "dateGranted" ||
-              key === "originalMaturityDate"
-            ? "date"
-            : key === "originalAmountLoan"
-            ? "number"
-            : "text"
-        }
-        name={key}
-        value={form[key]}
-        onChange={handleChange}
-        required={
-          (key === "paymentLastPaidOn" &&
-            form.letterType === "Partial Payment Letter") ||
-          ((key === "dateGranted" ||
-            key === "originalAmountLoan" ||
-            key === "originalMaturityDate") &&
-            form.letterType === "Legal Demand Letter (YCFC)") ||
-          (key !== "paymentLastPaidOn" &&
-            key !== "dateGranted" &&
-            key !== "originalAmountLoan" &&
-            key !== "originalMaturityDate")
-        }
-        className="border w-full p-2 rounded-md focus:outline-green-600"
-      />
-    </div>
-  ))}
-
-
+        {visibleFields.map((key) => (
+          <div key={key}>
+            <label className="block text-sm font-medium capitalize mb-1">
+              {key.replace(/([A-Z])/g, " $1")}
+            </label>
+            <input
+              type={
+                key === "amountFigure" || key === "originalAmountLoan"
+                  ? "number"
+                  : [
+                      "paymentLastPaidOn",
+                      "dateGranted",
+                      "originalMaturityDate",
+                      "lastMonthlyDue",
+                      "firstReminderDate",
+                      "secondReminderDate",
+                    ].includes(key)
+                  ? "date"
+                  : "text"
+              }
+              name={key}
+              value={form[key]}
+              onChange={handleChange}
+              required
+              className="border w-full p-2 rounded-md focus:outline-green-600"
+            />
+          </div>
+        ))}
       </div>
+
+      {/* Dynamic Collateral Fields for Final Notice */}
+      {form.letterType === "Final Notice" && (
+        <div className="mt-4">
+          <h3 className="text-lg font-semibold mb-2 text-green-700">
+            Collateral Information
+          </h3>
+          {(form.collaterals || []).map((collateral, index) => (
+            <div
+              key={index}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2 border p-3 rounded-md"
+            >
+              <div>
+                <label className="block text-sm font-medium mb-1">Title</label>
+                <input
+                  type="text"
+                  value={collateral.title}
+                  onChange={(e) =>
+                    handleCollateralChange(index, "title", e.target.value)
+                  }
+                  className="border w-full p-2 rounded-md focus:outline-green-600"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Description</label>
+               <textarea
+  value={collateral.description}
+  onChange={(e) =>
+    handleCollateralChange(index, "description", e.target.value)
+  }
+  className="border w-full p-2 rounded-md focus:outline-green-600"
+  rows={3}
+/>
+              </div>
+              <div className="col-span-full text-right">
+                <button
+                  type="button"
+                  onClick={() => removeCollateral(index)}
+                  className="text-red-600 text-sm"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={addCollateral}
+            className="bg-green-700 text-white px-3 py-1 rounded-md mt-2"
+          >
+            + Add Collateral
+          </button>
+        </div>
+      )}
 
       <button
         type="submit"
@@ -155,4 +225,413 @@ const [form, setForm] = useState({
   );
 };
 
-export default DemandLetterForm;
+// -------- Letter Templates --------
+const getLetterContent = (
+  type,
+  data,
+  todayStr,
+  lastPaymentOn,
+  dateGranted,
+  originalMaturityDate,
+  formattedAmount,
+  formattedAmountOrig
+) => {
+  switch (type) {
+    case "1st Reminder":
+      return (
+        <>
+          <p>
+            Our records indicate that your account with us under{" "}
+            <strong>REM PN NO. {data.remPn}</strong> has matured on{" "}
+            <strong>{formatFullDate(data.lastMonthlyDue)}</strong>. We hope this was just an
+            oversight on your part and that you will be able to pay the same
+            within three (3) days from receipt hereof. As of{" "}
+            <strong>{todayStr}</strong>, your current overdue balance is{" "}
+            <strong>{data.amountInWords}</strong> (
+            <strong>₱{formattedAmount}</strong>) exclusive of penalties and past
+            due interest.
+          </p>
+          <br />
+          <p>
+            Please treat this matter with urgency. Thank you for your attention.
+          </p>
+          <br />
+          <p>Very truly yours,</p>
+        </>
+      );
+
+    case "2nd Reminder":
+      return (
+        <>
+          <p>
+            A review of our records indicates that your REM loan with{" "}
+            <strong>PN No. {data.remPn}</strong> had matured on{" "}
+            {data.lastMonthlyDue}. Your credit reputation is a valuable asset.
+            We want you to keep it that way. As of <strong>{todayStr}</strong>,
+            your overdue balance is <strong>{data.amountInWords}</strong> (
+            <strong>₱{formattedAmount}</strong>) exclusive of interest and
+            penalties.
+          </p>
+          <br />
+          <ul style={{ marginLeft: "1.25rem", lineHeight: 1.6 }}>
+            <li>👉 Save on accumulating penalty charges.</li>
+            <li>👉 Avoid tarnishing your credit reputation.</li>
+            <li>
+              👉 Avoid extraordinary charges if referred to our attorney for
+              collection.
+            </li>
+          </ul>
+          <br />
+          <p>Thank you for your prompt attention.</p>
+          <br></br>
+          <br />
+          <p>Very truly yours,</p>
+        </>
+      );
+
+    case "Partial Payment Reminder":
+      return (
+        <>
+          <p>
+            Thank you for your payment last {lastPaymentOn}, however, said
+            payment was not sufficient to lodge your account to current status
+            as you still have an overdue balance of{" "}
+            <strong>₱{formattedAmount}</strong>. Kindly be reminded that your
+            maturity date is on <strong>{formatFullDate(data.lastMonthlyDue)}</strong> under PN
+            REM-{data.remPn}. There will be a 5% penalty if you are unable to
+            fully pay the loan on time.
+          </p>
+          <br />
+          <p>
+            Please update your account soon to avoid inconvenience. Thank you
+            for your attention.
+          </p>
+          <br />
+          <br />
+          <p>Very truly yours,</p>
+        </>
+      );
+
+    case "Legal Demand":
+      return (
+        <>
+          <p>
+            YUSAY CREDIT & FINANCE CORPORATION, which we represent as counsel,
+            has referred to us your obligation for collection.
+          </p>
+          <br />
+          <p>
+            According to our client’s records, you obtained a loan under PN No.
+            REM-{data.remPn} in the amount of{" "}
+            <strong>{data.amountInWordsOriginal}</strong> (
+            <strong>₱{formattedAmountOrig}</strong>), granted on{" "}
+            <strong>{dateGranted}</strong> and matured on{" "}
+            <strong>{originalMaturityDate}</strong>.
+          </p>
+          <br />
+          <p>
+            As of {todayStr}, your outstanding balance is ₱
+            <strong>{formattedAmount}</strong>, exclusive of penalties and other
+            charges.
+          </p>
+          <br />
+          <p>
+            Kindly pay your account within seven (7) working days from receipt
+            of this demand, otherwise legal action will be taken.
+          </p>
+           <br />
+          <p>Very truly yours,</p>
+          <br />
+          <p>TANCINCO LAW OFFICE<br />Counsel for YCFC</p>
+          <br />
+          <p>
+            By: <br />
+            <strong>ATTY. CECILIO CHITO R. TANCINCO</strong>
+          </p>
+          <br />
+          <p>At my instance:</p>
+        </>
+      );
+
+    case "Final Reminder":
+      {
+        const firstRem = data.firstReminderDate ? formatFullDate(data.firstReminderDate) : "";
+        const secondRem = data.secondReminderDate ? formatFullDate(data.secondReminderDate) : "";
+        const both = [firstRem, secondRem].filter(Boolean).join(" | ");
+
+        return (
+          <>
+            <p>
+              Our records indicate that your account with us under{" "}
+              <strong>REM PN NO. {data.remPn}</strong> has matured on{" "}
+              <strong>{formatFullDate(data.lastMonthlyDue)}</strong>. We hope
+              this was just an oversight on your part and that you will be able
+              to pay the same within three (3) days from receipt hereof. As of{" "}
+              <strong>{todayStr}</strong>, your current overdue balance is{" "}
+              <strong>{data.amountInWords}</strong> (
+              <strong>₱{formattedAmount}</strong>) exclusive of penalties and
+              past due interest.
+            </p>
+            <br />
+            {both ? (
+              <p>
+                Previous reminders: <strong>{both}</strong>
+              </p>
+            ) : null}
+            <br />
+            <p>
+              Please treat this matter with urgency. Thank you for your
+              attention.
+            </p>
+            <br />
+            <p>Very truly yours,</p>
+          </>
+        );
+      }
+
+    case "Final Notice":
+      return (
+        <>
+          <p>
+            This serves as your final notice prior to legal endorsement. Your
+            account under <strong>REM PN NO. {data.remPn}</strong> remains
+            unpaid with a total balance of <strong>{data.amountInWords}</strong>{" "}
+            (<strong>₱{formattedAmount}</strong>). Immediate payment is required
+            to prevent legal proceedings.
+          </p>
+
+          {/* If collaterals exist (non-empty), output them as numbered list */}
+          {data.collaterals &&
+            data.collaterals.filter(c => (c.title && c.title.trim()) || (c.description && c.description.trim())).length > 0 && (
+              <>
+                <br />
+                <p>The following collateral(s) are noted in our records:</p>
+                <ol style={{ marginLeft: "1.25rem", lineHeight: 1.6 }}>
+                  {data.collaterals
+                    .filter(c => (c.title && c.title.trim()) || (c.description && c.description.trim()))
+                    .map((c, i) => (
+                      <li key={i} style={{ marginBottom: 6 }}>
+                        <strong>{c.title && c.title.trim() ? c.title : `Collateral ${i + 1}`}</strong>
+                        {c.description && c.description.trim() ? ` — ${c.description}` : ""}
+                      </li>
+                    ))}
+                </ol>
+              </>
+            )}
+
+          <br />
+          <p>Very truly yours,</p>
+        </>
+      );
+
+    default:
+      return null;
+  }
+};
+
+// -------- LetterPreview --------
+const LetterPreview = React.forwardRef(({ data }, ref) => {
+  if (!data) return null;
+
+  const today = new Date();
+  const todayStr = formatFullDate(today);
+  const lastPaymentOn = data.paymentLastPaidOn
+    ? formatFullDate(data.paymentLastPaidOn)
+    : "";
+  const dateGranted = data.dateGranted ? formatFullDate(data.dateGranted) : "";
+  const originalMaturityDate = data.originalMaturityDate
+    ? formatFullDate(data.originalMaturityDate)
+    : "";
+
+  const formattedAmount = parseFloat(data.amountFigure || 0).toLocaleString(
+    "en-PH",
+    { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+  );
+  const formattedAmountOrig = parseFloat(
+    data.originalAmountLoan || 0
+  ).toLocaleString("en-PH", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  const letterBody = getLetterContent(
+    data.letterType,
+    data,
+    todayStr,
+    lastPaymentOn,
+    dateGranted,
+    originalMaturityDate,
+    formattedAmount,
+    formattedAmountOrig
+  );
+
+  return (
+    <div ref={ref} className="letter-a4" style={{ paddingTop: "40px" }}>
+      <div className="letter-header">
+        {data.letterType === "Legal Demand" ? (
+          <img
+            src={legalHeader}
+            alt="Tancinco Law Header"
+            style={{ width: "40%", height: "auto" }}
+          />
+        ) : (
+          <img src={logo} alt="YCFC Logo" style={{ width: 90, height: 90 }} />
+        )}
+      </div>
+
+      <div style={{ fontSize: 14, marginBottom: 10 }}>{todayStr}</div>
+      <br />
+
+      <div style={{ fontSize: 14, lineHeight: 1.5 }}>
+        Ms/Mr <strong>{data.firstName} {data.middleInitial}. {data.lastName}</strong>
+        <br />
+        <strong>{data.streetName}</strong> <strong>{data.barangayName}</strong>
+        <br />
+        <strong>{data.municipalityName}</strong>, <strong>{data.provinceName}</strong>
+        <br />
+        {data.zipcode}
+      </div>
+
+      <div
+        className="reminder-title"
+        style={{
+          textAlign: "center",
+          fontWeight: "bold",
+          textDecoration: "underline",
+          margin: "10px 0",
+        }}
+      >
+        {data.letterType.toUpperCase()}
+      </div>
+
+      <div className="letter-body" style={{ fontSize: 14 }}>
+        <br />
+        <p>
+          Dear Mr/Ms. <strong>{data.lastName}</strong>,
+        </p>
+        <br />
+        {data.letterType !== "Legal Demand" ?  <p><strong>Greetings!</strong></p> : ""}
+       
+        <br />
+        {letterBody}
+        <br />
+        <p style={{ fontWeight: "bold" }}>EARL LAURIECE S. BUTLAY</p>
+        <p>Branch Manager</p>
+      </div>
+
+      <div className="letter-footer">
+        <div>
+          N.B.: Total Outstanding balance as of <em>{data.lastMonthlyDue}</em>{" "}
+          in the amount of <strong>Php {formattedAmount}</strong> under PN# REM{" "}
+          <strong>{data.remPn}</strong> remains unpaid. Please disregard this
+          note if payment has been made. <em>Thank you!</em>
+        </div>
+        <div className="letter-note">
+          <div>YUSAY ARCADE, ARANETA STREET, BACOLOD CITY</div>
+          <div>(034) 435-2846 * 434-6797 * 707-0177</div>
+          <div>info@ycfc.com.ph | www.ycfc.com.ph</div>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+// -------- Main Component --------
+export default function DemandLetterPDFGenerator() {
+  const [formData, setFormData] = useState(null);
+  const previewRef = useRef();
+
+  const [form, setForm] = useState({
+    letterType: "1st Reminder",
+    firstName: "",
+    middleInitial: "",
+    lastName: "",
+    streetName: "",
+    barangayName: "",
+    municipalityName: "",
+    provinceName: "",
+    zipcode: "",
+    remPn: "",
+    lastMonthlyDue: "",
+    amountFigure: "",
+    paymentLastPaidOn: "",
+    dateGranted: "",
+    originalAmountLoan: "",
+    originalMaturityDate: "",
+    // added fields for final reminder & final notice dynamic data:
+    firstReminderDate: "",
+    secondReminderDate: "",
+    collaterals: [], // [{ title: "", description: "" }, ...]
+  });
+
+  const handleGenerate = (f) => {
+    const parsedAmount = parseFloat(f.amountFigure || 0);
+    const parsedOriginal = parseFloat(f.originalAmountLoan || 0);
+
+    const amountInWords = numberToWords(parsedAmount) + " Pesos Only";
+    const amountInWordsOriginal = numberToWords(parsedOriginal) + " Pesos Only";
+
+    // ensure we pass collaterals but filter out entirely empty rows
+    const filteredCollaterals = (f.collaterals || []).filter(
+      (c) => (c.title && c.title.trim()) || (c.description && c.description.trim())
+    );
+
+    if (f.letterType === "Legal Demand") {
+      setFormData({ ...f, amountInWords, amountInWordsOriginal, collaterals: filteredCollaterals });
+    } else {
+      setFormData({ ...f, amountInWords, collaterals: filteredCollaterals });
+    }
+  };
+
+  const exportToPdf = async () => {
+    const element = previewRef.current;
+    const canvas = await html2canvas(element, {
+      scale: 1.5,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+    });
+    const imgData = canvas.toDataURL("image/jpeg", 0.6);
+    const pdf = new jsPDF("p", "mm", [215.9, 330.2]);
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgHeight = (canvas.height * pageWidth) / canvas.width;
+
+    pdf.addImage(imgData, "JPEG", 0, 0, pageWidth, imgHeight);
+    pdf.setFontSize(9);
+    pdf.text(`Page 1 of 1`, pageWidth - 25, pageHeight - 10);
+
+    const today = new Date().toISOString().split("T")[0];
+    pdf.save(`${formData.letterType.replace(/\s+/g, "_")}_${formData.lastName}_${today}.pdf`);
+  };
+
+  return (
+    <div style={{ maxWidth: 1000, margin: "32px auto", paddingTop: "80px" }}>
+      {!formData ? (
+        <DemandLetterForm form={form} setForm={setForm} onGenerate={handleGenerate} />
+      ) : (
+        <>
+          <div style={{ marginBottom: 16 }}>
+            <button onClick={() => setFormData(null)} style={{ padding: "8px 14px", marginRight: 8 }}>
+              Edit Inputs
+            </button>
+            <button
+              onClick={exportToPdf}
+              style={{
+                background: "#0b3d2e",
+                color: "#fff",
+                border: "none",
+                padding: "8px 14px",
+              }}
+            >
+              Export PDF
+            </button>
+          </div>
+
+          <div style={{ border: "1px solid #ccc", display: "inline-block" }}>
+            <LetterPreview ref={previewRef} data={formData} />
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
