@@ -84,7 +84,11 @@ main {
   font-size: 14px;
   line-height: 1.6;
   text-align: justify;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
+  
 
 .line-section {
   border-top: 1px solid #000;

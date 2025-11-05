@@ -256,6 +256,8 @@ const getLetterContent = (
             Please treat this matter with urgency. Thank you for your attention.
           </p>
           <br />
+          <div className="page-break" style={{ pageBreakBefore: "always" }}></div>
+
           <p>Very truly yours,</p>
         </>
       );
@@ -362,27 +364,15 @@ const getLetterContent = (
         return (
           <>
             <p>
-              Our records indicate that your account with us under{" "}
-              <strong>REM PN NO. {data.remPn}</strong> has matured on{" "}
-              <strong>{formatFullDate(data.lastMonthlyDue)}</strong>. We hope
-              this was just an oversight on your part and that you will be able
-              to pay the same within three (3) days from receipt hereof. As of{" "}
-              <strong>{todayStr}</strong>, your current overdue balance is{" "}
-              <strong>{data.amountInWords}</strong> (
-              <strong>₱{formattedAmount}</strong>) exclusive of penalties and
-              past due interest.
+             Our records indicate that we have sent you two (2) previous reminders dated {firstRem} and {secondRem}, reminding you of your unpaid obligation, wherein as of this date amounted to {data.amountInWords} ({formattedAmount}).
             </p>
-            <br />
-            {both ? (
-              <p>
-                Previous reminders: <strong>{both}</strong>
-              </p>
-            ) : null}
             <br />
             <p>
-              Please treat this matter with urgency. Thank you for your
-              attention.
+              This is a final reminder for you to pay your account within seven (7) days from receipt hereto, to avoid referral to our legal counsel for the appropriate legal actions. 
             </p>
+            <br />
+            <p>Your preferential action regarding the matter would be most appreciated. Thank you very much.</p>
+            <br />
             <br />
             <p>Very truly yours,</p>
           </>
@@ -390,14 +380,11 @@ const getLetterContent = (
       }
 
     case "Final Notice":
+      console.log(data.remPn)
       return (
         <>
           <p>
-            This serves as your final notice prior to legal endorsement. Your
-            account under <strong>REM PN NO. {data.remPn}</strong> remains
-            unpaid with a total balance of <strong>{data.amountInWords}</strong>{" "}
-            (<strong>₱{formattedAmount}</strong>). Immediate payment is required
-            to prevent legal proceedings.
+            Please take notice that since the conditions of that certain Real Estate Mortgage executed by you, as Mortgagor, in favor of  Yusay Credit & Finance Corporation, Valencia City, as Mortgagee,  as  security  for  the  payment  of  REM  LOAN  had  been  violated since  {formatFullDate(data.lastMonthlyDue)} by your failure to make payment of the Principal and interests, the undersigned will cause the foreclosure of the property thereby mortgage, to wit:
           </p>
 
           {/* If collaterals exist (non-empty), output them as numbered list */}
@@ -405,22 +392,23 @@ const getLetterContent = (
             data.collaterals.filter(c => (c.title && c.title.trim()) || (c.description && c.description.trim())).length > 0 && (
               <>
                 <br />
-                <p>The following collateral(s) are noted in our records:</p>
-                <ol style={{ marginLeft: "1.25rem", lineHeight: 1.6 }}>
+               
+                <ol style={{ marginLeft: "1.25rem", lineHeight: 1.6, }}>
                   {data.collaterals
                     .filter(c => (c.title && c.title.trim()) || (c.description && c.description.trim()))
                     .map((c, i) => (
-                      <li key={i} style={{ marginBottom: 6 }}>
+                      <li key={i} style={{ marginBottom: 6, textAlign: "center" } }>
                         <strong>{c.title && c.title.trim() ? c.title : `Collateral ${i + 1}`}</strong>
-                        {c.description && c.description.trim() ? ` — ${c.description}` : ""}
+                        <br />
+                        {c.description && c.description.trim() ? <p>${c.description}</p> : ""}
                       </li>
                     ))}
                 </ol>
               </>
             )}
 
-          <br />
-          <p>Very truly yours,</p>
+          
+         
         </>
       );
 
@@ -506,17 +494,54 @@ const LetterPreview = React.forwardRef(({ data }, ref) => {
 
       <div className="letter-body" style={{ fontSize: 14 }}>
         <br />
+         {data.letterType === "Final Notice" ? <p><strong>PN# REM-{data.remPn}</strong></p> : ""}
+         <br />
         <p>
           Dear Mr/Ms. <strong>{data.lastName}</strong>,
         </p>
         <br />
-        {data.letterType !== "Legal Demand" ?  <p><strong>Greetings!</strong></p> : ""}
+        {(data.letterType === "Legal Demand" || data.letterType === "Final Notice") ?  "" : <p><strong>Greetings!</strong></p>}
        
         <br />
         {letterBody}
         <br />
-        <p style={{ fontWeight: "bold" }}>EARL LAURIECE S. BUTLAY</p>
+         {data.letterType === "Final Notice" ?  
+         <div>
+          <p>Then to be sold by the Sheriff of  Malaybalay City, Bukidnon, at Public Auction to the highest bidder, for cash, on the day and at the hour to be fixed by the Sheriff, and at such place that may be designated by him, the exact day, hour and place of the sale you shall be notified later by  the  Sheriff,  to  satisfy  our claim which as of {formatFullDate(data.lastMonthlyDue)} amounted to (₱{formattedAmount}) exclusive of interests, costs, Attorney`s fees and expenses of foreclosure and sale.</p>
+          <br />
+          <br />
+          <div className="w-full font-serif text-[12px] leading-tight">
+            {/* Right-aligned attorney info block */}
+  <div className="block text-right mb-8 leading-snug">
+    <div className="font-semibold">ATTY. CECILIO CHITO R. TANCINCO</div>
+    <div>Counsel for Petitioner</div>
+  </div>
+
+  {/* Left paragraph block */}
+  <div className="block text-left mb-8 whitespace-pre-line">
+    I <u>hereby certify</u> that{"\n"}
+    Copies hereof have been sent{"\n"}
+    <u>To the</u> addressee by Special{"\n"}
+    Delivery-Registered Mail at his/{"\n"}
+    Her Above address on _______________, 2025
+  </div>
+
+ 
+  
+  {/* Extra blank space at the bottom */}
+  <div className="h-8"></div>
+</div>
+
+
+         </div>
+          : <div>
+            <p style={{ fontWeight: "bold" }}>EARL LAURIECE S. BUTLAY</p>
         <p>Branch Manager</p>
+            
+            </div>}
+
+
+        
       </div>
 
       <div className="letter-footer">
@@ -582,27 +607,57 @@ export default function DemandLetterPDFGenerator() {
       setFormData({ ...f, amountInWords, collaterals: filteredCollaterals });
     }
   };
+const exportToPdf = async () => {
+  const element = previewRef.current;
+  const pdf = new jsPDF("p", "mm", [215.9, 330.2]); // Legal size (8.5" x 13")
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
 
-  const exportToPdf = async () => {
-    const element = previewRef.current;
-    const canvas = await html2canvas(element, {
-      scale: 1.5,
-      useCORS: true,
-      backgroundColor: "#ffffff",
-    });
-    const imgData = canvas.toDataURL("image/jpeg", 0.6);
-    const pdf = new jsPDF("p", "mm", [215.9, 330.2]);
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const imgHeight = (canvas.height * pageWidth) / canvas.width;
+  // Render the HTML letter to a high-resolution canvas
+  const canvas = await html2canvas(element, {
+    scale: 2.5,
+    useCORS: true,
+    backgroundColor: "#ffffff",
+    scrollY: -window.scrollY,
+    windowWidth: element.scrollWidth,
+    windowHeight: element.scrollHeight,
+  });
 
-    pdf.addImage(imgData, "JPEG", 0, 0, pageWidth, imgHeight);
-    pdf.setFontSize(9);
-    pdf.text(`Page 1 of 1`, pageWidth - 25, pageHeight - 10);
+  const imgData = canvas.toDataURL("image/jpeg", 1.0);
+  const imgWidth = pageWidth;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-    const today = new Date().toISOString().split("T")[0];
-    pdf.save(`${formData.letterType.replace(/\s+/g, "_")}_${formData.lastName}_${today}.pdf`);
-  };
+  let position = 0;
+  let heightLeft = imgHeight;
+
+  // Add first page
+  pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+  heightLeft -= pageHeight;
+
+  // Continue adding pages until all content fits
+  while (heightLeft > 0) {
+    position -= pageHeight;
+    pdf.addPage();
+    pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+  }
+
+  // Add page numbering (footer)
+  const totalPages = pdf.internal.getNumberOfPages();
+  pdf.setFontSize(9);
+  for (let i = 1; i <= totalPages; i++) {
+    pdf.setPage(i);
+    pdf.text(`Page ${i} of ${totalPages}`, pageWidth - 30, pageHeight - 10);
+  }
+
+  // Save the file
+  const today = new Date().toISOString().split("T")[0];
+  pdf.save(
+    `${formData.letterType.replace(/\s+/g, "_")}_${formData.lastName}_${today}.pdf`
+  );
+};
+
+
 
   return (
     <div style={{ maxWidth: 1000, margin: "32px auto", paddingTop: "80px" }}>
