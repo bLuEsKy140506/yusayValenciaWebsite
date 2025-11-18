@@ -4,6 +4,7 @@ export function numberToWords(num) {
     "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
     "sixteen", "seventeen", "eighteen", "nineteen"
   ];
+
   const b = [
     "", "", "twenty", "thirty", "forty", "fifty",
     "sixty", "seventy", "eighty", "ninety"
@@ -18,15 +19,29 @@ export function numberToWords(num) {
       return (
         a[Math.floor(n / 100)] + " hundred" + (n % 100 ? " " + inWords(n % 100) : "")
       );
-    if (n < 1000000)
+    if (n < 1_000_000)
       return (
         inWords(Math.floor(n / 1000)) +
         " thousand" +
         (n % 1000 ? " " + inWords(n % 1000) : "")
       );
-    return n.toString();
+    if (n < 1_000_000_000)
+      return (
+        inWords(Math.floor(n / 1_000_000)) +
+        " million" +
+        (n % 1_000_000 ? " " + inWords(n % 1_000_000) : "")
+      );
+    if (n < 10_000_000_000)
+      return (
+        inWords(Math.floor(n / 1_000_000_000)) +
+        " billion" +
+        (n % 1_000_000_000 ? " " + inWords(n % 1_000_000_000) : "")
+      );
+
+    return n.toString(); // fallback for >10 digits
   };
 
+  // Split peso and centavo parts
   const [pesoPart, centavoPart] = num.toFixed(2).split(".");
   const pesoNum = parseInt(pesoPart, 10);
   const centNum = parseInt(centavoPart, 10);

@@ -237,7 +237,9 @@ const getLetterContent = (
   formattedAmountOrig
 ) => {
   switch (type) {
+    
     case "1st Reminder":
+      console.log(data.amountInWords);
       return (
         <>
           <p>
@@ -364,7 +366,7 @@ const getLetterContent = (
         return (
           <>
             <p>
-             Our records indicate that we have sent you two (2) previous reminders dated {firstRem} and {secondRem}, reminding you of your unpaid obligation, wherein as of this date amounted to {data.amountInWords} ({formattedAmount}).
+             Our records indicate that we have sent you two (2) previous reminders dated <strong>{firstRem}</strong> and <strong>{secondRem}</strong>, reminding you of your unpaid obligation, wherein as of this date amounted to <strong>{data.amountInWords} (₱{formattedAmount})</strong>.
             </p>
             <br />
             <p>
