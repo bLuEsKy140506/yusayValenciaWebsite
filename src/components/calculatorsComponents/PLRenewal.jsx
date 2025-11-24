@@ -72,7 +72,7 @@ export default function PLRenewalCalculator() {
             value={monthly}
             onChange={(e) => handleNumericInput(e, setMonthly)}
             placeholder="Enter monthly amortization"
-            className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
+            className="w-[250px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
             min="1"
           />
         </div>
@@ -84,7 +84,7 @@ export default function PLRenewalCalculator() {
            <select
             value={months}
             onChange={(e) => setMonths(e.target.value)}
-            className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
+            className="w-[250px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
           >
             <option value="">Select months</option>
             {[...Array(27).keys()].map((num) => (
@@ -98,7 +98,7 @@ export default function PLRenewalCalculator() {
             value={months}
             onChange={(e) => setMonths(e.target.value)}
             placeholder="Enter 4 - 30 months"
-            className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
+            className="w-[250px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
             min="4"
             max="36"
           /> */}

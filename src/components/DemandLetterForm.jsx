@@ -4,6 +4,114 @@ import jsPDF from "jspdf";
 import logo from "../assets/logo2.png";
 import legalHeader from "../assets/legalHeader.png";
 import { numberToWords } from "../utils/numberToWords";
+import { supabase } from "../supabaseClient";
+
+// ---- Local Storage Helpers ----
+const saveToLocalStorage = (pn, data) => {
+  if (!pn) return;
+
+  const filtered = {};
+  allowedFields.forEach((key) => {
+    if (data[key] !== undefined) filtered[key] = data[key];
+  });
+
+  localStorage.setItem(`demand_letter_${pn}`, JSON.stringify(filtered));
+};
+
+
+const loadFromLocalStorage = (pn) => {
+  if (!pn) return null;
+
+  const saved = localStorage.getItem(`demand_letter_${pn}`);
+  if (!saved) return null;
+
+  const parsed = JSON.parse(saved);
+
+  // ensure we return only allowed fields
+  const filtered = {};
+  allowedFields.forEach((key) => {
+    if (parsed[key] !== undefined) filtered[key] = parsed[key];
+  });
+
+  return filtered;
+};
+
+
+const allowedFields = [
+  
+  "letterType",
+  "remPn",
+    "firstName",
+    "middleInitial",
+    "lastName",
+    "streetName",
+    "barangayName",
+    "municipalityName",
+    "provinceName",
+    "zipcode",
+    "lastMonthlyDue",
+    "amountFigure",
+    "paymentLastPaidOn",
+    "dateGranted",
+    "originalAmountLoan",
+    "originalMaturityDate",
+    // added fields for final reminder & final notice dynamic data:
+    "firstReminderDate",
+    "secondReminderDate",
+    // [{ title: "", description: "" }, ...]
+  // add more only if they are user inputs
+];
+
+
+
+const saveToDatabase = async (formData) => {
+  
+  const payload = {
+    letter_type: formData.letterType,
+    first_name: formData.firstName,
+    middle_initial: formData.middleInitial,
+    last_name: formData.lastName,
+    rem_pn: formData.remPn,
+    street_name: formData.streetName,
+    barangay_name: formData.barangayName,
+    municipality_name: formData.municipalityName,
+    province_name: formData.provinceName,
+    zipcode: formData.zipcode,
+
+    amount: formData.amountFigure ?? null,
+    amount_in_words: formData.amountInWords ?? null,
+
+    last_monthly_due: formData.lastMonthlyDue || null,
+    last_payment_on: formData.lastPaymentOn || null,
+    date_granted: formData.dateGranted || null,
+    maturity_date: formData.maturityDate || null,
+
+    original_amount: formData.originalAmountLoan || null,
+    original_amount_words: formData.amountInWordsOriginal || null,
+
+    first_notice: formData.firstNoticeDate || null,
+    second_notice: formData.secondNoticeDate || null,
+
+    title_name_1: formData.collaterals[0].title || null,
+    // title_name_2: formData.collaterals[1].title || null,
+    // title_name_3: formData.collaterals[2].title || null,
+
+    title_description_1: formData.collaterals[0].description || null,
+    // title_description_2: formData.collaterals[1].description || null,
+    // title_description_3: formData.collaterals[2].description || null,
+  };
+
+  const { error } = await supabase
+    .from("demand_letters")
+    .insert(payload);
+
+  if (error) {
+    console.error("Supabase Insert Error:", error);
+  }
+};
+
+
+
 
 const formatFullDate = (date) => {
   if (!date) return "";
@@ -18,10 +126,29 @@ const formatFullDate = (date) => {
 
 // -------- DemandLetterForm --------
 const DemandLetterForm = ({ form, setForm, onGenerate }) => {
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+
+  // Auto-load when REM PN changes
+const handlePnChangeLoad = (pn) => {
+  const existing = loadFromLocalStorage(pn);
+  if (existing) {
+    setForm((prev) => ({
+      ...prev,
+      ...existing,   // overwrite with saved data
+    }));
+  }
+};
+
+
+const handleChange = (e) => {
+  const { name, value } = e.target;
+
+  if (name === "remPn") {
+    handlePnChangeLoad(value); // ⬅ NEW
+  }
+
+  setForm((prev) => ({ ...prev, [name]: value }));
+};
+
 
   // --- Dynamic collateral (Final Notice) ---
   const handleCollateralChange = (index, field, value) => {
@@ -382,7 +509,6 @@ const getLetterContent = (
       }
 
     case "Final Notice":
-      console.log(data.remPn)
       return (
         <>
           <p>
@@ -570,6 +696,7 @@ export default function DemandLetterPDFGenerator() {
 
   const [form, setForm] = useState({
     letterType: "1st Reminder",
+    remPn: "",
     firstName: "",
     middleInitial: "",
     lastName: "",
@@ -578,7 +705,6 @@ export default function DemandLetterPDFGenerator() {
     municipalityName: "",
     provinceName: "",
     zipcode: "",
-    remPn: "",
     lastMonthlyDue: "",
     amountFigure: "",
     paymentLastPaidOn: "",
@@ -591,24 +717,43 @@ export default function DemandLetterPDFGenerator() {
     collaterals: [], // [{ title: "", description: "" }, ...]
   });
 
-  const handleGenerate = (f) => {
-    const parsedAmount = parseFloat(f.amountFigure || 0);
-    const parsedOriginal = parseFloat(f.originalAmountLoan || 0);
+ const handleGenerate = (f) => {
+  const parsedAmount = parseFloat(f.amountFigure || 0);
+  const parsedOriginal = parseFloat(f.originalAmountLoan || 0);
 
-    const amountInWords = numberToWords(parsedAmount) + " Pesos Only";
-    const amountInWordsOriginal = numberToWords(parsedOriginal) + " Pesos Only";
+  const amountInWords = numberToWords(parsedAmount) + " Pesos Only";
+  const amountInWordsOriginal =
+    numberToWords(parsedOriginal) + " Pesos Only";
 
-    // ensure we pass collaterals but filter out entirely empty rows
-    const filteredCollaterals = (f.collaterals || []).filter(
-      (c) => (c.title && c.title.trim()) || (c.description && c.description.trim())
-    );
+  const filteredCollaterals = (f.collaterals || []).filter(
+    (c) =>
+      (c.title && c.title.trim()) ||
+      (c.description && c.description.trim())
+  );
 
-    if (f.letterType === "Legal Demand") {
-      setFormData({ ...f, amountInWords, amountInWordsOriginal, collaterals: filteredCollaterals });
-    } else {
-      setFormData({ ...f, amountInWords, collaterals: filteredCollaterals });
-    }
-  };
+  const finalData =
+    f.letterType === "Legal Demand"
+      ? {
+          ...f,
+          amountInWords,
+          amountInWordsOriginal,
+          collaterals: filteredCollaterals,
+        }
+      : {
+          ...f,
+          amountInWords,
+          collaterals: filteredCollaterals,
+        };
+
+  setFormData(finalData);
+
+// Save to Supabase
+saveToDatabase(finalData);
+
+// Save to LocalStorage
+saveToLocalStorage(finalData.remPn, finalData);
+};
+
 const exportToPdf = async () => {
   const element = previewRef.current;
   const pdf = new jsPDF("p", "mm", [215.9, 330.2]); // Legal size (8.5" x 13")

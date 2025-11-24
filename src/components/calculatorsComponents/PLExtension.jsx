@@ -85,7 +85,7 @@ export default function PLExtensionCalculator() {
             value={monthly}
             onChange={handleMonthlyChange}
             placeholder="Enter monthly amortization"
-            className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
+            className="w-[250px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
           />
         </div>
 
@@ -97,7 +97,7 @@ export default function PLExtensionCalculator() {
           <select
             value={remaining}
             onChange={(e) => setRemaining(e.target.value)}
-            className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
+            className="w-[250px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
           >
             <option value="">Select months</option>
             {[...Array(29).keys()].map((num) => (
@@ -116,7 +116,7 @@ export default function PLExtensionCalculator() {
           <select
             value={extended}
             onChange={(e) => setExtended(e.target.value)}
-            className="w-[300px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
+            className="w-[250px] px-4 py-2 border rounded-lg focus:ring focus:ring-green-200"
           >
             <option value="">Select months</option>
             {[...Array(29).keys()].map((num) => (
