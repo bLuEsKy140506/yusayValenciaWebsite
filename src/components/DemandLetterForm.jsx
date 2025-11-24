@@ -92,13 +92,14 @@ const saveToDatabase = async (formData) => {
     first_notice: formData.firstNoticeDate || null,
     second_notice: formData.secondNoticeDate || null,
 
-    title_name_1: formData.collaterals[0].title || null,
-    // title_name_2: formData.collaterals[1].title || null,
-    // title_name_3: formData.collaterals[2].title || null,
+title_name_1: formData.collaterals?.[0]?.title || "N/A",
+title_name_2: formData.collaterals?.[1]?.title || "N/A",
+title_name_3: formData.collaterals?.[2]?.title || "N/A",
 
-    title_description_1: formData.collaterals[0].description || null,
-    // title_description_2: formData.collaterals[1].description || null,
-    // title_description_3: formData.collaterals[2].description || null,
+title_description_1: formData.collaterals?.[0]?.description || "N/A",
+title_description_2: formData.collaterals?.[1]?.description || "N/A",
+title_description_3: formData.collaterals?.[2]?.description || "N/A",
+
   };
 
   const { error } = await supabase
