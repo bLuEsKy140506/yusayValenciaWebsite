@@ -157,7 +157,7 @@ const AppointmentPage = () => {
             Important Notes:
           </h2>
           <ul className="list-disc pl-6 text-gray-700 space-y-1">
-            <li>Pensioners must be 74 years old and below.</li>
+            <li>Pensioners must be 75 years old and below.</li>
             <li>
               Applicants should preferably be permanent residents within
               Bukidnon.
