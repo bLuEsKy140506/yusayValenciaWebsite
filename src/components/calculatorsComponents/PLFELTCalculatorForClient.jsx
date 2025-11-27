@@ -37,7 +37,7 @@ export default function PLFELTCalculatorForClient() {
     const rfpl = (gross / 1000) * 2.5 * monthsVal;
     const atmCharges = monthsVal * 15;
     const itFee = gross <= 100000 ? 50 : 0.0005 * gross;
-    const notarial = 100;
+    const notarial = 200;
 
     // Referral Fee (optional)
     let referralFee = 0;
