@@ -119,3 +119,10 @@ main {
   font-size: 10px;
   color: #0b3d2e;
 }
+
+@supports not (color: oklch(60% 0.2 120)) {
+  .bg-green-600 { background-color: #16a34a !important; }
+  .bg-green-700 { background-color: #15803d !important; }
+  .text-green-700 { color: #15803d !important; }
+  .bg-yellow-500 { background-color: #eab308 !important; }
+}

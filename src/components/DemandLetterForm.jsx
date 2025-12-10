@@ -345,7 +345,7 @@ const handleChange = (e) => {
 
       <button
         type="submit"
-        className="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg w-full mt-4"
+        className="bg-green-700 border-2 border-solid border-green-500 hover:bg-green-800 text-gray-100 px-4 py-2 rounded-lg w-full mt-4"
       >
         Generate Letter
       </button>
@@ -722,7 +722,7 @@ export default function DemandLetterPDFGenerator() {
   const parsedAmount = parseFloat(f.amountFigure || 0);
   const parsedOriginal = parseFloat(f.originalAmountLoan || 0);
 
-  const amountInWords = numberToWords(parsedAmount) + " Pesos Only";
+  const amountInWords = numberToWords(parsedAmount) + " Pesos ";
   const amountInWordsOriginal =
     numberToWords(parsedOriginal) + " Pesos Only";
 
