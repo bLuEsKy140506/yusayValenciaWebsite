@@ -37,7 +37,7 @@ const getMonthlyInterestRate = (months) => {
 
 const REMCalculatorNew = () => {
   const [gross, setGross] = useState("");
-  const [months, setMonths] = useState("");
+  const [months, setMonths] = useState(36);
   const [includeFireInsurance, setIncludeFireInsurance] = useState(false);
   const [result, setResult] = useState(null);
 
@@ -189,7 +189,9 @@ const REMCalculatorNew = () => {
                 </React.Fragment>
               ))}
               <span className="font-semibold">Total Deductions</span>
-              <span className="font-semibold">₱{formatNumber(result.totalDeductions)}</span>
+              <span className="font-semibold">
+                ₱{formatNumber(result.totalDeductions)}
+              </span>
               <span className="font-semibold">Net Proceeds</span>
               <span className="font-semibold text-green-700">
                 ₱{formatNumber(result.netProceeds)}
@@ -219,11 +221,21 @@ const REMCalculatorNew = () => {
                 {result.schedule.map((row) => (
                   <tr key={row.month} className="text-center">
                     <td className="px-4 py-2 border">{row.month}</td>
-                    <td className="px-4 py-2 border">₱{formatNumber(row.amortization)}</td>
-                    <td className="px-4 py-2 border">₱{formatNumber(row.interest)}</td>
-                    <td className="px-4 py-2 border">₱{formatNumber(row.principal)}</td>
-                    <td className="px-4 py-2 border">₱{formatNumber(row.insurance)}</td>
-                    <td className="px-4 py-2 border">₱{formatNumber(row.balance)}</td>
+                    <td className="px-4 py-2 border">
+                      ₱{formatNumber(row.amortization)}
+                    </td>
+                    <td className="px-4 py-2 border">
+                      ₱{formatNumber(row.interest)}
+                    </td>
+                    <td className="px-4 py-2 border">
+                      ₱{formatNumber(row.principal)}
+                    </td>
+                    <td className="px-4 py-2 border">
+                      ₱{formatNumber(row.insurance)}
+                    </td>
+                    <td className="px-4 py-2 border">
+                      ₱{formatNumber(row.balance)}
+                    </td>
                     <td className="px-4 py-2 border">
                       ₱{formatNumber(row.preterminationFee)}
                     </td>

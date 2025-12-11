@@ -6,14 +6,14 @@ import { useLocation } from "react-router-dom";
 import PLFELTCalculatorForClient from "../components/calculatorsComponents/PLFELTCalculatorForClient";
 import PLNewCalculatorForClient from "../components/calculatorsComponents/PLNewForClient";
 import REMCalculatorNewForClient from "../components/calculatorsComponents/REMCalculatorNewForClient";
-import REMCalculatorOldForNewClient from "../components/calculatorsComponents/REMCalculatorOldForClient";
+// import REMCalculatorOldForNewClient from "../components/calculatorsComponents/REMCalculatorOldForClient";
 
 const LoanCalculator = () => {
   const location = useLocation();
 
   // Default Tabs
   const [activeTab, setActiveTab] = useState("REM"); // Main: REM or PL
-  const [remTab, setRemTab] = useState("new"); // REM sub-tabs
+  // const [remTab, setRemTab] = useState("new"); // REM sub-tabs
   const [plTab, setPlTab] = useState("new"); // PL sub-tabs
   const [showNote, setShowNote] = useState(false);
 
@@ -21,7 +21,7 @@ const LoanCalculator = () => {
   useEffect(() => {
     if (location.state) {
       if (location.state.activeTab) setActiveTab(location.state.activeTab);
-      if (location.state.remTab) setRemTab(location.state.remTab);
+      // if (location.state.remTab) setRemTab(location.state.remTab);
       if (location.state.plTab) setPlTab(location.state.plTab);
     }
   }, [location.state]);
@@ -60,50 +60,47 @@ const LoanCalculator = () => {
 
       {/* Content Box */}
       <div className="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-8">
-      {activeTab === "REM" ? (
-  <>
-    {/* REM Tabs */}
-    
-  <REMCalculatorNewForClient />
-  </>
-) : (
-  <>
-    {/* PL Tabs */}
-    <div className="mb-6">
-      {/* New Clients */}
-      <h3 className="text-lg font-semibold text-green-700 mb-3">
-        🟢 New Clients
-      </h3>
-      <div className="flex flex-wrap gap-3 mb-6">
-        {[
-          { key: "new", label: "New" },
-          { key: "felt", label: "FELT" },
-        ].map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setPlTab(tab.key)}
-            className={`px-5 py-2 rounded-lg font-medium transition-all ${
-              plTab === tab.key
-                ? "bg-green-600 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+        {activeTab === "REM" ? (
+          <>
+            {/* REM Tabs */}
 
-      {/* Existing Clients */}
-     
-    </div>
+            <REMCalculatorNewForClient />
+          </>
+        ) : (
+          <>
+            {/* PL Tabs */}
+            <div className="mb-6">
+              {/* New Clients */}
+              <h3 className="text-lg font-semibold text-green-700 mb-3">
+                🟢 New Clients
+              </h3>
+              <div className="flex flex-wrap gap-3 mb-6">
+                {[
+                  { key: "new", label: "New" },
+                  { key: "felt", label: "FELT" },
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setPlTab(tab.key)}
+                    className={`px-5 py-2 rounded-lg font-medium transition-all ${
+                      plTab === tab.key
+                        ? "bg-green-600 text-white"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
 
-    {/* PL Calculator */}
-    {plTab === "new" && <PLNewCalculatorForClient />}
-    {plTab === "felt" && <PLFELTCalculatorForClient />}
-    
-  </>
-)}
+              {/* Existing Clients */}
+            </div>
 
+            {/* PL Calculator */}
+            {plTab === "new" && <PLNewCalculatorForClient />}
+            {plTab === "felt" && <PLFELTCalculatorForClient />}
+          </>
+        )}
       </div>
 
       {/* Note Button */}
@@ -123,8 +120,7 @@ const LoanCalculator = () => {
                 This calculator is for <b>illustration purposes only</b>
               </li>
               <li>
-                Final approval  will depend on{" "}
-                <b>branch evaluation</b>.
+                Final approval will depend on <b>branch evaluation</b>.
               </li>
               <li>
                 For clarifications, please contact our{" "}
