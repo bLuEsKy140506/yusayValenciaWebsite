@@ -23,6 +23,18 @@ const fireInsuranceTable = [
   { max: 10000000, premium: 15270.0 },
 ];
 
+// Interest table based on term
+const getMonthlyInterestRate = (months) => {
+  if (months >= 4 && months <= 6) return 0.015;
+  if (months === 7) return 0.0136;
+  if (months === 8) return 0.0125;
+  if (months === 9) return 0.0117;
+  if (months === 10) return 0.011;
+  if (months === 11) return 0.0105;
+  if (months >= 12 && months <= 60) return 0.01;
+  return 0;
+};
+
 const REMCalculatorNewForClient = () => {
   const [gross, setGross] = useState("");
   const [months, setMonths] = useState("");
@@ -47,22 +59,23 @@ const REMCalculatorNewForClient = () => {
     const grossAmount = parseFloat(gross);
     const term = parseInt(months);
 
-    if (!grossAmount || ![37, 48, 60].includes(term)) {
+    if (!grossAmount || term < 4 || term > 60) {
       setResult(null);
       return;
     }
 
-    // Deductions
-    const deduction12Percent = grossAmount * 0.12;
+    // Interest rate per month
+    const monthlyInterestRate = getMonthlyInterestRate(term);
+
+    // Deductions (NO advance 12% now)
     const ciFee = 1500;
     const rodFee = grossAmount * 0.03;
     const processingFee = grossAmount * 0.0075;
-    const itFee = grossAmount <= 100000 ? 50 : 0.0005 * grossAmount;
+    const itFee = grossAmount * 0.0007 <= 50 ? 50 : grossAmount * 0.0007;
     const pnNotary = 100;
     const fireInsurance = getFireInsurance(grossAmount);
 
     const totalDeductions =
-      deduction12Percent +
       ciFee +
       rodFee +
       processingFee +
@@ -72,54 +85,50 @@ const REMCalculatorNewForClient = () => {
 
     const netProceeds = grossAmount - totalDeductions;
 
-    // Monthly Payment
-    const baseAmort = grossAmount / term;
-    const interestAmort = (grossAmount * ((term - 12) / term)) * 0.01;
-    const fireMultiplier = term === 37 ? 3 : term === 48 ? 3 : 4;
-    const fireAmort = includeFireInsurance
-      ? (fireInsurance * fireMultiplier) / term
-      : 0;
+    // Monthly amortization
+    const basePrincipal = grossAmount / term;
+    const monthlyInterest = grossAmount * monthlyInterestRate;
+    const fireAmort = includeFireInsurance ? fireInsurance / term : 0;
 
-    const monthlyPayment = baseAmort + interestAmort + fireAmort;
+    const monthlyPayment = basePrincipal + monthlyInterest + fireAmort;
 
-    // Amortization Schedule
+    // Amortization schedule
     let balance = grossAmount;
-    const sched = [];
+    const schedule = [];
+
     for (let i = 1; i <= term; i++) {
-      const interest = interestAmort; // simplified 1%/month model
+      const interest = grossAmount * monthlyInterestRate;
       const principal = monthlyPayment - interest - fireAmort;
       balance -= principal;
       if (balance < 0) balance = 0;
 
-      sched.push({
+      schedule.push({
         month: i,
         amortization: monthlyPayment,
         interest,
         principal,
         insurance: fireAmort,
         balance,
-        preterminationFee: balance * 0.03, // ✅ 3% of balance
+        preterminationFee: balance * 0.03,
       });
     }
 
     setResult({
       breakdown: {
-        "12% Deduction": deduction12Percent,
         "CI Fee": ciFee,
         "ROD Registration (3%)": rodFee,
         "Processing Fee (0.75%)": processingFee,
-        "IT Fee (₱50/100k)": itFee,
+        "IT Fee": itFee,
         "PN Notary": pnNotary,
         ...(includeFireInsurance && { "Fire Insurance": fireInsurance }),
       },
       totalDeductions,
       netProceeds,
       monthlyPayment,
-      schedule: sched,
+      schedule,
     });
   };
 
-  // Auto-recompute when inputs change
   useEffect(() => {
     calculate();
   }, [gross, months, includeFireInsurance]);
@@ -137,19 +146,7 @@ const REMCalculatorNewForClient = () => {
           value={gross}
           onChange={(e) => {
             const val = e.target.value;
-            if (/^\d*$/.test(val)) setGross(val); // allow only digits
-          }}
-          onKeyDown={(e) => {
-            if (
-              !/[0-9]/.test(e.key) &&
-              e.key !== "Backspace" &&
-              e.key !== "Delete" &&
-              e.key !== "ArrowLeft" &&
-              e.key !== "ArrowRight" &&
-              e.key !== "Tab"
-            ) {
-              e.preventDefault();
-            }
+            if (/^\d*$/.test(val)) setGross(val);
           }}
           className="w-[200px] border rounded-lg px-4 py-2"
         />
@@ -160,9 +157,11 @@ const REMCalculatorNewForClient = () => {
           className="w-[200px] border rounded-lg px-4 py-2"
         >
           <option value="">Select Term (Months)</option>
-          <option value="37">37 months (3 years)</option>
-          <option value="48">48 months (4 years)</option>
-          <option value="60">60 months (5 years)</option>
+          {[...Array(57)].map((_, i) => (
+            <option key={i + 4} value={i + 4}>
+              {i + 4} months
+            </option>
+          ))}
         </select>
 
         <label className="flex items-center space-x-2">
@@ -179,32 +178,43 @@ const REMCalculatorNewForClient = () => {
         <div className="mt-6 space-y-4 w-full max-w-2xl">
           {/* Deduction Breakdown */}
           <div className="bg-gray-50 p-4 rounded-lg shadow-inner">
-            
-            {/* ✅ Responsive Grid */}
+            {/* <h3 className="text-lg font-semibold text-gray-800 mb-2">
+              Deduction Breakdown:
+            </h3> */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-gray-700">
-              
-              <span className="font-semibold">Total Deductions</span>
-              <span className="font-semibold">₱{formatNumber(result.totalDeductions)}</span>
+              {Object.entries(result.breakdown).map(([label, value]) => (
+                <React.Fragment key={label}>
+                  <span className="font-medium">{label}</span>
+                  <span>₱{formatNumber(value)}</span>
+                </React.Fragment>
+              ))}
+              {/* <span className="font-semibold">Total Deductions</span>
+              <span className="font-semibold">₱{formatNumber(result.totalDeductions)}</span> */}
               <span className="font-semibold">Net Proceeds</span>
-              <span className="font-semibold text-green-700">₱{formatNumber(result.netProceeds)}</span>
+              <span className="font-semibold text-green-700">
+                ₱{formatNumber(result.netProceeds)}
+              </span>
               <span className="font-semibold">Monthly Payment</span>
-              <span className="font-semibold text-blue-700">₱{formatNumber(result.monthlyPayment)}</span>
+              <span className="font-semibold text-blue-700">
+                ₱{formatNumber(result.monthlyPayment)}
+              </span>
             </div>
           </div>
-            
 
           {/* Amortization Table */}
-      
-        </div>
-        
-      )}
-      <div className="bg-white p-6 rounded-xl shadow-2xl w-80 z-30 border border-green-200 animate-fadeIn mt-8">
+          <div className="fixed top-1/4 left-6 sm:left-12 md:left-20 bg-white p-6 rounded-xl shadow-2xl w-80 z-30 border border-green-200 animate-fadeIn">
       {/* Header */}
       <div className="flex justify-between items-center mb-3">
         <h2 className="text-lg font-semibold text-green-800">
           REM Loan Requirements
         </h2>
-       
+        <button
+          onClick={onClose}
+          className="text-gray-500 hover:text-red-500 transition"
+          aria-label="Close"
+        >
+          <X size={20} />
+        </button>
       </div>
 
       {/* Content */}
@@ -221,10 +231,9 @@ const REMCalculatorNewForClient = () => {
         <li>CAR (Certificate Authorizing Registration)</li>
       </ul>
     </div>
-      
+        </div>
+      )}
     </div>
-    
-    
   );
 };
 

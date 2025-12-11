@@ -68,31 +68,9 @@ const LoanCalculator = () => {
       {activeTab === "REM" ? (
   <>
     {/* REM Tabs */}
-    <div className="flex space-x-4 mb-6">
-      <button
-        onClick={() => setRemTab("new")}
-        className={`px-5 py-2 rounded-lg font-medium transition-all ${
-          remTab === "new"
-            ? "bg-green-600 text-white"
-            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-        }`}
-      >
-        New Scheme
-      </button>
-      <button
-        onClick={() => setRemTab("old")}
-        className={`px-5 py-2 rounded-lg font-medium transition-all ${
-          remTab === "old"
-            ? "bg-green-600 text-white"
-            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-        }`}
-      >
-        Old Scheme
-      </button>
-    </div>
-
+    
     {/* REM Calculator */}
-    {remTab === "new" ? <REMCalculatorNew /> : <REMCalculatorOld />}
+    <REMCalculatorNew />
   </>
 ) : (
   <>
