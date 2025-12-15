@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 export default function PLRenewalCalculator() {
   const [monthly, setMonthly] = useState("");
-  const [months, setMonths] = useState("");
+  const [months, setMonths] = useState(18);
   const [result, setResult] = useState(null);
 
     const handleNumericInput = (e, setter) => {

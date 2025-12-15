@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 export default function PL13thMonthCalculator() {
   const [gross, setGross] = useState("");
-  const [months, setMonths] = useState("");
+  const [months, setMonths] = useState(6);
   const [result, setResult] = useState(null);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function PL13thMonthCalculator() {
     const interestRate = interestRates[monthsVal];
     const interest = grossVal * interestRate;
     const cf = (grossVal / 1000) * 2.5 * monthsVal;
-    const notarial = 100;
+    const notarial = 200;
     const itFee = 50;
     const atm = 15; // fixed ATM charge
 

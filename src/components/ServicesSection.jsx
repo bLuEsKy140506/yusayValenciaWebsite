@@ -35,7 +35,7 @@ const ServicesSection = ({ id }) => {
         "We provide loans for SSS and GSIS pensioners — including retirees, survivorship, ITF, and disability pensions. Enjoy a low interest of only 1% per month. With our Extension Program, you can borrow proportionate to the months you’ve paid without overlapping payments — giving pensioners access to funds while rebuilding their capital.",
       realEstateTitle: "Real Estate Mortgage Loan",
       realEstateDesc:
-        "Get financing with your land title as collateral. We offer low interest rates with flexible repayment terms of up to 5 years. Our hybrid of advance and add-on interest keeps payments affordable and manageable — ensuring financial stability and growth.",
+        "Avail of our low-interest loans with flexible terms of up to 5 years. Our add-on interest structure ensures affordable monthly payments, supporting your goals with peace of mind.",
       calcBtn: "Calculate",
     },
     tl: {

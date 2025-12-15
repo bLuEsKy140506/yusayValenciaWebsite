@@ -3,7 +3,7 @@ import PensionBookmark from "../bookmarks/PensionBookmark";
 
 export default function PLFELTCalculatorForClient() {
   const [monthly, setMonthly] = useState("");
-  const [months, setMonths] = useState("");
+  const [months, setMonths] = useState(36);
   const [withReferral, setWithReferral] = useState(true);
   const [result, setResult] = useState(null);
 
