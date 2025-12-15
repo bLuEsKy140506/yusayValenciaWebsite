@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function PLNewCalculator() {
   const [monthly, setMonthly] = useState("");
@@ -64,8 +64,70 @@ export default function PLNewCalculator() {
     });
   }, [monthly, months, withReferral]);
 
+   const printRef = useRef();
+
+  const handlePrint = () => {
+  const printContent = printRef.current.innerHTML;
+  const originalContent = document.body.innerHTML;
+
+  document.body.innerHTML = `
+    <html>
+      <head>
+        <title>REM Loan Computation</title>
+        <style>
+          @page {
+            size: A4;
+            margin: 12mm;
+          }
+
+          body {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            color: #000;
+          }
+
+          h2, h3 {
+            margin: 6px 0;
+          }
+
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9px;
+          }
+
+          th, td {
+            border: 1px solid #000;
+            padding: 3px;
+            text-align: center;
+          }
+
+          .no-print {
+            display: none;
+          }
+
+          .section {
+            margin-bottom: 8px;
+          }
+
+          .avoid-break {
+            page-break-inside: avoid;
+          }
+        </style>
+      </head>
+      <body>
+        ${printContent}
+      </body>
+    </html>
+  `;
+
+  window.print();
+  document.body.innerHTML = originalContent;
+  window.location.reload();
+};
+
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white shadow-lg rounded-xl flex flex-col items-center space-y-4 min-h-[300px] transition-all">
+    <div  className="max-w-xl mx-auto p-6 bg-white shadow-lg rounded-xl flex flex-col items-center space-y-4 min-h-[300px] transition-all">
       <h2 className="text-2xl font-bold text-gray-800 text-center">
         PLNew Loan Calculator
       </h2>
@@ -125,8 +187,8 @@ export default function PLNewCalculator() {
 
       {/* Results Section */}
       {result && (
-        <div className="mt-6 p-4 bg-gray-50 border rounded-lg space-y-3">
-          <h3 className="text-xl font-semibold text-gray-800">Results</h3>
+        <div ref={printRef} className="mt-6 p-4 bg-gray-50 border rounded-lg space-y-3">
+          <h3 className="text-xl font-semibold text-gray-800">Results @ {monthly.toLocaleString()} - {months} mos. term</h3>
 
           {/* Gross */}
           <div className="grid grid-cols-2">
@@ -193,8 +255,39 @@ export default function PLNewCalculator() {
               ₱{result.netProceeds.toLocaleString()}
             </span>
           </div>
+           <div className="bg-white p-6 rounded-xl shadow-2xl w-full z-30 border border-green-200 animate-fadeIn">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-3">
+        <h2 className="text-lg font-semibold text-green-800">
+          Pension Loan Requirements
+        </h2>
+       
+      </div>
+
+      {/* Content */}
+      <ul className="text-sm text-gray-700 list-disc pl-4 space-y-1">
+        <li>SSS/GSIS ID Number</li>
+        <li>DDR Print / SSS Certification</li>
+        <li>Voucher / Retirement Notice from SSS/GSIS</li>
+        <li>Bank Statement of ATM</li>
+        <li>ATM Card and Photocopy</li>
+        <li>2 Valid IDs</li>
+        <li>One (1) 2x2 ID Picture</li>
+        <li>Marriage Contract (Authenticated)</li>
+        <li>Birth Certificate (if with dependents)</li>
+        <li>Cedula / Barangay Clearance</li>
+        <li>Proof of Billing (Electric/Water)</li>
+        <li>2 co-makers (1 if retirement), 2 valid IDs and 2x2 ID picture</li>
+      </ul>
+    </div>
         </div>
       )}
+           <button
+  onClick={handlePrint}
+  className="no-print mb-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+>
+  Print PL Computation
+</button>
     </div>
   );
 }

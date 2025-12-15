@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 // Fire Insurance Premium Table
 const fireInsuranceTable = [
@@ -72,7 +72,7 @@ const REMCalculatorNew = () => {
     const rodFee = grossAmount * 0.03;
     const processingFee = grossAmount * 0.0075;
     const itFee = grossAmount * 0.0007 <= 50 ? 50 : grossAmount * 0.0007;
-    const pnNotary = 100;
+    const pnNotary = 200;
     const fireInsurance = getFireInsurance(grossAmount);
 
     const totalDeductions =
@@ -133,8 +133,71 @@ const REMCalculatorNew = () => {
     calculate();
   }, [gross, months, includeFireInsurance]);
 
+  const printRef = useRef();
+
+const handlePrint = () => {
+  const printContent = printRef.current.innerHTML;
+  const originalContent = document.body.innerHTML;
+
+  document.body.innerHTML = `
+    <html>
+      <head>
+        <title>REM Loan Computation</title>
+        <style>
+          @page {
+            size: A4;
+            margin: 12mm;
+          }
+
+          body {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            color: #000;
+          }
+
+          h2, h3 {
+            margin: 6px 0;
+          }
+
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9px;
+          }
+
+          th, td {
+            border: 1px solid #000;
+            padding: 3px;
+            text-align: center;
+          }
+
+          .no-print {
+            display: none;
+          }
+
+          .section {
+            margin-bottom: 8px;
+          }
+
+          .avoid-break {
+            page-break-inside: avoid;
+          }
+        </style>
+      </head>
+      <body>
+        ${printContent}
+      </body>
+    </html>
+  `;
+
+  window.print();
+  document.body.innerHTML = originalContent;
+  window.location.reload();
+};
+
+
   return (
-    <div className="flex flex-col items-center px-2 min-h-[260px] transition-all">
+    <div   className="flex flex-col items-center px-2 min-h-[260px] transition-all ">
       <h2 className="text-xl font-semibold mb-4 text-gray-800 text-center">
         REM Loan Calculator (New Scheme)
       </h2>
@@ -175,11 +238,12 @@ const REMCalculatorNew = () => {
       </div>
 
       {result && (
-        <div className="mt-6 space-y-4 w-full max-w-2xl">
+        <div className="mt-6 space-y-4 w-full max-w-2xl section avoid-break" ref={printRef}>
+          {/* <h3>@ {gross} </h3> */}
           {/* Deduction Breakdown */}
           <div className="bg-gray-50 p-4 rounded-lg shadow-inner">
             <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              Deduction Breakdown:
+              Deduction Breakdown: @ {formatNumber(gross)} - {months} mos. term
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-gray-700">
               {Object.entries(result.breakdown).map(([label, value]) => (
@@ -205,7 +269,7 @@ const REMCalculatorNew = () => {
 
           {/* Amortization Table */}
           <div className="overflow-x-auto max-h-[500px] overflow-y-scroll border rounded-lg">
-            <table className="min-w-[800px] border-collapse text-sm">
+            <table className="min-w-[800px] border-collapse text-sm section avoid-break">
               <thead className="bg-blue-600 text-white sticky top-0">
                 <tr>
                   <th className="px-4 py-2 border">Month</th>
@@ -245,7 +309,7 @@ const REMCalculatorNew = () => {
             </table>
             
           </div>
-          <div className="bg-white p-6 rounded-xl shadow-2xl z-30 border border-green-200 animate-fadeIn">
+          <div className="bg-white p-6 rounded-xl shadow-2xl z-30 border border-green-200 animate-fadeIn section avoid-break">
             {/* Header */}
             <div className="flex justify-between items-center mb-3">
               <h2 className="text-lg font-semibold text-green-800">
@@ -267,6 +331,14 @@ const REMCalculatorNew = () => {
               <li>CAR (Certificate Authorizing Registration)</li>
             </ul>
           </div>
+          <button
+  onClick={handlePrint}
+  className="no-print mb-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+>
+  Print REM Computation
+</button>
+
+          
         </div>
       )}
     </div>

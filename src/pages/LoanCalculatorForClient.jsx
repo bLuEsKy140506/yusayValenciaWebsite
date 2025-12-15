@@ -15,7 +15,7 @@ const LoanCalculator = () => {
   const [activeTab, setActiveTab] = useState("REM"); // Main: REM or PL
   // const [remTab, setRemTab] = useState("new"); // REM sub-tabs
   const [plTab, setPlTab] = useState("new"); // PL sub-tabs
-  const [showNote, setShowNote] = useState(false);
+  const [showNote, setShowNote] = useState(true);
 
   // 🔹 Read state from Link (from ServicesSection)
   useEffect(() => {

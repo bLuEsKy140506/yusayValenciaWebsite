@@ -72,7 +72,7 @@ const REMCalculatorNewForClient = () => {
     const rodFee = grossAmount * 0.03;
     const processingFee = grossAmount * 0.0075;
     const itFee = grossAmount * 0.0007 <= 50 ? 50 : grossAmount * 0.0007;
-    const pnNotary = 100;
+    const pnNotary = 200;
     const fireInsurance = getFireInsurance(grossAmount);
 
     const totalDeductions =
