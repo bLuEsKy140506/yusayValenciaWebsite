@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+
 
 // Fire Insurance Premium Table
 const fireInsuranceTable = [
@@ -195,11 +198,89 @@ const handlePrint = () => {
   window.location.reload();
 };
 
+const handleGeneratePDF = async () => {
+  const element = printRef.current;
+  if (!element) return;
+
+  const canvas = await html2canvas(element, {
+    scale: 1.3, // 🔽 reduced scale
+    useCORS: true,
+    backgroundColor: "#ffffff",
+
+    onclone: (clonedDoc) => {
+  const clonedEl = clonedDoc.querySelector("[data-print-root]");
+  if (!clonedEl) return;
+
+  clonedEl.style.color = "#000";
+  clonedEl.style.backgroundColor = "#fff";
+
+  clonedEl.querySelectorAll("*").forEach((node) => {
+    const style = window.getComputedStyle(node);
+
+    if (style.color.includes("oklch")) node.style.color = "#000";
+    if (style.backgroundColor.includes("oklch"))
+      node.style.backgroundColor = "#fff";
+    if (style.borderColor.includes("oklch"))
+      node.style.borderColor = "#000";
+  });
+
+  // 🔥 FIX REQUIREMENTS VISIBILITY
+
+  const requirementsBox = clonedEl.querySelector(
+    ".border.border-green-200"
+  );
+
+  if (requirementsBox) {
+    requirementsBox.style.boxShadow = "none"; // remove shadow
+    requirementsBox.style.borderColor = "#000";
+    requirementsBox.style.backgroundColor = "#fff";
+
+    requirementsBox.querySelectorAll("li").forEach((li) => {
+      li.style.color = "#000";
+      li.style.fontWeight = "500";
+      li.style.fontSize = "10px";
+    });
+  }
+}
+
+  });
+
+  // 🔑 JPEG instead of PNG + quality control
+  const imgData = canvas.toDataURL("image/jpeg", 0.75);
+
+  const pdf = new jsPDF({
+    orientation: "p",
+    unit: "mm",
+    format: "a4",
+    compress: true, // 🔑 enable compression
+  });
+
+  const pageWidth = 210;
+  const pageHeight = 297;
+
+  const imgWidth = pageWidth;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  pdf.addImage(
+    imgData,
+    "JPEG",
+    0,
+    0,
+    imgWidth,
+    imgHeight,
+    undefined,
+    "FAST" // 🔑 jsPDF compression hint
+  );
+
+  pdf.save("REM_Loan_Computation_Optimized.pdf");
+};
+
+
 
   return (
     <div   className="flex flex-col items-center px-2 min-h-[260px] transition-all ">
       <h2 className="text-xl font-semibold mb-4 text-gray-800 text-center">
-        REM Loan Calculator (New Scheme)
+        REM Loan Calculator
       </h2>
 
       <div className="flex flex-col items-center space-y-4 w-[200px] max-w-md ">
@@ -238,7 +319,8 @@ const handlePrint = () => {
       </div>
 
       {result && (
-        <div className="mt-6 space-y-4 w-full max-w-2xl section avoid-break" ref={printRef}>
+        <div className="mt-6 space-y-4 w-full max-w-2xl section avoid-break" ref={printRef}
+  data-print-root>
           {/* <h3>@ {gross} </h3> */}
           {/* Deduction Breakdown */}
           <div className="bg-gray-50 p-4 rounded-lg shadow-inner">
@@ -268,9 +350,9 @@ const handlePrint = () => {
           </div>
 
           {/* Amortization Table */}
-          <div className="overflow-x-auto max-h-[500px] overflow-y-scroll border rounded-lg">
+          <div className="overflow-x-auto max-h-[250px] overflow-y-scroll border rounded-lg">
             <table className="min-w-[800px] border-collapse text-sm section avoid-break">
-              <thead className="bg-blue-600 text-white sticky top-0">
+              <thead className="bg-teal-600 text-black sticky top-0">
                 <tr>
                   <th className="px-4 py-2 border">Month</th>
                   <th className="px-4 py-2 border">Amortization</th>
@@ -309,16 +391,16 @@ const handlePrint = () => {
             </table>
             
           </div>
-          <div className="bg-white p-6 rounded-xl shadow-2xl z-30 border border-green-200 animate-fadeIn section avoid-break">
+          <div className="bg-white p-3 rounded-xl shadow-2xl z-30 border border-green-200 avoid-break pdf-strong-text">
             {/* Header */}
             <div className="flex justify-between items-center mb-3">
-              <h2 className="text-lg font-semibold text-green-800">
+              <h2 className="text-lg font-bold text-green-800">
                 REM Loan Requirements
               </h2>
             </div>
 
             {/* Content */}
-            <ul className="text-sm text-gray-700 list-disc pl-4 space-y-1">
+            <ul className="text-sm text-black list-disc pl-4 space-y-1">
               <li>Owner’s Duplicate Copy of Title</li>
               <li>Certified True Copy of Title</li>
               <li>Lot Plan with Vicinity Map</li>
@@ -336,6 +418,12 @@ const handlePrint = () => {
   className="no-print mb-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
 >
   Print REM Computation
+</button>
+<button
+  onClick={handleGeneratePDF}
+  className="no-print mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+>
+  Generate PDF
 </button>
 
           

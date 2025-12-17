@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+
 
 export default function PLNewCalculator() {
   const [monthly, setMonthly] = useState("");
@@ -126,8 +129,96 @@ export default function PLNewCalculator() {
   window.location.reload();
 };
 
+const handleGeneratePDF = async () => {
+  const element = printRef.current;
+  if (!element) return;
+
+  const canvas = await html2canvas(element, {
+    scale: 2, // keep clarity
+    backgroundColor: "#ffffff",
+    useCORS: true,
+
+    onclone: (clonedDoc) => {
+      const root =
+        clonedDoc.body.querySelector("[data-print-root]") ||
+        clonedDoc.body;
+
+      /* ===============================
+         1️⃣ SCALE CONTENT (PDF ONLY)
+      =============================== */
+      root.style.transform = "scale(0.85)";
+      root.style.transformOrigin = "top left";
+      root.style.width = "118%"; 
+      root.style.padding = "40px"; // compensate for scale
+
+      /* ===============================
+         2️⃣ FORCE SAFE COLORS
+      =============================== */
+      root.style.color = "#000";
+      root.style.backgroundColor = "#fff";
+
+      root.querySelectorAll("*").forEach((el) => {
+        el.style.color = "#000";
+        el.style.backgroundColor = "#fff";
+        el.style.borderColor = "#000";
+        el.style.boxShadow = "none";
+      });
+
+      /* ===============================
+         3️⃣ FONT & SPACING CONTROL
+      =============================== */
+      root.querySelectorAll("h3").forEach((h) => {
+        h.style.fontSize = "14px";
+        h.style.marginBottom = "6px";
+      });
+
+      root.querySelectorAll("h4").forEach((h) => {
+        h.style.fontSize = "12px";
+        h.style.marginTop = "6px";
+      });
+
+      root.querySelectorAll("span, div").forEach((el) => {
+        el.style.fontSize = "10px";
+        el.style.lineHeight = "1.2";
+      });
+
+      root.querySelectorAll("li").forEach((li) => {
+        li.style.fontSize = "9px";
+        li.style.lineHeight = "1.2";
+        li.style.fontWeight = "500";
+        li.style.color = "#000";
+      });
+    },
+  });
+
+  const imgData = canvas.toDataURL("image/jpeg", 0.75);
+
+  const pdf = new jsPDF({
+    orientation: "p",
+    unit: "mm",
+    format: "a4",
+    compress: true,
+  });
+
+  const imgWidth = 210;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  pdf.addImage(
+    imgData,
+    "JPEG",
+    0,
+    0,
+    imgWidth,
+    imgHeight,
+    undefined,
+    "FAST"
+  );
+
+  pdf.save("PL_Loan_Computation.pdf");
+};
+
   return (
-    <div  className="max-w-xl mx-auto p-6 bg-white shadow-lg rounded-xl flex flex-col items-center space-y-4 min-h-[300px] transition-all">
+    <div className="max-w-xl mx-auto p-6 bg-white shadow-lg rounded-xl flex flex-col items-center space-y-4 min-h-[300px] transition-all">
       <h2 className="text-2xl font-bold text-gray-800 text-center">
         PLNew Loan Calculator
       </h2>
@@ -187,7 +278,7 @@ export default function PLNewCalculator() {
 
       {/* Results Section */}
       {result && (
-        <div ref={printRef} className="mt-6 p-4 bg-gray-50 border rounded-lg space-y-3">
+        <div ref={printRef} data-print-root className="mt-6 p-4 bg-gray-50 border rounded-lg space-y-3">
           <h3 className="text-xl font-semibold text-gray-800">Results @ {monthly.toLocaleString()} - {months} mos. term</h3>
 
           {/* Gross */}
@@ -255,7 +346,7 @@ export default function PLNewCalculator() {
               ₱{result.netProceeds.toLocaleString()}
             </span>
           </div>
-           <div className="bg-white p-6 rounded-xl shadow-2xl w-full z-30 border border-green-200 animate-fadeIn">
+      <div className="bg-white p-6 rounded-xl shadow-2xl w-full z-30 border border-green-200">
       {/* Header */}
       <div className="flex justify-between items-center mb-3">
         <h2 className="text-lg font-semibold text-green-800">
@@ -265,7 +356,7 @@ export default function PLNewCalculator() {
       </div>
 
       {/* Content */}
-      <ul className="text-sm text-gray-700 list-disc pl-4 space-y-1">
+      <ul className="text-sm text-black-700 list-disc pl-4 space-y-1 ">
         <li>SSS/GSIS ID Number</li>
         <li>DDR Print / SSS Certification</li>
         <li>Voucher / Retirement Notice from SSS/GSIS</li>
@@ -288,6 +379,13 @@ export default function PLNewCalculator() {
 >
   Print PL Computation
 </button>
+<button
+  onClick={handleGeneratePDF}
+  className="no-print mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+>
+  Generate PDF
+</button>
+
     </div>
   );
 }
