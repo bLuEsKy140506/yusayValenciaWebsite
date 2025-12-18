@@ -197,83 +197,76 @@ const handlePrint = () => {
   document.body.innerHTML = originalContent;
   window.location.reload();
 };
-
 const handleGeneratePDF = async () => {
   const element = printRef.current;
   if (!element) return;
 
+  // 🔑 Save original styles
+  const original = {
+    overflow: element.style.overflow,
+    maxHeight: element.style.maxHeight,
+    height: element.style.height,
+  };
+
+  // 🔥 FORCE FULL CONTENT RENDER (MOBILE FIX)
+  element.style.overflow = "visible";
+  element.style.maxHeight = "none";
+  element.style.height = "auto";
+
   const canvas = await html2canvas(element, {
-    scale: 1.3, // 🔽 reduced scale
+    scale: window.devicePixelRatio > 1 ? 2 : 1.3,
     useCORS: true,
     backgroundColor: "#ffffff",
+    windowWidth: element.scrollWidth,
+    windowHeight: element.scrollHeight,
 
     onclone: (clonedDoc) => {
-  const clonedEl = clonedDoc.querySelector("[data-print-root]");
-  if (!clonedEl) return;
+      const root =
+        clonedDoc.querySelector("[data-print-root]") || clonedDoc.body;
 
-  clonedEl.style.color = "#000";
-  clonedEl.style.backgroundColor = "#fff";
+      // Remove scroll limits in clone too
+      root.style.overflow = "visible";
+      root.style.maxHeight = "none";
+      root.style.height = "auto";
 
-  clonedEl.querySelectorAll("*").forEach((node) => {
-    const style = window.getComputedStyle(node);
-
-    if (style.color.includes("oklch")) node.style.color = "#000";
-    if (style.backgroundColor.includes("oklch"))
-      node.style.backgroundColor = "#fff";
-    if (style.borderColor.includes("oklch"))
-      node.style.borderColor = "#000";
+      // Safe colors (no oklch)
+      root.querySelectorAll("*").forEach((el) => {
+        el.style.color = "#000";
+        el.style.backgroundColor = "#fff";
+        el.style.borderColor = "#000";
+        el.style.boxShadow = "none";
+      });
+    },
   });
 
-  // 🔥 FIX REQUIREMENTS VISIBILITY
+  // 🔁 Restore original styles
+  element.style.overflow = original.overflow;
+  element.style.maxHeight = original.maxHeight;
+  element.style.height = original.height;
 
-  const requirementsBox = clonedEl.querySelector(
-    ".border.border-green-200"
-  );
-
-  if (requirementsBox) {
-    requirementsBox.style.boxShadow = "none"; // remove shadow
-    requirementsBox.style.borderColor = "#000";
-    requirementsBox.style.backgroundColor = "#fff";
-
-    requirementsBox.querySelectorAll("li").forEach((li) => {
-      li.style.color = "#000";
-      li.style.fontWeight = "500";
-      li.style.fontSize = "10px";
-    });
-  }
-}
-
-  });
-
-  // 🔑 JPEG instead of PNG + quality control
+  // 🧾 Create PDF
   const imgData = canvas.toDataURL("image/jpeg", 0.75);
-
-  const pdf = new jsPDF({
-    orientation: "p",
-    unit: "mm",
-    format: "a4",
-    compress: true, // 🔑 enable compression
-  });
+  const pdf = new jsPDF("p", "mm", "a4");
 
   const pageWidth = 210;
   const pageHeight = 297;
-
   const imgWidth = pageWidth;
   const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-  pdf.addImage(
-    imgData,
-    "JPEG",
-    0,
-    0,
-    imgWidth,
-    imgHeight,
-    undefined,
-    "FAST" // 🔑 jsPDF compression hint
-  );
+  let heightLeft = imgHeight;
+  let position = 0;
 
-  pdf.save("REM_Loan_Computation_Optimized.pdf");
+  // 🔥 MULTI-PAGE SUPPORT (CRITICAL FOR MOBILE)
+  while (heightLeft > 0) {
+    pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+    position -= pageHeight;
+    if (heightLeft > 0) pdf.addPage();
+  }
+
+  pdf.save("Loan_Computation_Full.pdf");
 };
+
 
 
 
@@ -350,7 +343,7 @@ const handleGeneratePDF = async () => {
           </div>
 
           {/* Amortization Table */}
-          <div className="overflow-x-auto max-h-[250px] overflow-y-scroll border rounded-lg">
+          <div className="overflow-x-auto border rounded-lg">
             <table className="min-w-[800px] border-collapse text-sm section avoid-break">
               <thead className="bg-teal-600 text-black sticky top-0">
                 <tr>

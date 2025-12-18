@@ -56,7 +56,7 @@ const PDICalculatorLumpsum = () => {
     const P = parseFloat(principal);
     const X = parseFloat(availableFunds);
 
-    if (!pdi || !P || !X || X <= 0) {
+    if (pdi === null || !P || !X || X <= 0) {
       setResults([]);
       return;
     }
@@ -149,7 +149,7 @@ const PDICalculatorLumpsum = () => {
     const P = parseFloat(principal);
     const downPercent = parseFloat(percent) / 100;
 
-    if (!P || !downPercent || !pdi) {
+    if (!P || !downPercent || pdi === null) {
       alert("Please enter valid principal, percent, and compute PDI first.");
       return;
     }
@@ -254,14 +254,14 @@ const PDICalculatorLumpsum = () => {
               value={formData.availableFunds}
               onChange={handleChange}
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
-              disabled={!pdi}
+              disabled={pdi === null}
               onInput={(e) => {
     if (e.target.value.length > 9) {
       e.target.value = e.target.value.slice(0, 9);
     }
   }}
             />
-            {!pdi && <p className="text-sm text-gray-500 text-center">💡 Compute PDI first to unlock this step.</p>}
+            {pdi === null && <p className="text-sm text-gray-500 text-center">💡 Compute PDI first to unlock this step.</p>}
           </div>
         ) : (
           <form onSubmit={handleComputeByPercent} className="mt-6 space-y-4">
@@ -272,11 +272,11 @@ const PDICalculatorLumpsum = () => {
               value={formData.percent}
               onChange={handleChange}
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
-              disabled={!pdi}
+              disabled={pdi === null}
             />
             <button
               type="submit"
-              disabled={!pdi}
+              disabled={pdi === null}
               className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-medium"
             >
               Compute Percent Options

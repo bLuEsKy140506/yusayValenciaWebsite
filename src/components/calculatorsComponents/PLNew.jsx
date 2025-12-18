@@ -133,88 +133,70 @@ const handleGeneratePDF = async () => {
   const element = printRef.current;
   if (!element) return;
 
+  // 🔑 Save original styles
+  const original = {
+    overflow: element.style.overflow,
+    maxHeight: element.style.maxHeight,
+    height: element.style.height,
+  };
+
+  // 🔥 FORCE FULL CONTENT RENDER (MOBILE FIX)
+  element.style.overflow = "visible";
+  element.style.maxHeight = "none";
+  element.style.height = "auto";
+
   const canvas = await html2canvas(element, {
-    scale: 2, // keep clarity
-    backgroundColor: "#ffffff",
+    scale: window.devicePixelRatio > 1 ? 2 : 1.3,
     useCORS: true,
+    backgroundColor: "#ffffff",
+    windowWidth: element.scrollWidth,
+    windowHeight: element.scrollHeight,
 
     onclone: (clonedDoc) => {
       const root =
-        clonedDoc.body.querySelector("[data-print-root]") ||
-        clonedDoc.body;
+        clonedDoc.querySelector("[data-print-root]") || clonedDoc.body;
 
-      /* ===============================
-         1️⃣ SCALE CONTENT (PDF ONLY)
-      =============================== */
-      root.style.transform = "scale(0.85)";
-      root.style.transformOrigin = "top left";
-      root.style.width = "118%"; 
-      root.style.padding = "40px"; // compensate for scale
+      // Remove scroll limits in clone too
+      root.style.overflow = "visible";
+      root.style.maxHeight = "none";
+      root.style.height = "auto";
 
-      /* ===============================
-         2️⃣ FORCE SAFE COLORS
-      =============================== */
-      root.style.color = "#000";
-      root.style.backgroundColor = "#fff";
-
+      // Safe colors (no oklch)
       root.querySelectorAll("*").forEach((el) => {
         el.style.color = "#000";
         el.style.backgroundColor = "#fff";
         el.style.borderColor = "#000";
         el.style.boxShadow = "none";
       });
-
-      /* ===============================
-         3️⃣ FONT & SPACING CONTROL
-      =============================== */
-      root.querySelectorAll("h3").forEach((h) => {
-        h.style.fontSize = "14px";
-        h.style.marginBottom = "6px";
-      });
-
-      root.querySelectorAll("h4").forEach((h) => {
-        h.style.fontSize = "12px";
-        h.style.marginTop = "6px";
-      });
-
-      root.querySelectorAll("span, div").forEach((el) => {
-        el.style.fontSize = "10px";
-        el.style.lineHeight = "1.2";
-      });
-
-      root.querySelectorAll("li").forEach((li) => {
-        li.style.fontSize = "9px";
-        li.style.lineHeight = "1.2";
-        li.style.fontWeight = "500";
-        li.style.color = "#000";
-      });
     },
   });
 
+  // 🔁 Restore original styles
+  element.style.overflow = original.overflow;
+  element.style.maxHeight = original.maxHeight;
+  element.style.height = original.height;
+
+  // 🧾 Create PDF
   const imgData = canvas.toDataURL("image/jpeg", 0.75);
+  const pdf = new jsPDF("p", "mm", "a4");
 
-  const pdf = new jsPDF({
-    orientation: "p",
-    unit: "mm",
-    format: "a4",
-    compress: true,
-  });
-
-  const imgWidth = 210;
+  const pageWidth = 210;
+  const pageHeight = 297;
+  const imgWidth = pageWidth;
   const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-  pdf.addImage(
-    imgData,
-    "JPEG",
-    0,
-    0,
-    imgWidth,
-    imgHeight,
-    undefined,
-    "FAST"
-  );
+  let heightLeft = imgHeight;
+  let position = 0;
 
-  pdf.save("PL_Loan_Computation.pdf");
+  // 🔥 MULTI-PAGE SUPPORT (CRITICAL FOR MOBILE)
+  while (heightLeft > 0) {
+    pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+    position -= pageHeight;
+    if (heightLeft > 0) pdf.addPage();
+  }
+
+  pdf.save("Loan_Computation_Full.pdf");
 };
 
   return (
