@@ -186,7 +186,7 @@ useEffect(() => {
   }, [account.numberMonthsToExtend, account.outstandingPrincipal]);
 
   const extrasTotal = charges.reduce((s, it) => s + parseNum(it.amount), 0);
-  const grandTotal = (pdi || 0) + extrasTotal;
+  const grandTotal = (pdi || 0) + extrasTotal + parseNum(account.outstandingPrincipal);
   const paid = parseNum(totalPaid);
   const totalDue = grandTotal + parseNum(account.outstandingPrincipal) - paid;
 
