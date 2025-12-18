@@ -511,7 +511,7 @@ useEffect(() => {
             {/* Totals */}
             <div className="mt-6 border-t pt-2">
               <div className="flex justify-between font-bold text-[12px]">
-                <span>Outstanding balance + total charges</span>
+                <span>Outstanding balance + total charges + PDI</span>
                 <span>{formatPeso(grandTotal)}</span>
               </div>
               <div className="flex justify-between mt-2">
