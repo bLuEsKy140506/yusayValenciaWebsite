@@ -188,7 +188,7 @@ useEffect(() => {
   const extrasTotal = charges.reduce((s, it) => s + parseNum(it.amount), 0);
   const grandTotal = (pdi || 0) + extrasTotal + parseNum(account.outstandingPrincipal);
   const paid = parseNum(totalPaid);
-  const totalDue = grandTotal + parseNum(account.outstandingPrincipal) - paid;
+  const totalDue = grandTotal - paid;
 
   /* =============================== 📄 EXPORT TO PDF =============================== */
   const handleExportPDF = async () => {
