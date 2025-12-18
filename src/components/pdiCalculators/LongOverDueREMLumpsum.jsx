@@ -97,6 +97,19 @@ export default function LongOverDueREMLumpsum() {
     saveDB(db);
     setPnList(Object.keys(db));
     alert(`Record for PN# ${account.promissoryNo} deleted.`);
+    setAccount({
+      accountName: "",
+    address: "",
+    promissoryNo: "",
+    originalLoan: "",
+    outstandingPrincipal: "",
+   
+    numberMonthsToExtend: "0",
+    maturityDate: "",
+    cutOffDate: "",
+    rateUnder: "PROMO RATE",
+    });
+
   };
 
   /* =============================== ⏰ COMPUTATION LOGIC =============================== */
@@ -498,7 +511,7 @@ useEffect(() => {
             {/* Totals */}
             <div className="mt-6 border-t pt-2">
               <div className="flex justify-between font-bold text-[12px]">
-                <span>Total Due</span>
+                <span>Outstanding balance + total charges</span>
                 <span>{formatPeso(grandTotal)}</span>
               </div>
               <div className="flex justify-between mt-2">
