@@ -34,7 +34,7 @@ export default function PLFELTCalculatorForClient() {
     // Deductions
     const interest = gross * monthsVal * 0.008; // 0.8% per month
     const serviceFee = 400;
-    const rfpl = (gross / 1000) * 2.5 * monthsVal;
+    const rfpl = (gross / 1000) * 2.0 * monthsVal;
     const atmCharges = monthsVal * 15;
     const itFee = gross <= 100000 ? 50 : 0.0005 * gross;
     const notarial = 200;
