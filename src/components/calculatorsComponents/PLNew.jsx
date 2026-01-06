@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import PensionVsREMComparison from "./PensionVsREMComparison";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
@@ -367,6 +368,18 @@ const handleGeneratePDF = async () => {
 >
   Generate PDF
 </button>
+{result && (
+  <PensionVsREMComparison
+    pensionResult={{
+      gross: result.gross,
+      netProceeds: result.netProceeds,
+      monthly: Number(monthly),
+      months,
+      deduction: result.totalDeductions
+    }}
+  />
+)}
+
 
     </div>
   );

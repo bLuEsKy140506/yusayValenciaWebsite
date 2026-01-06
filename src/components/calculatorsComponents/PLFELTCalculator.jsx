@@ -150,7 +150,7 @@ export default function PLFELTCalculator() {
               ₱{result.serviceFee.toLocaleString()}
             </span>
 
-            <span>RFPL (2.5 / 1,000 × Months):</span>
+            <span>RFPL (2.0 / 1,000 × Months):</span>
             <span className="text-right">
               ₱{result.rfpl.toLocaleString()}
             </span>
