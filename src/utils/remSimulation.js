@@ -1,26 +1,22 @@
 
 import { computeREM } from "./remCompute";
 
-export function findREMByNet(targetNet, months) {
+export function findREMByMonthly(targetMonthly, months) {
   let best = null;
 
-  const startGross = Math.max(50_000, targetNet);
-  const maxGross = targetNet * 2; // wider search
-
-  for (let gross = startGross; gross <= maxGross; gross += 10_000) {
+  for (let gross = 10; gross <= 5_000_000; gross += 10_000) {
     const sim = computeREM({ gross, months });
-    const diff = Math.abs(sim.netProceeds - targetNet);
+    const diff = Math.abs(sim.monthlyAmortization - targetMonthly);
 
     if (!best || diff < best.diff) {
       best = { ...sim, diff };
     }
 
-    if (diff < 100) break;
+    if (diff < 50) break; // ₱50 tolerance
   }
 
   return best;
 }
-
 
 export function findREMByNet(targetNet, months) {
   let best = null;
