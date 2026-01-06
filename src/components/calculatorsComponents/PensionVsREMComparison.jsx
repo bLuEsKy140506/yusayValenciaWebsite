@@ -29,44 +29,108 @@ export default function PensionVsREMComparison({ pensionResult }) {
 
 
 
-  return (
-    <div className="mt-6 overflow-x-auto">
-      <h3 className="text-lg font-semibold mb-3 text-gray-800">
-        Pension Loan vs REM Loan Comparison with the same month
-      </h3>
+return (
+  <div className="mt-6">
+    <h3 className="text-base sm:text-lg font-semibold mb-3 text-gray-800">
+      Pension Loan vs REM Loan Comparison
+    </h3>
 
-      <table className="min-w-full border text-sm text-center">
+    {/* ================= MOBILE VIEW (CARDS) ================= */}
+    <div className="space-y-4 sm:hidden">
+      {[
+        {
+          title: "Pension Loan (Reference)",
+          highlight: true,
+          data: {
+            Gross: gross,
+            Monthly: monthly,
+            "Total Deductions": deduction,
+            "Net Proceeds": netProceeds,
+          },
+        },
+        {
+          title: "REM – Same Monthly",
+          data: {
+            Gross: remSameMonthly.gross,
+            Monthly: remSameMonthly.monthlyAmortization,
+            "Total Deductions": remSameMonthly.totalDeductions,
+            "Net Proceeds": remSameMonthly.netProceeds,
+          },
+        },
+        {
+          title: "REM – Same Gross",
+          data: {
+            Gross: remSameGross.gross,
+            Monthly: remSameGross.monthlyAmortization,
+            "Total Deductions": remSameGross.totalDeductions,
+            "Net Proceeds": remSameGross.netProceeds,
+          },
+        },
+        {
+          title: "REM – Same Net",
+          data: {
+            Gross: remSameNet.gross,
+            Monthly: remSameNet.monthlyAmortization,
+            "Total Deductions": remSameNet.totalDeductions,
+            "Net Proceeds": remSameNet.netProceeds,
+          },
+        },
+      ].map((item, idx) => (
+        <div
+          key={idx}
+          className={`rounded-lg border p-4 shadow-sm ${
+            item.highlight ? "bg-green-50 border-green-300" : "bg-white"
+          }`}
+        >
+          <h4 className="font-semibold text-gray-800 mb-3">
+            {item.title}
+          </h4>
+
+          <div className="space-y-2 text-sm">
+            {Object.entries(item.data).map(([label, value]) => (
+              <div key={label} className="flex justify-between">
+                <span className="text-gray-500">{label}</span>
+                <span className="font-medium text-gray-800">
+                  {peso(value)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {/* ================= DESKTOP VIEW (TABLE) ================= */}
+    <div className="hidden sm:block overflow-x-auto rounded border">
+      <table className="min-w-[720px] w-full text-sm text-center border-collapse">
         <thead className="bg-gray-100">
           <tr>
-            <th className="border px-3 py-2">Scenario</th>
+            <th className="border px-3 py-2 sticky left-0 bg-gray-100 z-10">
+              Scenario
+            </th>
             <th className="border px-3 py-2">Gross</th>
             <th className="border px-3 py-2">Monthly</th>
             <th className="border px-3 py-2">Total Deductions</th>
             <th className="border px-3 py-2">Net Proceeds</th>
           </tr>
         </thead>
+
         <tbody>
-          {/* Pension Reference */}
           <tr className="bg-green-50 font-semibold">
-            <td className="border px-3 py-2">
+            <td className="border px-3 py-2 sticky left-0 bg-green-50 z-10">
               Pension Loan (Reference)
             </td>
             <td className="border px-3 py-2">{peso(gross)}</td>
             <td className="border px-3 py-2">{peso(monthly)}</td>
             <td className="border px-3 py-2">{peso(deduction)}</td>
-            <td className="border px-3 py-2">
-              {peso(netProceeds)}
-            </td>
+            <td className="border px-3 py-2">{peso(netProceeds)}</td>
           </tr>
 
-          {/* REM – Same Monthly */}
           <tr>
-            <td className="border px-3 py-2">
+            <td className="border px-3 py-2 sticky left-0 bg-white">
               REM – Same Monthly
             </td>
-            <td className="border px-3 py-2">
-              {peso(remSameMonthly.gross)}
-            </td>
+            <td className="border px-3 py-2">{peso(remSameMonthly.gross)}</td>
             <td className="border px-3 py-2 bg-green-100">
               {peso(remSameMonthly.monthlyAmortization)}
             </td>
@@ -78,9 +142,8 @@ export default function PensionVsREMComparison({ pensionResult }) {
             </td>
           </tr>
 
-          {/* REM – Same Gross */}
           <tr>
-            <td className="border px-3 py-2">
+            <td className="border px-3 py-2 sticky left-0 bg-white">
               REM – Same Gross
             </td>
             <td className="border px-3 py-2 bg-green-100">
@@ -97,14 +160,11 @@ export default function PensionVsREMComparison({ pensionResult }) {
             </td>
           </tr>
 
-          {/* REM – Same Net */}
           <tr>
-            <td className="border px-3 py-2">
+            <td className="border px-3 py-2 sticky left-0 bg-white">
               REM – Same Net
             </td>
-            <td className="border px-3 py-2">
-              {peso(remSameNet.gross)}
-            </td>
+            <td className="border px-3 py-2">{peso(remSameNet.gross)}</td>
             <td className="border px-3 py-2">
               {peso(remSameNet.monthlyAmortization)}
             </td>
@@ -118,5 +178,6 @@ export default function PensionVsREMComparison({ pensionResult }) {
         </tbody>
       </table>
     </div>
-  );
+  </div>
+);
 }
