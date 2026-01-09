@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import PensionVsREMComparison from "./PensionVsREMComparison";
+import PLComparisonTable from "./PLComparisonTable";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
@@ -379,6 +380,11 @@ const handleGeneratePDF = async () => {
     }}
   />
 )}
+
+{monthly && (
+  <PLComparisonTable monthly={monthly} />
+)}
+
 
 
     </div>
