@@ -25,7 +25,7 @@ export default function PLComparisonTable({ monthly = 5000 }) {
     return (
       <div>
         <h3 className="font-bold text-lg mb-3">
-          Target {target} Months
+          Total months -- {target} Months with {peso(monthly)} monthly
         </h3>
 
         {/* ================= DESKTOP TABLE ================= */}
@@ -108,7 +108,7 @@ export default function PLComparisonTable({ monthly = 5000 }) {
                 className="border rounded-lg p-3 shadow-sm bg-white"
               >
                 <div className="font-bold text-sm mb-2">
-                  Term: {n} months
+                  {n} months as starting loan
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-xs">
@@ -128,7 +128,7 @@ export default function PLComparisonTable({ monthly = 5000 }) {
                   <div>Straight</div>
                   <div className="text-right">{peso(straight)}</div>
 
-                  <div>Diff</div>
+                  <div>Diff (Straight and Extended)</div>
                   <div className={`text-right ${diffStyle(diff)}`}>
                     {peso(diff)}
                   </div>

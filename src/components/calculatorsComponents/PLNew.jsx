@@ -7,7 +7,7 @@ import jsPDF from "jspdf";
 
 export default function PLNewCalculator() {
   const [monthly, setMonthly] = useState("");
-  const [months, setMonths] = useState(18);
+  const [months, setMonths] = useState(24);
   const [withReferral, setWithReferral] = useState(true);
   const [result, setResult] = useState(null);
     const handleNumericInput = (e, setter) => {
@@ -330,6 +330,9 @@ const handleGeneratePDF = async () => {
               ₱{result.netProceeds.toLocaleString()}
             </span>
           </div>
+      
+        </div>
+      )}
       <div className="bg-white p-6 rounded-xl shadow-2xl w-full z-30 border border-green-200">
       {/* Header */}
       <div className="flex justify-between items-center mb-3">
@@ -355,8 +358,6 @@ const handleGeneratePDF = async () => {
         <li>2 co-makers (1 if retirement), 2 valid IDs and 2x2 ID picture</li>
       </ul>
     </div>
-        </div>
-      )}
            <button
   onClick={handlePrint}
   className="no-print mb-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"

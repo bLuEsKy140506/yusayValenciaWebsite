@@ -49,7 +49,7 @@ return (
           },
         },
         {
-          title: "REM – Same Monthly",
+          title: "Same Monthly with Pension Loan",
           data: {
             Gross: remSameMonthly.gross,
             Monthly: remSameMonthly.monthlyAmortization,
@@ -58,7 +58,7 @@ return (
           },
         },
         {
-          title: "REM – Same Gross",
+          title: "Same Gross of the Pension Loan",
           data: {
             Gross: remSameGross.gross,
             Monthly: remSameGross.monthlyAmortization,
@@ -67,7 +67,7 @@ return (
           },
         },
         {
-          title: "REM – Same Net",
+          title: "Same Net of the Pension Loan",
           data: {
             Gross: remSameNet.gross,
             Monthly: remSameNet.monthlyAmortization,
@@ -128,7 +128,7 @@ return (
 
           <tr>
             <td className="border px-3 py-2 sticky left-0 bg-white">
-              REM – Same Monthly
+              Same monthly with Pension Loan
             </td>
             <td className="border px-3 py-2">{peso(remSameMonthly.gross)}</td>
             <td className="border px-3 py-2 bg-green-100">
@@ -144,7 +144,7 @@ return (
 
           <tr>
             <td className="border px-3 py-2 sticky left-0 bg-white">
-              REM – Same Gross
+              Same Gross with Pension Loan
             </td>
             <td className="border px-3 py-2 bg-green-100">
               {peso(remSameGross.gross)}
@@ -162,7 +162,7 @@ return (
 
           <tr>
             <td className="border px-3 py-2 sticky left-0 bg-white">
-              REM – Same Net
+              Same Net with Pension Loan
             </td>
             <td className="border px-3 py-2">{peso(remSameNet.gross)}</td>
             <td className="border px-3 py-2">

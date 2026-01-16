@@ -83,9 +83,9 @@ const Footer = () => {
               </a>
             </li>  */}
              <li>
-              <a href="#" className="hover:text-green-400 transition">
+               <HashLink smooth to="/history" className="hover:text-green-700">
                 History
-              </a>
+              </HashLink>
             </li>
           </ul>
         </div>

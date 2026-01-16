@@ -40,7 +40,7 @@ const getMonthlyInterestRate = (months) => {
 
 const REMCalculatorNew = () => {
   const [gross, setGross] = useState("");
-  const [months, setMonths] = useState(36);
+  const [months, setMonths] = useState(24);
   const [includeFireInsurance, setIncludeFireInsurance] = useState(false);
   const [result, setResult] = useState(null);
 
