@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
-
 // Fire Insurance Premium Table
 const fireInsuranceTable = [
   { max: 1000000, premium: 1527.0 },
@@ -138,11 +137,11 @@ const REMCalculatorNew = () => {
 
   const printRef = useRef();
 
-const handlePrint = () => {
-  const printContent = printRef.current.innerHTML;
-  const originalContent = document.body.innerHTML;
+  const handlePrint = () => {
+    const printContent = printRef.current.innerHTML;
+    const originalContent = document.body.innerHTML;
 
-  document.body.innerHTML = `
+    document.body.innerHTML = `
     <html>
       <head>
         <title>REM Loan Computation</title>
@@ -193,85 +192,82 @@ const handlePrint = () => {
     </html>
   `;
 
-  window.print();
-  document.body.innerHTML = originalContent;
-  window.location.reload();
-};
-const handleGeneratePDF = async () => {
-  const element = printRef.current;
-  if (!element) return;
+    window.print();
+    document.body.innerHTML = originalContent;
+    window.location.reload();
+  };
+  const handleGeneratePDF = async () => {
+    const element = printRef.current;
+    if (!element) return;
 
-  // 🔑 Save original styles
-  const original = {
-    overflow: element.style.overflow,
-    maxHeight: element.style.maxHeight,
-    height: element.style.height,
+    // 🔑 Save original styles
+    const original = {
+      overflow: element.style.overflow,
+      maxHeight: element.style.maxHeight,
+      height: element.style.height,
+    };
+
+    // 🔥 FORCE FULL CONTENT RENDER (MOBILE FIX)
+    element.style.overflow = "visible";
+    element.style.maxHeight = "none";
+    element.style.height = "auto";
+
+    const canvas = await html2canvas(element, {
+      scale: window.devicePixelRatio > 1 ? 2 : 1.3,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+      windowWidth: element.scrollWidth,
+      windowHeight: element.scrollHeight,
+
+      onclone: (clonedDoc) => {
+        const root =
+          clonedDoc.querySelector("[data-print-root]") || clonedDoc.body;
+
+        // Remove scroll limits in clone too
+        root.style.overflow = "visible";
+        root.style.maxHeight = "none";
+        root.style.height = "auto";
+
+        // Safe colors (no oklch)
+        root.querySelectorAll("*").forEach((el) => {
+          el.style.color = "#000";
+          el.style.backgroundColor = "#fff";
+          el.style.borderColor = "#000";
+          el.style.boxShadow = "none";
+        });
+      },
+    });
+
+    // 🔁 Restore original styles
+    element.style.overflow = original.overflow;
+    element.style.maxHeight = original.maxHeight;
+    element.style.height = original.height;
+
+    // 🧾 Create PDF
+    const imgData = canvas.toDataURL("image/jpeg", 0.75);
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const pageWidth = 210;
+    const pageHeight = 297;
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    // 🔥 MULTI-PAGE SUPPORT (CRITICAL FOR MOBILE)
+    while (heightLeft > 0) {
+      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      position -= pageHeight;
+      if (heightLeft > 0) pdf.addPage();
+    }
+
+    pdf.save("Loan_Computation_Full.pdf");
   };
 
-  // 🔥 FORCE FULL CONTENT RENDER (MOBILE FIX)
-  element.style.overflow = "visible";
-  element.style.maxHeight = "none";
-  element.style.height = "auto";
-
-  const canvas = await html2canvas(element, {
-    scale: window.devicePixelRatio > 1 ? 2 : 1.3,
-    useCORS: true,
-    backgroundColor: "#ffffff",
-    windowWidth: element.scrollWidth,
-    windowHeight: element.scrollHeight,
-
-    onclone: (clonedDoc) => {
-      const root =
-        clonedDoc.querySelector("[data-print-root]") || clonedDoc.body;
-
-      // Remove scroll limits in clone too
-      root.style.overflow = "visible";
-      root.style.maxHeight = "none";
-      root.style.height = "auto";
-
-      // Safe colors (no oklch)
-      root.querySelectorAll("*").forEach((el) => {
-        el.style.color = "#000";
-        el.style.backgroundColor = "#fff";
-        el.style.borderColor = "#000";
-        el.style.boxShadow = "none";
-      });
-    },
-  });
-
-  // 🔁 Restore original styles
-  element.style.overflow = original.overflow;
-  element.style.maxHeight = original.maxHeight;
-  element.style.height = original.height;
-
-  // 🧾 Create PDF
-  const imgData = canvas.toDataURL("image/jpeg", 0.75);
-  const pdf = new jsPDF("p", "mm", "a4");
-
-  const pageWidth = 210;
-  const pageHeight = 297;
-  const imgWidth = pageWidth;
-  const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-  let heightLeft = imgHeight;
-  let position = 0;
-
-  // 🔥 MULTI-PAGE SUPPORT (CRITICAL FOR MOBILE)
-  while (heightLeft > 0) {
-    pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-    position -= pageHeight;
-    if (heightLeft > 0) pdf.addPage();
-  }
-
-  pdf.save("Loan_Computation_Full.pdf");
-};
-
-
-
-
   return (
-    <div   className="flex flex-col items-center px-2 min-h-[260px] transition-all ">
+    <div className="flex flex-col items-center px-2 min-h-[260px] transition-all ">
       <h2 className="text-xl font-semibold mb-4 text-gray-800 text-center">
         REM Loan Calculator
       </h2>
@@ -312,8 +308,11 @@ const handleGeneratePDF = async () => {
       </div>
 
       {result && (
-        <div className="mt-6 space-y-4 w-full max-w-2xl section avoid-break" ref={printRef}
-  data-print-root>
+        <div
+          className="mt-6 space-y-4 w-full max-w-2xl section avoid-break"
+          ref={printRef}
+          data-print-root
+        >
           {/* <h3>@ {gross} </h3> */}
           {/* Deduction Breakdown */}
           <div className="bg-gray-50 p-4 rounded-lg shadow-inner">
@@ -382,7 +381,6 @@ const handleGeneratePDF = async () => {
                 ))}
               </tbody>
             </table>
-            
           </div>
           <div className="bg-white p-3 rounded-xl shadow-2xl z-30 border border-green-200 avoid-break pdf-strong-text">
             {/* Header */}
@@ -407,19 +405,17 @@ const handleGeneratePDF = async () => {
             </ul>
           </div>
           <button
-  onClick={handlePrint}
-  className="no-print mb-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
->
-  Print REM Computation
-</button>
-<button
-  onClick={handleGeneratePDF}
-  className="no-print mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
->
-  Generate PDF
-</button>
-
-          
+            onClick={handlePrint}
+            className="no-print mb-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+          >
+            Print REM Computation
+          </button>
+          <button
+            onClick={handleGeneratePDF}
+            className="no-print mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Generate PDF
+          </button>
         </div>
       )}
     </div>
