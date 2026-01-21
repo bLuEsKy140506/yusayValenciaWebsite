@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import Footer from "./components/Footer";
+import ScrollToTop from "./pages/ScrollToTop";
 
 // Lazy load heavy pages & components
 const LoanCalculator = lazy(() => import("./pages/LoanCalculator"));
@@ -71,6 +72,7 @@ function App() {
       />
 
       <ScrollToHash />
+      <ScrollToTop />
 
       {/* Page content (pushes footer down) */}
       <main className="flex-grow">
