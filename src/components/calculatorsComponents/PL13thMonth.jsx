@@ -34,7 +34,7 @@ export default function PL13thMonthCalculator() {
     const cf = (grossVal / 1000) * 2.5 * monthsVal;
     const notarial = 200;
     const itFee = 50;
-    const atm = 15; // fixed ATM charge
+    const atm = 50; // fixed ATM charge
 
     const totalDeductions = interest + cf + notarial + itFee + atm;
     const netProceeds = grossVal - totalDeductions;

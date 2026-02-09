@@ -34,7 +34,7 @@ export default function PLNewCalculatorForClient() {
     const interest = gross * monthsVal * 0.01;
     const serviceFee = 400;
     const rfpl = (gross / 1000) * 2.5 * monthsVal;
-    const atmCharges = monthsVal * 15;
+    const atmCharges = monthsVal * 50;
     const itFee = gross <= 100000 ? 50 : 0.0005*gross;
     const notarial = 200;
     // Referral Fee (optional)

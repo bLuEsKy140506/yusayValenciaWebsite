@@ -46,7 +46,7 @@ export default function PLExtensionCalculator() {
     const cfPayable =
       ((monthlyVal * extendedVal) / 1000) * 2.5 * (extendedVal+remainingVal);
     const itFee = gross <= 100000 ? 50 : 50 * Math.ceil(gross / 100000);
-    const atmCharges = 15 * extendedVal;
+    const atmCharges = 50 * extendedVal;
     const notarial = 200;
 
     const totalDeductions =
