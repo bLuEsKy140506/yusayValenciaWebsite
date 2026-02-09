@@ -292,7 +292,7 @@ const handleGeneratePDF = async () => {
               ₱{result.rfpl.toLocaleString()}
             </span>
 
-            <span>ATM Charges (₱15 × Months):</span>
+            <span>ATM Charges (₱50 × Months):</span>
             <span className="text-right">
               ₱{result.atmCharges.toLocaleString()}
             </span>
