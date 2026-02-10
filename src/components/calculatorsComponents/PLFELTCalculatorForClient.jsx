@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import PensionBookmark from "../bookmarks/PensionBookmark";
 
 export default function PLFELTCalculatorForClient() {
-  const [monthly, setMonthly] = useState("");
+  const [monthly, setMonthly] = useState(5000);
   const [months, setMonths] = useState(36);
   const [withReferral, setWithReferral] = useState(true);
   const [result, setResult] = useState(null);

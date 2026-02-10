@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 export default function PLNewCalculatorForClient() {
-  const [monthly, setMonthly] = useState("");
+  const [monthly, setMonthly] = useState(5000);
   const [months, setMonths] = useState(18);
   const [withReferral, setWithReferral] = useState(true);
   const [result, setResult] = useState(null);

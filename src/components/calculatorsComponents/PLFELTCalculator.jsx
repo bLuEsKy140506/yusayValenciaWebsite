@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 export default function PLFELTCalculator() {
-  const [monthly, setMonthly] = useState("");
+  const [monthly, setMonthly] = useState(5000);
   const [months, setMonths] = useState(36);
   const [withReferral, setWithReferral] = useState(true);
   const [result, setResult] = useState(null);
@@ -34,7 +34,7 @@ export default function PLFELTCalculator() {
     const interest = gross * monthsVal * 0.008; // 0.8% per month
     const serviceFee = 400;
     const rfpl = (gross / 1000) * 2.0 * monthsVal;
-    const atmCharges = monthsVal * 15;
+    const atmCharges = monthsVal * 50;
     const itFee = gross <= 100000 ? 50 : 0.0005 * gross;
     const notarial = 200;
 

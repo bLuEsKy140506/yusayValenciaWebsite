@@ -6,7 +6,7 @@ const HeroSection = () => {
     <section
       id="hero"
       className="relative flex flex-col md:flex-row items-center justify-center px-6 md:px-12 lg:px-20 py-20 md:py-24 lg:py-28 min-h-screen bg-cover bg-center overflow-hidden"
-      style={{ backgroundImage: `url('/bg-interior.jpg')` }}
+      style={{ backgroundImage: `url('/bg-interior.webp')` }}
     >
       {/* Light Overlay */}
       <div className="absolute inset-0 bg-white/60"></div>

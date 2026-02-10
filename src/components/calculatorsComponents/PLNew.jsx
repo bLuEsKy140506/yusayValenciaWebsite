@@ -6,10 +6,14 @@ import jsPDF from "jspdf";
 
 
 export default function PLNewCalculator() {
-  const [monthly, setMonthly] = useState("");
+  const [monthly, setMonthly] = useState(5000);
   const [months, setMonths] = useState(24);
   const [withReferral, setWithReferral] = useState(true);
   const [result, setResult] = useState(null);
+  const [showComparison, setShowComparison] = useState(false);
+const [showTable, setShowTable] = useState(false);
+
+
     const handleNumericInput = (e, setter) => {
     const value = e.target.value;
     if (/^\d*$/.test(value)) {
@@ -370,7 +374,17 @@ const handleGeneratePDF = async () => {
 >
   Generate PDF
 </button>
-{result && (
+
+<button
+  onClick={() => setShowComparison(prev => !prev)}
+  className="no-print mb-2 px-4 py-2 bg-purple-600 text-white rounded-lg"
+>
+  {showComparison ? "Hide REM to PL Comparison" : "Show REM to PL Comparison"}
+</button>
+
+
+
+{result && showComparison && (
   <PensionVsREMComparison
     pensionResult={{
       gross: result.gross,
@@ -382,7 +396,14 @@ const handleGeneratePDF = async () => {
   />
 )}
 
-{monthly && (
+<button
+  onClick={() => setShowTable(prev => !prev)}
+  className="no-print mb-4 px-4 py-2 bg-orange-600 text-white rounded-lg"
+>
+  {showTable ? "Hide PL Division Table" : "Show PL Division Table"}
+</button>
+
+{monthly && showTable && (
   <PLComparisonTable monthly={monthly} />
 )}
 

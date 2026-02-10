@@ -1,4 +1,4 @@
-import { Phone, Mail, FacebookIcon } from "lucide-react";
+import { Phone, Mail, FacebookIcon, History} from "lucide-react";
 import { HashLink } from "react-router-hash-link";
 import { Link } from "react-router-dom";
 
@@ -16,28 +16,20 @@ const Footer = () => {
           </p>
         </div>
 
-        {/* ☎️ Contact Section */}
+       
         {/* ☎️ Contact Section */}
         <div>
-          <h3 className="text-lg font-semibold text-white mb-3">Contact Us</h3>
+          <h3 className="text-lg font-semibold text-white mb-3">Contact Us and Know Us</h3>
           <ul className="space-y-2 text-sm">
             <li>
-              <Phone className="inline w-4 h-4 mr-2 text-green-400" />
-              (088) 828-4163
+             
+              <History className="inline w-4 h-4 mr-2 text-green-400" />
+              <Link to="/history" className="hover:text-green-700">
+                History
+              </Link>
             </li>
-            <li>
-              <Phone className="inline w-4 h-4 mr-2 text-green-400" />
-              0926-143-793 / 0917-180-8551
-            </li>
-            <li>
-              <Mail className="inline w-4 h-4 mr-2 text-green-400" />
-              <a
-                href="mailto:valencia@ycfc.com.ph"
-                className="hover:text-green-400 transition"
-              >
-                valencia@ycfc.com.ph
-              </a>
-            </li>
+            
+            
             <li>
               {/* 💬 Messenger Link */}
               <svg
@@ -56,6 +48,23 @@ const Footer = () => {
               >
                 Message us on Messenger
               </a>
+            </li>
+            <li>
+              <Mail className="inline w-4 h-4 mr-2 text-green-400" />
+              <a
+                href="mailto:valencia@ycfc.com.ph"
+                className="hover:text-green-400 transition"
+              >
+                valencia@ycfc.com.ph
+              </a>
+            </li>
+            <li>
+              <Phone className="inline w-4 h-4 mr-2 text-green-400" />
+              (088) 828-4163
+            </li>
+            <li>
+              <Phone className="inline w-4 h-4 mr-2 text-green-400" />
+              0926-143-793 / 0917-180-8551
             </li>
           </ul>
         </div>
@@ -89,13 +98,10 @@ const Footer = () => {
                 Company Manual
               </a>
             </li>  */}
-            <li>
-              <Link to="/history" className="hover:text-green-700">
-                History
-              </Link>
-            </li>
+            
           </ul>
         </div>
+        
 
         {/* 📱 Social / Extra */}
         <div>
