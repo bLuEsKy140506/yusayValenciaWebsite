@@ -5,14 +5,15 @@ const HeroSection = () => {
   return (
     <section
       id="hero"
-      className="relative flex flex-col md:flex-row items-center justify-center px-6 md:px-12 lg:px-20 py-20 md:py-24 lg:py-28 min-h-screen bg-cover bg-center overflow-hidden"
+      className="relative flex flex-col md:flex-row items-center justify-center px-6 md:px-12 lg:px-20 py-20 md:py-24 lg:py-28 min-h-screen bg-cover bg-center overflow-hidden
+      "
       style={{ backgroundImage: `url('/bg-interior.webp')` }}
     >
       {/* Light Overlay */}
       <div className="absolute inset-0 bg-white/60"></div>
 
       {/* Content Container */}
-      <div className="relative z-10 flex flex-col-reverse md:flex-row items-center justify-between w-full gap-10 md:gap-12 lg:gap-16 max-w-7xl mx-auto">
+      <div className="relative z-10 flex flex-col-reverse md:flex-row items-center justify-between w-full gap-10 md:gap-12 lg:gap-16 max-w-7xl mx-auto [@media(max-height:750px)]:gap-5">
         {/* Left Content */}
         <div className="w-full md:w-1/2 text-center md:text-left space-y-6 md:space-y-8 px-2 sm:px-4">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
@@ -51,7 +52,8 @@ const HeroSection = () => {
         {/* Right Section */}
         <div className="w-full md:w-1/2 flex justify-center md:justify-end">
           <div
-            className="text-white rounded-2xl shadow-lg text-center p-10 sm:p-12 md:p-14 lg:p-16 w-full max-w-sm sm:max-w-md md:max-w-lg"
+            className="text-white rounded-2xl shadow-lg text-center p-10 sm:p-12 md:p-14 lg:p-16 w-full max-w-sm sm:max-w-md md:max-w-lg [@media(max-height:750px)]:py-3 -mt-5
+[@media(max-height:750px)]:justify-start"
             style={{ backgroundColor: "#226C3B" }}
           >
             <h2 className="text-5xl sm:text-6xl md:text-7xl font-extrabold">
