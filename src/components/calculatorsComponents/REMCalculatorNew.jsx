@@ -25,7 +25,6 @@ const fireInsuranceTable = [
   { max: 10000000, premium: 15270.0 },
 ];
 
-// Interest table based on term
 const getMonthlyInterestRate = (months) => {
   if (months >= 4 && months <= 6) return 0.015;
   if (months === 7) return 0.0136;
@@ -66,16 +65,31 @@ const REMCalculatorNew = () => {
       return;
     }
 
-    // Interest rate per month
     const monthlyInterestRate = getMonthlyInterestRate(term);
 
-    // Deductions (NO advance 12% now)
     const ciFee = 1500;
     const rodFee = grossAmount * 0.03;
     const processingFee = grossAmount * 0.0075;
     const itFee = grossAmount * 0.0007 <= 50 ? 50 : grossAmount * 0.0007;
     const pnNotary = 200;
-    const fireInsurance = getFireInsurance(grossAmount);
+
+    // UPDATED --- FIRE INSURANCE LOGIC
+    const fireInsurancePremium = getFireInsurance(grossAmount);
+    const insuranceYears = includeFireInsurance
+      ? Math.ceil(term / 12)
+      : 0;
+
+    const fireInsuranceUpfront = includeFireInsurance
+      ? fireInsurancePremium
+      : 0;
+
+    const remainingInsuranceYears =
+      insuranceYears > 1 ? insuranceYears - 1 : 0;
+
+    const fireAmort = includeFireInsurance
+      ? (remainingInsuranceYears * fireInsurancePremium) / term
+      : 0;
+    // END UPDATED
 
     const totalDeductions =
       ciFee +
@@ -83,18 +97,15 @@ const REMCalculatorNew = () => {
       processingFee +
       itFee +
       pnNotary +
-      (includeFireInsurance ? fireInsurance : 0);
+      fireInsuranceUpfront; // UPDATED
 
     const netProceeds = grossAmount - totalDeductions;
 
-    // Monthly amortization
     const basePrincipal = grossAmount / term;
     const monthlyInterest = grossAmount * monthlyInterestRate;
-    const fireAmort = includeFireInsurance ? fireInsurance / term : 0;
 
-    const monthlyPayment = basePrincipal + monthlyInterest + fireAmort;
+    const monthlyPayment = basePrincipal + monthlyInterest + fireAmort; // UPDATED
 
-    // Amortization schedule
     let balance = grossAmount;
     const schedule = [];
 
@@ -122,7 +133,9 @@ const REMCalculatorNew = () => {
         "Processing Fee (0.75%)": processingFee,
         "IT Fee": itFee,
         "PN Notary": pnNotary,
-        ...(includeFireInsurance && { "Fire Insurance": fireInsurance }),
+        ...(includeFireInsurance && {
+          "Fire Insurance (1st Year)": fireInsuranceUpfront, // UPDATED
+        }),
       },
       totalDeductions,
       netProceeds,
