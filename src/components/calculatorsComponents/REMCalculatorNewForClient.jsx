@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 // Fire Insurance Premium Table
 const fireInsuranceTable = [
@@ -23,7 +25,6 @@ const fireInsuranceTable = [
   { max: 10000000, premium: 15270.0 },
 ];
 
-// Interest table based on term
 const getMonthlyInterestRate = (months) => {
   if (months >= 4 && months <= 6) return 0.015;
   if (months === 7) return 0.0136;
@@ -37,7 +38,7 @@ const getMonthlyInterestRate = (months) => {
 
 const REMCalculatorNewForClient = () => {
   const [gross, setGross] = useState("");
-  const [months, setMonths] = useState(36);
+  const [months, setMonths] = useState(24);
   const [includeFireInsurance, setIncludeFireInsurance] = useState(false);
   const [result, setResult] = useState(null);
 
@@ -64,16 +65,31 @@ const REMCalculatorNewForClient = () => {
       return;
     }
 
-    // Interest rate per month
     const monthlyInterestRate = getMonthlyInterestRate(term);
 
-    // Deductions (NO advance 12% now)
     const ciFee = 1500;
     const rodFee = grossAmount * 0.03;
     const processingFee = grossAmount * 0.0075;
     const itFee = grossAmount * 0.0007 <= 50 ? 50 : grossAmount * 0.0007;
     const pnNotary = 200;
-    const fireInsurance = getFireInsurance(grossAmount);
+
+    // UPDATED --- FIRE INSURANCE LOGIC
+    const fireInsurancePremium = getFireInsurance(grossAmount);
+    const insuranceYears = includeFireInsurance
+      ? Math.ceil(term / 12)
+      : 0;
+
+    const fireInsuranceUpfront = includeFireInsurance
+      ? fireInsurancePremium
+      : 0;
+
+    const remainingInsuranceYears =
+      insuranceYears > 1 ? insuranceYears - 1 : 0;
+
+    const fireAmort = includeFireInsurance
+      ? (remainingInsuranceYears * fireInsurancePremium) / term
+      : 0;
+    // END UPDATED
 
     const totalDeductions =
       ciFee +
@@ -81,18 +97,15 @@ const REMCalculatorNewForClient = () => {
       processingFee +
       itFee +
       pnNotary +
-      (includeFireInsurance ? fireInsurance : 0);
+      fireInsuranceUpfront; // UPDATED
 
     const netProceeds = grossAmount - totalDeductions;
 
-    // Monthly amortization
     const basePrincipal = grossAmount / term;
     const monthlyInterest = grossAmount * monthlyInterestRate;
-    const fireAmort = includeFireInsurance ? fireInsurance / term : 0;
 
-    const monthlyPayment = basePrincipal + monthlyInterest + fireAmort;
+    const monthlyPayment = basePrincipal + monthlyInterest + fireAmort; // UPDATED
 
-    // Amortization schedule
     let balance = grossAmount;
     const schedule = [];
 
@@ -120,7 +133,9 @@ const REMCalculatorNewForClient = () => {
         "Processing Fee (0.75%)": processingFee,
         "IT Fee": itFee,
         "PN Notary": pnNotary,
-        ...(includeFireInsurance && { "Fire Insurance": fireInsurance }),
+        ...(includeFireInsurance && {
+          "Fire Insurance (1st Year)": fireInsuranceUpfront, // UPDATED
+        }),
       },
       totalDeductions,
       netProceeds,
@@ -133,10 +148,141 @@ const REMCalculatorNewForClient = () => {
     calculate();
   }, [gross, months, includeFireInsurance]);
 
+  const printRef = useRef();
+
+  const handlePrint = () => {
+    const printContent = printRef.current.innerHTML;
+    const originalContent = document.body.innerHTML;
+
+    document.body.innerHTML = `
+    <html>
+      <head>
+        <title>REM Loan Computation</title>
+        <style>
+          @page {
+            size: A4;
+            margin: 12mm;
+          }
+
+          body {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            color: #000;
+          }
+
+          h2, h3 {
+            margin: 6px 0;
+          }
+
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9px;
+          }
+
+          th, td {
+            border: 1px solid #000;
+            padding: 3px;
+            text-align: center;
+          }
+
+          .no-print {
+            display: none;
+          }
+
+          .section {
+            margin-bottom: 8px;
+          }
+
+          .avoid-break {
+            page-break-inside: avoid;
+          }
+        </style>
+      </head>
+      <body>
+        ${printContent}
+      </body>
+    </html>
+  `;
+
+    window.print();
+    document.body.innerHTML = originalContent;
+    window.location.reload();
+  };
+  const handleGeneratePDF = async () => {
+    const element = printRef.current;
+    if (!element) return;
+
+    // 🔑 Save original styles
+    const original = {
+      overflow: element.style.overflow,
+      maxHeight: element.style.maxHeight,
+      height: element.style.height,
+    };
+
+    // 🔥 FORCE FULL CONTENT RENDER (MOBILE FIX)
+    element.style.overflow = "visible";
+    element.style.maxHeight = "none";
+    element.style.height = "auto";
+
+    const canvas = await html2canvas(element, {
+      scale: window.devicePixelRatio > 1 ? 2 : 1.3,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+      windowWidth: element.scrollWidth,
+      windowHeight: element.scrollHeight,
+
+      onclone: (clonedDoc) => {
+        const root =
+          clonedDoc.querySelector("[data-print-root]") || clonedDoc.body;
+
+        // Remove scroll limits in clone too
+        root.style.overflow = "visible";
+        root.style.maxHeight = "none";
+        root.style.height = "auto";
+
+        // Safe colors (no oklch)
+        root.querySelectorAll("*").forEach((el) => {
+          el.style.color = "#000";
+          el.style.backgroundColor = "#fff";
+          el.style.borderColor = "#000";
+          el.style.boxShadow = "none";
+        });
+      },
+    });
+
+    // 🔁 Restore original styles
+    element.style.overflow = original.overflow;
+    element.style.maxHeight = original.maxHeight;
+    element.style.height = original.height;
+
+    // 🧾 Create PDF
+    const imgData = canvas.toDataURL("image/jpeg", 0.75);
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const pageWidth = 210;
+    const pageHeight = 297;
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    // 🔥 MULTI-PAGE SUPPORT (CRITICAL FOR MOBILE)
+    while (heightLeft > 0) {
+      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      position -= pageHeight;
+      if (heightLeft > 0) pdf.addPage();
+    }
+
+    pdf.save("Loan_Computation_Full.pdf");
+  };
+
   return (
-    <div className="flex flex-col items-center px-2 min-h-[260px] transition-all">
+    <div className="flex flex-col items-center px-2 min-h-[260px] transition-all ">
       <h2 className="text-xl font-semibold mb-4 text-gray-800 text-center">
-        REM Loan Calculator (Add-on Scheme)
+        REM Loan Calculator
       </h2>
 
       <div className="flex flex-col items-center space-y-4 w-[200px] max-w-md ">
@@ -175,23 +321,20 @@ const REMCalculatorNewForClient = () => {
       </div>
 
       {result && (
-        <div className="mt-6 space-y-4 w-full max-w-2xl">
+        <div
+          className="mt-6 space-y-4 w-full max-w-2xl section avoid-break"
+          ref={printRef}
+          data-print-root
+        >
+          {/* <h3>@ {gross} </h3> */}
           {/* Deduction Breakdown */}
           <div className="bg-gray-50 p-4 rounded-lg shadow-inner">
             {/* <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              Deduction Breakdown:
+              Deduction Breakdown: @ {formatNumber(gross)} - {months} mos. term
             </h3> */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-gray-700">
-              {/* {Object.entries(result.breakdown).map(([label, value]) => (
-                <React.Fragment key={label}>
-                  <span className="font-medium">{label}</span>
-                  <span>₱{formatNumber(value)}</span>
-                </React.Fragment>
-              ))} */}
-              {/* <span className="font-semibold">Total Deductions</span>
-              <span className="font-semibold">
-                ₱{formatNumber(result.totalDeductions)}
-              </span> */}
+              
+            
               <span className="font-semibold">Net Proceeds</span>
               <span className="font-semibold text-green-700">
                 ₱{formatNumber(result.netProceeds)}
@@ -204,16 +347,56 @@ const REMCalculatorNewForClient = () => {
           </div>
 
           {/* Amortization Table */}
-          <div className="bg-white p-6 rounded-xl shadow-2xl z-30 border border-green-200 animate-fadeIn">
+          <div className="overflow-x-auto border rounded-lg">
+            <table className="min-w-[800px] border-collapse text-sm section avoid-break">
+              <thead className="bg-teal-600 text-black sticky top-0">
+                <tr>
+                  <th className="px-4 py-2 border">Month</th>
+                  <th className="px-4 py-2 border">Amortization</th>
+                  <th className="px-4 py-2 border">Interest</th>
+                  <th className="px-4 py-2 border">Principal</th>
+                  <th className="px-4 py-2 border">Insurance</th>
+                  <th className="px-4 py-2 border">Balance</th>
+                  <th className="px-4 py-2 border">Pretermination Fee</th>
+                </tr>
+              </thead>
+              <tbody>
+                {result.schedule.map((row) => (
+                  <tr key={row.month} className="text-center">
+                    <td className="px-4 py-2 border">{row.month}</td>
+                    <td className="px-4 py-2 border">
+                      ₱{formatNumber(row.amortization)}
+                    </td>
+                    <td className="px-4 py-2 border">
+                      ₱{formatNumber(row.interest)}
+                    </td>
+                    <td className="px-4 py-2 border">
+                      ₱{formatNumber(row.principal)}
+                    </td>
+                    <td className="px-4 py-2 border">
+                      ₱{formatNumber(row.insurance)}
+                    </td>
+                    <td className="px-4 py-2 border">
+                      ₱{formatNumber(row.balance)}
+                    </td>
+                    <td className="px-4 py-2 border">
+                      ₱{formatNumber(row.preterminationFee)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="bg-white p-3 rounded-xl shadow-2xl z-30 border border-green-200 avoid-break pdf-strong-text">
             {/* Header */}
             <div className="flex justify-between items-center mb-3">
-              <h2 className="text-lg font-semibold text-green-800">
+              <h2 className="text-lg font-bold text-green-800">
                 REM Loan Requirements
               </h2>
             </div>
 
             {/* Content */}
-            <ul className="text-sm text-gray-700 list-disc pl-4 space-y-1">
+            <ul className="text-sm text-black list-disc pl-4 space-y-1">
               <li>Owner’s Duplicate Copy of Title</li>
               <li>Certified True Copy of Title</li>
               <li>Lot Plan with Vicinity Map</li>
@@ -226,6 +409,7 @@ const REMCalculatorNewForClient = () => {
               <li>CAR (Certificate Authorizing Registration)</li>
             </ul>
           </div>
+         
         </div>
       )}
     </div>
