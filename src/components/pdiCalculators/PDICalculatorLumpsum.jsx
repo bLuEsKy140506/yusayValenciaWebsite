@@ -93,31 +93,40 @@ useEffect(() => {
   setResults(computedOptions);
 }, [formData.availableFunds, formData.principal, pdi, mode]);
 
-  // --- MODE 2: Percent Mode (fixed percent downpayment) ---
-  const handleComputeByPercent = (e) => {
-    e.preventDefault();
-    if (mode !== "percent") return;
+ // --- MODE 2: Percent Mode (fixed percent downpayment) ---
+const handleComputeByPercent = (e) => {
+  e.preventDefault();
+  if (mode !== "percent") return;
 
-    const { principal, percent } = formData;
-    const P = parseFloat(principal);
-    const downPercent = parseFloat(percent) / 100;
+  const { principal, percent } = formData;
+  const P = parseFloat(principal);
+  const percentValue = parseFloat(percent);
 
-    if (!P || !downPercent || pdi === null) {
-      alert("Please enter valid principal, percent, and compute PDI first.");
-      return;
-    }
+  if (!P || percent === "" || percentValue < 0 || pdi === null) {
+    alert("Please enter valid principal, percent (can be 0), and compute PDI first.");
+    return;
+  }
 
-    const resultsArray = extensions.map((opt) => {
-      const base = P * downPercent;
-      const remaining = P - base;
-      const interest = remaining * opt.percent;
-      const total = base + interest + pdi;
-      const diff = NaN; // not relevant for percent mode
-      return { ...opt, base, remaining, interest, total, diff };
-    });
+  const downPercent = percentValue / 100;
 
-    setResults(resultsArray);
-  };
+  const resultsArray = extensions.map((opt) => {
+    const base = P * downPercent;
+    const remaining = P - base;
+    const interest = remaining * opt.percent;
+    const total = base + interest + pdi;
+
+    return {
+      ...opt,
+      base,
+      remaining,
+      interest,
+      total,
+      diff: null, // cleaner than NaN
+    };
+  });
+
+  setResults(resultsArray);
+};
 
   return (
     <section className="min-h-screen flex flex-col items-center justify-start bg-gray-50 p-1">
