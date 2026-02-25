@@ -3,13 +3,14 @@ import React, { useState, useEffect } from "react";
 
 const PDICalculatorLumpsum = () => {
   const [mode, setMode] = useState("funds"); // 'funds' or 'percent'
-  const [formData, setFormData] = useState({
-    principal: "",
-    maturityDate: "",
-    paymentDate: "",
-    availableFunds: "",
-    percent: "",
-  });
+const [formData, setFormData] = useState({
+  principal: "",
+  maturityDate: "",
+  paymentDate: "",
+  availableFunds: "",
+  percent: "",
+  downpayment: "",   // ✅ ADD THIS
+});
 
   const [pdi, setPdi] = useState(null);
   const [results, setResults] = useState([]);
@@ -49,96 +50,48 @@ const PDICalculatorLumpsum = () => {
   ];
 
   // --- MODE 1: Available Funds Mode (progressive refinement search) ---
-  useEffect(() => {
-    if (mode !== "funds") return;
+useEffect(() => {
+  if (mode !== "funds") return;
 
-    const { principal, availableFunds } = formData;
-    const P = parseFloat(principal);
-    const X = parseFloat(availableFunds);
+  const { principal, availableFunds } = formData;
+  const P = parseFloat(principal);
+  const X = parseFloat(availableFunds);
 
-    if (pdi === null || !P || !X || X <= 0) {
-      setResults([]);
-      return;
-    }
+  if (pdi === null || !P || !X || X <= 0) {
+    setResults([]);
+    return;
+  }
 
-    const validExtensions = extensions.filter((opt) => P * opt.percent + pdi < X);
-    const computedOptions = [];
+  const computedOptions = extensions.map((opt) => {
+    const r = opt.percent;
 
-    validExtensions.forEach((opt) => {
-      // starting base = minimal downpayment (percent * principal)
-      let base = P * opt.percent;
-      // clamp base so it doesn't exceed principal
-      base = Math.min(base, P);
+    // Solve for Base dynamically
+    const numerator = X - P * r - pdi;
+    const denominator = 1 - r;
 
-      let bestMatch = null;
-      let smallestDiff = Infinity;
+    let base = numerator / denominator;
 
-      // progressive steps, largest to smallest
-      const stepSizes = [1000000,100000,10000,1000, 100, 10, 1];
+    // Safety guards
+    if (isNaN(base) || base < 0) base = 0;
+    if (base > P) base = P;
 
-      // For each step, attempt to increase base in increments of `step` as much as allowed
-      for (let s = 0; s < stepSizes.length; s++) {
-        const step = stepSizes[s];
+    const remaining = P - base;
+    const interest = remaining * r;
+    const total = base + interest + pdi;
+    const diff = X - total;
 
-        // Try to increase base by step until doing so would push total > X
-        while (true) {
-          const nextBase = base + step;
-          if (nextBase > P) break; // can't downpay more than principal
+    return {
+      ...opt,
+      base,
+      remaining,
+      interest,
+      total,
+      diff,
+    };
+  });
 
-          const remaining = P - nextBase;
-          const interest = remaining * opt.percent;
-          const total = nextBase + interest + pdi;
-
-          if (total > X) {
-            // cannot take another `step` — move to next finer step
-            break;
-          }
-
-          // total <= X, it's a valid candidate; compute diff (unspent)
-          const diff = X - total;
-
-          if (diff >= 0 && diff < smallestDiff) {
-            smallestDiff = diff;
-            bestMatch = {
-              ...opt,
-              base: nextBase,
-              remaining,
-              interest,
-              total,
-              diff,
-            };
-          }
-
-          // If we've reached an unspent < 1, that's good enough — stop everything
-          if (diff < 1) break;
-
-          // commit the increment and continue with the same step size
-          base = nextBase;
-        }
-
-        // if we already got diff < 1, break out of stepSizes loop early
-        if (bestMatch && bestMatch.diff < 1) break;
-      }
-
-      // If we never updated bestMatch (maybe initial base is the only valid), compute initial candidate
-      if (!bestMatch) {
-        const remaining = P - base;
-        const interest = remaining * opt.percent;
-        const total = base + interest + pdi;
-        const diff = X - total;
-        if (diff >= 0) {
-          bestMatch = { ...opt, base, remaining, interest, total, diff };
-        }
-      }
-
-      if (bestMatch) computedOptions.push(bestMatch);
-    });
-
-    // Sort results by smallest unspent (diff) ascending
-    computedOptions.sort((a, b) => a.diff - b.diff);
-
-    setResults(computedOptions);
-  }, [formData.availableFunds, pdi, formData.principal, mode]);
+  setResults(computedOptions);
+}, [formData.availableFunds, formData.principal, pdi, mode]);
 
   // --- MODE 2: Percent Mode (fixed percent downpayment) ---
   const handleComputeByPercent = (e) => {
@@ -247,6 +200,7 @@ const PDICalculatorLumpsum = () => {
         {/* mode specific inputs */}
         {mode === "funds" ? (
           <div className="mt-6 space-y-4">
+   
             <input
               type="number"
               name="availableFunds"
