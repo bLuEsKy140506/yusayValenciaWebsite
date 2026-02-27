@@ -72,6 +72,7 @@ const REMCalculatorNew = () => {
     const processingFee = grossAmount * 0.0075;
     const itFee = grossAmount * 0.0007 <= 50 ? 50 : grossAmount * 0.0007;
     const pnNotary = 200;
+    const docStamp = 100;
 
     // UPDATED --- FIRE INSURANCE LOGIC
     const fireInsurancePremium = getFireInsurance(grossAmount);
@@ -96,7 +97,7 @@ const REMCalculatorNew = () => {
       rodFee +
       processingFee +
       itFee +
-      pnNotary +
+      pnNotary + docStamp +
       fireInsuranceUpfront; // UPDATED
 
     const netProceeds = grossAmount - totalDeductions;
@@ -132,6 +133,7 @@ const REMCalculatorNew = () => {
         "ROD Registration (3%)": rodFee,
         "Processing Fee (0.75%)": processingFee,
         "IT Fee": itFee,
+        "Doc stamp": docStamp,
         "PN Notary": pnNotary,
         ...(includeFireInsurance && {
           "Fire Insurance (1st Year)": fireInsuranceUpfront, // UPDATED
