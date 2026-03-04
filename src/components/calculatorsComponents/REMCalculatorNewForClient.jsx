@@ -397,16 +397,15 @@ const REMCalculatorNewForClient = () => {
 
             {/* Content */}
             <ul className="text-sm text-black list-disc pl-4 space-y-1">
-              <li>Owner’s Duplicate Copy of Title</li>
-              <li>Certified True Copy of Title</li>
-              <li>Lot Plan with Vicinity Map</li>
-              <li>Tax Declaration & Receipts</li>
-              <li>Land Tax Clearance</li>
-              <li>Pictures of Property (2 outside, 2 inside)</li>
-              <li>2 Valid IDs (Applicant & Co-Maker)</li>
-              <li>1 2x2 ID Picture (Applicant & Co-Maker)</li>
-              <li>TIN (Applicant)</li>
-              <li>CAR (Certificate Authorizing Registration)</li>
+             <li>Owner’s Duplicate Copy of Title</li>
+        <li>Certified True Copy of Title</li>
+        <li>Lot Plan with Vicinity Map</li>
+        <li>Tax Declaration & Receipts -- LAND and BUILDING (if any)</li>
+        <li>Land Tax Clearance -- LAND and BUILDING (if any) </li>
+        <li>2 Valid IDs (Applicant & Co-Maker)</li>
+        <li>1 2x2 ID Picture (Applicant & Co-Maker)</li>
+        <li>TIN (Applicant)</li>
+        <li>CAR (Certificate Authorizing Registration) if purchased year 2007 onward</li>
             </ul>
           </div>
          

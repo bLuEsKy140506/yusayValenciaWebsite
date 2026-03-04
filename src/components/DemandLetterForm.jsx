@@ -724,7 +724,7 @@ export default function DemandLetterPDFGenerator() {
 
   const amountInWords = numberToWords(parsedAmount) + " Pesos ";
   const amountInWordsOriginal =
-    numberToWords(parsedOriginal) + " Pesos Only";
+    numberToWords(parsedOriginal) + " Pesos ";
 
   const filteredCollaterals = (f.collaterals || []).filter(
     (c) =>

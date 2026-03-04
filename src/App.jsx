@@ -3,7 +3,9 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import Footer from "./components/Footer";
-import ScrollToTop from "./pages/ScrollToTop";
+
+import History from "./pages/History.jsx";
+
 
 // Lazy load heavy pages & components
 const LoanCalculator = lazy(() => import("./pages/LoanCalculator"));
@@ -16,11 +18,11 @@ const ServicesSection = lazy(() => import("./components/ServicesSection"));
 const PropertyList = lazy(() => import("./pages/PropertyList"));
 const PropertyDetails = lazy(() => import("./pages/PropertyDetails"));
 const MakeAppointment = lazy(() => import("./pages/MakeAppointment"));
-const DemandLetterForm = lazy(() => import("./components/DemandLetterForm"));
+const DemandLetterForm = lazy(()=> import("./components/DemandLetterForm"));
 const PDICalculatorSwitcher = lazy(() =>
   import("./pages/PDICalculatorSwitcher")
 );
-const History = lazy(() => import("./pages/History"));
+
 
 function ScrollToHash() {
   const location = useLocation();
@@ -72,7 +74,6 @@ function App() {
       />
 
       <ScrollToHash />
-      <ScrollToTop />
 
       {/* Page content (pushes footer down) */}
       <main className="flex-grow">
@@ -98,9 +99,9 @@ function App() {
             />
             <Route path="/appointment" element={<MakeAppointment />} />
             <Route path="/pdi-calculator" element={<PDICalculatorSwitcher />} />
-            <Route path="/demand-letter" element={<DemandLetterForm />} />
-
-            <Route path="/history" element={<History />} />
+             <Route path="/demand-letter" element={<DemandLetterForm />} />
+             
+              <Route path="/history" element={<History />} />
 
             <Route
               path="*"
