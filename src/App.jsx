@@ -5,6 +5,7 @@ import HeroSection from "./components/HeroSection";
 import Footer from "./components/Footer";
 
 import History from "./pages/History.jsx";
+import ScrollToTop from "./pages/ScrollToTop.jsx";
 
 
 // Lazy load heavy pages & components
@@ -72,6 +73,9 @@ function App() {
         onPreloadProperties={preloadProperties}
         onPreloadLoanCalculator={preloadLoanCalculator}
       />
+  
+
+<ScrollToTop />
 
       <ScrollToHash />
 
