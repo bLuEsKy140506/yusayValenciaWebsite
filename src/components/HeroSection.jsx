@@ -31,12 +31,14 @@ const HeroSection = () => {
           </h1>
 
           <p className="text-gray-700 text-sm sm:text-base md:text-xl leading-relaxed max-w-md md:max-w-xl mx-auto md:mx-0">
-            Get quick approvals, flexible terms, and low rates for
-            <span className="font-semibold text-[#226C3B]"> SSS/GSIS Pension</span> and
-            <span className="font-semibold text-[#226C3B]"> Real Estate Mortgage</span> loans.
-          </p>
+  We provides trusted lending solutions for
+  <span className="font-semibold text-[#226C3B]"> SSS/GSIS pensioners</span> and
+  <span className="font-semibold text-[#226C3B]"> real estate owners</span>,
+  helping clients in <span className="font-semibold text-[#226C3B]">Valencia City </span>
+  access financing quickly and responsibly.
+</p>
 
-          <div className="flex flex-wrap gap-2 sm:gap-3 justify-center md:justify-start">
+          <div className="flex flex-wrap gap-2 sm:gap-3 justify-center md:justify-start -mt-1.5 -mb-1">
             {trustIndicators.map((item) => (
               <span
                 key={item}
@@ -47,7 +49,7 @@ const HeroSection = () => {
             ))}
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start pt-2">
+          <div className="flex flex-col sm:flex-row gap-1 sm:gap-2 justify-center md:justify-start pt-2">
 
             <ScrollLink
               to="apply-now"
@@ -72,7 +74,7 @@ const HeroSection = () => {
         {/* Right Section */}
         <div className="w-full md:w-1/2 flex justify-center md:justify-end">
 
-          <div className="rounded-3xl shadow-2xl text-center p-1 sm:p-8 md:p-14 lg:p-16 w-full max-w-sm sm:max-w-md md:max-w-lg bg-gradient-to-b from-[#2c7a47] to-[#1d5b31] text-white ring-1 ring-white/30 backdrop-blur-sm">
+          <div className="rounded-3xl shadow-2xl text-center p-2 sm:p-8 md:p-14 lg:p-16 w-full max-w-sm sm:max-w-md md:max-w-lg bg-gradient-to-b from-[#2c7a47] to-[#1d5b31] text-white ring-1 ring-white/30 backdrop-blur-sm">
 
             <h2 className="text-4xl sm:text-5xl md:text-7xl font-extrabold">
               60+
@@ -82,7 +84,7 @@ const HeroSection = () => {
               Years of Trusted Service
             </p>
 
-            <div className="mt-6 border-t border-green-300/60 pt-4 space-y-1">
+            <div className="mt-3 border-t border-green-300/60 pt-4 space-y-1">
               <p className="text-sm sm:text-base">Established 1960</p>
               <p className="text-sm sm:text-base">Valencia Branch since 2004</p>
             </div>
