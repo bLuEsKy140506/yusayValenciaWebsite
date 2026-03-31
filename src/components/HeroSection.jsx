@@ -22,9 +22,9 @@ const HeroSection = () => {
         {/* Left Content */}
         <div className="w-full md:w-1/2 text-center md:text-left space-y-5 md:space-y-8 px-2 sm:px-4">
 
-          <p className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-2 text-xs sm:text-sm font-semibold text-green-800 shadow-sm ring-1 ring-green-200">
+          {/* <p className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-2 text-xs sm:text-sm font-semibold text-green-800 shadow-sm ring-1 ring-green-200">
             Valencia City's trusted lender since 2004
-          </p>
+          </p> */}
 
           <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
             Fast & Affordable Loans in <span className="text-[#226C3B]">Valencia City</span>
@@ -34,11 +34,10 @@ const HeroSection = () => {
   We provides trusted lending solutions for
   <span className="font-semibold text-[#226C3B]"> SSS/GSIS pensioners</span> and
   <span className="font-semibold text-[#226C3B]"> real estate owners</span>,
-  helping clients in <span className="font-semibold text-[#226C3B]">Valencia City </span>
-  access financing quickly and responsibly.
+  helping clients access financing quickly and responsibly.
 </p>
 
-          <div className="flex flex-wrap gap-2 sm:gap-3 justify-center md:justify-start -mt-1.5 -mb-1">
+          <div className="flex flex-wrap gap-2 sm:gap-3 justify-center md:justify-start mt-1.5 mb-2">
             {trustIndicators.map((item) => (
               <span
                 key={item}
